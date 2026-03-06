@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Briefcase, GraduationCap } from "lucide-react";
 import { Timeline } from "@/components/ui/timeline";
 import { experience } from "@/data/experience";
 import { education } from "@/data/education";
@@ -11,6 +12,7 @@ function EntryContent({
   period,
   gpa,
   bullets,
+  type,
 }: {
   name: string;
   role: string;
@@ -18,14 +20,22 @@ function EntryContent({
   period: string;
   gpa?: string;
   bullets: string[];
+  type: "work" | "education";
 }) {
+  const Icon = type === "education" ? GraduationCap : Briefcase;
+
   return (
     <div className="flex flex-col gap-4 pb-4">
       <div>
         <h4 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
           {name}
         </h4>
-        <p className="text-neutral-600 dark:text-neutral-400 italic">{role}</p>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <Icon className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
+          <p className="text-neutral-600 dark:text-neutral-400 italic text-sm">
+            {role}
+          </p>
+        </div>
         <div className="flex items-center gap-2 mt-1">
           <span className="text-sm text-neutral-500 dark:text-neutral-500">
             {location} · {period}
@@ -59,6 +69,7 @@ const timelineData = [
     title: "2025",
     content: (
       <EntryContent
+        type="work"
         name={experience[0].company}
         role={experience[0].role}
         location={experience[0].location}
@@ -71,6 +82,7 @@ const timelineData = [
     title: "2024–2026",
     content: (
       <EntryContent
+        type="education"
         name={education[0].institution}
         role={education[0].degree}
         location={education[0].location}
@@ -84,6 +96,7 @@ const timelineData = [
     title: "2023–2024",
     content: (
       <EntryContent
+        type="work"
         name={experience[1].company}
         role={experience[1].role}
         location={experience[1].location}
@@ -96,6 +109,7 @@ const timelineData = [
     title: "2022–2023",
     content: (
       <EntryContent
+        type="work"
         name={experience[2].company}
         role={experience[2].role}
         location={experience[2].location}
@@ -108,6 +122,7 @@ const timelineData = [
     title: "Early 2022",
     content: (
       <EntryContent
+        type="work"
         name={experience[3].company}
         role={experience[3].role}
         location={experience[3].location}
@@ -120,6 +135,7 @@ const timelineData = [
     title: "2018–2022",
     content: (
       <EntryContent
+        type="education"
         name={education[1].institution}
         role={education[1].degree}
         location={education[1].location}
