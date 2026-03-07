@@ -110,7 +110,7 @@ export const MinimalistHero = ({
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-7xl md:text-8xl lg:text-9xl font-extrabold"
         >
-          <AnimatedGradientText colorFrom="#7bb0ff" colorTo="#a77bff" speed={6}>
+          <AnimatedGradientText colorFrom="#a77bff" colorTo="#7bb0ff" speed={6}>
             {name}
           </AnimatedGradientText>
         </motion.h1>
@@ -146,15 +146,9 @@ export const MinimalistHero = ({
         >
           <a
             href={resumeLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 pointer-events-auto inline-flex"
+            className="mt-6 inline-block text-sm font-medium text-foreground underline decoration-from-font pointer-events-auto"
           >
-            <span className="rounded-full bg-gradient-to-r from-[#7bb0ff] to-[#a77bff] p-px">
-              <span className="flex items-center gap-1.5 rounded-full bg-background px-5 py-2 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground hover:bg-background/90">
-                View Resume
-              </span>
-            </span>
+            View Resume
           </a>
         </motion.div>
       </div>
@@ -168,7 +162,7 @@ export const MinimalistHero = ({
           opacity: { duration: 0.5, delay: 1.5 },
           y: { duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: 1.5 },
         }}
-        className="z-30 flex flex-col items-center gap-1 text-foreground/40 hover:text-foreground transition-colors pointer-events-auto translate-y-5"
+        className="z-30 flex flex-col items-center gap-1 text-foreground/40 hover:text-foreground transition-colors pointer-events-auto"
         aria-label="Scroll to experience"
       >
         <span className="text-xs font-medium tracking-widest uppercase">

@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${plusJakartaSans.variable} ${lora.variable} font-sans antialiased`}>
+      <body suppressHydrationWarning className={`${plusJakartaSans.variable} ${lora.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

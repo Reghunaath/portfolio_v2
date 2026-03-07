@@ -86,7 +86,7 @@
   100% { background-position: 200% center; }
 }
 
-.animate-gradient {
+@utility animate-gradient {
   animation: gradient var(--speed, 4s) linear infinite;
 }
 
@@ -102,10 +102,10 @@
   50% { background-color: #0d4429; }
 }
 
-.animate-highlight {
+@utility animate-highlight {
   animation: highlight 0.6s ease-in-out forwards;
 }
 
-.animate-flash {
+@utility animate-flash {
   animation: flash 2s ease-in-out infinite;
 }
