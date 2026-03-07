@@ -13,7 +13,7 @@ export const education: Education[] = [
     degree: "Masters of Science in Data Science",
     location: "Boston, MA",
     period: "2024 – 2026",
-    gpa: "3.9",
+    gpa: "3.9/4.0",
     bullets: [],
   },
   {
@@ -21,7 +21,7 @@ export const education: Education[] = [
     degree: "Bachelors of Technology in Computer Science and Engineering",
     location: "Vellore, India",
     period: "2018 – 2022",
-    gpa: "8.56",
+    gpa: "8.56/10.00",
     bullets: [],
   },
 ];

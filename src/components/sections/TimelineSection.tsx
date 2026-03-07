@@ -64,7 +64,7 @@ function EntryContent({
   );
 }
 
-const timelineData = [
+const workData = [
   {
     title: "2025",
     content: (
@@ -75,20 +75,6 @@ const timelineData = [
         location={experience[0].location}
         period={experience[0].period}
         bullets={experience[0].bullets}
-      />
-    ),
-  },
-  {
-    title: "2024–2026",
-    content: (
-      <EntryContent
-        type="education"
-        name={education[0].institution}
-        role={education[0].degree}
-        location={education[0].location}
-        period={education[0].period}
-        gpa={education[0].gpa}
-        bullets={education[0].bullets}
       />
     ),
   },
@@ -131,6 +117,23 @@ const timelineData = [
       />
     ),
   },
+];
+
+const educationData = [
+  {
+    title: "2024–2026",
+    content: (
+      <EntryContent
+        type="education"
+        name={education[0].institution}
+        role={education[0].degree}
+        location={education[0].location}
+        period={education[0].period}
+        gpa={education[0].gpa}
+        bullets={education[0].bullets}
+      />
+    ),
+  },
   {
     title: "2018–2022",
     content: (
@@ -150,7 +153,16 @@ const timelineData = [
 export function TimelineSection() {
   return (
     <section id="experience">
-      <Timeline data={timelineData} />
+      <Timeline
+        data={workData}
+        heading="Work Experience"
+        subtitle="My professional journey so far."
+      />
+      <Timeline
+        data={educationData}
+        heading="Education"
+        subtitle="My academic background."
+      />
     </section>
   );
 }
