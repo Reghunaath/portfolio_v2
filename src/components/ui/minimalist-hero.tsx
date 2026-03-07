@@ -146,9 +146,15 @@ export const MinimalistHero = ({
         >
           <a
             href={resumeLink}
-            className="mt-6 inline-block text-sm font-medium text-foreground underline decoration-from-font pointer-events-auto"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 pointer-events-auto inline-flex"
           >
-            View Resume
+            <span className="rounded-full bg-gradient-to-r from-[#7bb0ff] to-[#a77bff] p-px">
+              <span className="flex items-center gap-1.5 rounded-full bg-background px-5 py-2 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground hover:bg-background/90">
+                View Resume
+              </span>
+            </span>
           </a>
         </motion.div>
       </div>
@@ -162,7 +168,7 @@ export const MinimalistHero = ({
           opacity: { duration: 0.5, delay: 1.5 },
           y: { duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: 1.5 },
         }}
-        className="z-30 flex flex-col items-center gap-1 text-foreground/40 hover:text-foreground transition-colors pointer-events-auto"
+        className="z-30 flex flex-col items-center gap-1 text-foreground/40 hover:text-foreground transition-colors pointer-events-auto translate-y-5"
         aria-label="Scroll to experience"
       >
         <span className="text-xs font-medium tracking-widest uppercase">
