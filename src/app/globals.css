@@ -2,8 +2,8 @@
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  --background: #f9f8f6;
+  --foreground: #0d0d0b;
   --card: #ffffff;
   --card-foreground: #0a0a0a;
   --primary: #0a0a0a;
@@ -78,6 +78,16 @@
   html {
     scroll-behavior: smooth;
   }
+}
+
+/* ─── Gradient Text Animation ───────────────────────────────────────────── */
+@keyframes gradient {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-gradient {
+  animation: gradient var(--speed, 4s) linear infinite;
 }
 
 /* ─── CommitsGrid Animations ────────────────────────────────────────────── */

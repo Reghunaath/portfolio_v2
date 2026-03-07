@@ -2,7 +2,7 @@ export const personal = {
   name: "Reghunaath Ajith Kumar Ahila",
   subtitle: [
     "Full-Stack Engineer",
-    "AI Builder",
+    "AI Developer",
     "2x Hackathon Winner",
     "Published Researcher",
   ],

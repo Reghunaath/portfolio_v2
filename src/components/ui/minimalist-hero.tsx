@@ -5,6 +5,7 @@ import { LucideIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { Typewriter } from "./typewriter-text";
+import { AnimatedGradientText } from "@/registry/magicui/animated-gradient-text";
 
 const Boxes = dynamic(() => import("./boxes").then((m) => m.Boxes), {
   ssr: false,
@@ -80,14 +81,7 @@ export const MinimalistHero = ({
 
       {/* Header */}
       <header className="z-30 flex w-full max-w-7xl items-center justify-between">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-xl font-bold tracking-wider"
-        >
-          {logoText}
-        </motion.div>
+        <div />
         <div className="hidden items-center space-x-8 md:flex">
           {navLinks.map((link) => (
             <NavLink key={link.label} href={link.href}>
@@ -114,16 +108,18 @@ export const MinimalistHero = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-7xl md:text-8xl lg:text-9xl font-extrabold text-foreground"
+          className="text-7xl md:text-8xl lg:text-9xl font-extrabold"
         >
-          {name}
+          <AnimatedGradientText colorFrom="#7bb0ff" colorTo="#a77bff" speed={6}>
+            {name}
+          </AnimatedGradientText>
         </motion.h1>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-4 text-xl md:text-2xl text-foreground/80"
+          className="mt-4 text-xl md:text-2xl text-indigo-500 dark:text-indigo-400 font-medium tracking-wide"
         >
           <Typewriter
             text={subtitle}
@@ -138,7 +134,7 @@ export const MinimalistHero = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-6 max-w-md text-sm leading-relaxed text-foreground/80"
+          className="mt-6 max-w-md text-base leading-loose text-foreground/70 italic [font-family:var(--font-lora)]"
         >
           {introText}
         </motion.p>
@@ -169,7 +165,9 @@ export const MinimalistHero = ({
         className="z-30 flex flex-col items-center gap-1 text-foreground/40 hover:text-foreground transition-colors pointer-events-auto"
         aria-label="Scroll to experience"
       >
-        <span className="text-xs font-medium tracking-widest uppercase">Scroll</span>
+        <span className="text-xs font-medium tracking-widest uppercase">
+          Scroll
+        </span>
         <ChevronDown className="h-6 w-6" />
       </motion.a>
 
