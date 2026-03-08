@@ -27,21 +27,21 @@ function EntryContent({
   return (
     <div className="flex flex-col gap-4 pb-4">
       <div>
-        <h4 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
+        <h4 className="text-3xl font-bold text-neutral-800 dark:text-neutral-200">
           {name}
         </h4>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <Icon className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
-          <p className="text-neutral-600 dark:text-neutral-400 italic text-sm">
+          <Icon className="h-5 w-5 text-neutral-400 shrink-0" />
+          <p className="text-neutral-600 dark:text-neutral-400 italic text-lg">
             {role}
           </p>
         </div>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm text-neutral-500 dark:text-neutral-500">
+          <span className="text-lg text-neutral-500 dark:text-neutral-500">
             {location} · {period}
           </span>
           {gpa && (
-            <span className="text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 px-2 py-0.5 rounded-full">
+            <span className="text-base font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 px-2 py-0.5 rounded-full">
               GPA {gpa}
             </span>
           )}
@@ -52,7 +52,7 @@ function EntryContent({
           {bullets.map((bullet, i) => (
             <li
               key={i}
-              className="flex gap-2 text-sm text-neutral-700 dark:text-neutral-300"
+              className="flex gap-2 text-md text-neutral-700 dark:text-neutral-300"
             >
               <span className="text-neutral-400 shrink-0 mt-0.5">–</span>
               <span>{bullet}</span>
@@ -79,7 +79,7 @@ const workData = [
     ),
   },
   {
-    title: "2023–2024",
+    title: "Early 2025",
     content: (
       <EntryContent
         type="work"
@@ -92,7 +92,7 @@ const workData = [
     ),
   },
   {
-    title: "2022–2023",
+    title: "2023",
     content: (
       <EntryContent
         type="work"
@@ -105,7 +105,7 @@ const workData = [
     ),
   },
   {
-    title: "Early 2022",
+    title: "2022",
     content: (
       <EntryContent
         type="work"
@@ -117,11 +117,24 @@ const workData = [
       />
     ),
   },
+  {
+    title: "Early 2022",
+    content: (
+      <EntryContent
+        type="work"
+        name={experience[4].company}
+        role={experience[4].role}
+        location={experience[4].location}
+        period={experience[4].period}
+        bullets={experience[4].bullets}
+      />
+    ),
+  },
 ];
 
 const educationData = [
   {
-    title: "2024–2026",
+    title: "2024",
     content: (
       <EntryContent
         type="education"
@@ -135,7 +148,7 @@ const educationData = [
     ),
   },
   {
-    title: "2018–2022",
+    title: "2018",
     content: (
       <EntryContent
         type="education"

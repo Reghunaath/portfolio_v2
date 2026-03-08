@@ -19,6 +19,16 @@ export const experience: Experience[] = [
     ],
   },
   {
+    company: "Northeastern University",
+    role: "Teaching Assistant",
+    location: "Remote",
+    period: "May 2025 – Dec 2025",
+    bullets: [
+      "Served as TA for CS6620 Fundamentals of Cloud Computing and DS3000 Foundations of Data Science, supporting a combined cohort of graduate and undergraduate students.",
+      "Assisted in grading, designing assignments, and holding office hours to clarify concepts and guide students through course material.",
+    ],
+  },
+  {
     company: "Infosys",
     role: "Senior Systems Engineer",
     location: "Bengaluru, India",

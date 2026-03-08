@@ -110,7 +110,7 @@ export const MinimalistHero = ({
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-7xl md:text-8xl lg:text-9xl font-extrabold"
         >
-          <AnimatedGradientText colorFrom="#a77bff" colorTo="#7bb0ff" speed={6}>
+          <AnimatedGradientText colorFrom="#7735fc" colorTo="#6ea6fa" speed={6}>
             {name}
           </AnimatedGradientText>
         </motion.h1>
