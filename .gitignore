@@ -45,3 +45,9 @@ next-env.d.ts
 .cp-images/
 .playwright-mcp/
 project_memory/screenshots/
+
+# playwright screenshots
+*.jpg
+*.png
+!public/**/*.jpg
+!public/**/*.png

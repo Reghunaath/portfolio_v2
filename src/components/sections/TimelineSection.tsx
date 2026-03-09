@@ -32,7 +32,11 @@ function EntryContent({
           {name}
         </h4>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <Icon className="h-5 w-5 text-neutral-400 shrink-0" />
+          <Icon
+            className={`h-5 w-5 shrink-0 ${
+              type === "education" ? "text-sky-300" : "text-amber-900"
+            }`}
+          />
           <p className="text-neutral-600 dark:text-neutral-400 italic text-lg">
             {role}
           </p>
@@ -55,7 +59,7 @@ function EntryContent({
               key={i}
               className="flex gap-2 text-md text-neutral-700 dark:text-neutral-300"
             >
-              <span className="text-neutral-400 shrink-0 mt-0.5">–</span>
+              <span className="shrink-0">🔹</span>
               <span>{bullet}</span>
             </li>
           ))}
