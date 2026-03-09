@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { LucideIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Typewriter } from "./typewriter-text";
@@ -61,8 +61,16 @@ export const MinimalistHero = ({
   locationText,
   className,
 }: HeroProps) => {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const footerOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+
   return (
     <div
+      ref={heroRef}
       className={cn(
         "relative flex h-screen w-full flex-col items-center justify-between p-8 font-sans md:p-12",
         className
@@ -161,7 +169,10 @@ export const MinimalistHero = ({
       </motion.a>
 
       {/* Footer */}
-      <footer className="z-30 flex w-full max-w-7xl items-center justify-between pointer-events-auto">
+      <motion.footer
+        style={{ opacity: footerOpacity }}
+        className="z-30 flex w-full max-w-7xl items-center justify-between pointer-events-auto"
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -180,7 +191,7 @@ export const MinimalistHero = ({
         >
           {locationText}
         </motion.div>
-      </footer>
+      </motion.footer>
     </div>
   );
 };
