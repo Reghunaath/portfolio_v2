@@ -2,6 +2,7 @@
 import React from "react";
 import { Briefcase, GraduationCap } from "lucide-react";
 import { Timeline } from "@/components/ui/timeline";
+import { GlowCard } from "@/components/ui/glow-card";
 import { experience } from "@/data/experience";
 import { education } from "@/data/education";
 
@@ -64,103 +65,48 @@ function EntryContent({
   );
 }
 
+function makeWorkEntry(exp: (typeof experience)[0]) {
+  return (
+    <GlowCard>
+      <EntryContent
+        type="work"
+        name={exp.company}
+        role={exp.role}
+        location={exp.location}
+        period={exp.period}
+        bullets={exp.bullets}
+      />
+    </GlowCard>
+  );
+}
+
+function makeEducationEntry(edu: (typeof education)[0]) {
+  return (
+    <GlowCard>
+      <EntryContent
+        type="education"
+        name={edu.institution}
+        role={edu.degree}
+        location={edu.location}
+        period={edu.period}
+        gpa={edu.gpa}
+        bullets={edu.bullets}
+      />
+    </GlowCard>
+  );
+}
+
 const workData = [
-  {
-    title: "2025",
-    content: (
-      <EntryContent
-        type="work"
-        name={experience[0].company}
-        role={experience[0].role}
-        location={experience[0].location}
-        period={experience[0].period}
-        bullets={experience[0].bullets}
-      />
-    ),
-  },
-  {
-    title: "Early 2025",
-    content: (
-      <EntryContent
-        type="work"
-        name={experience[1].company}
-        role={experience[1].role}
-        location={experience[1].location}
-        period={experience[1].period}
-        bullets={experience[1].bullets}
-      />
-    ),
-  },
-  {
-    title: "2023",
-    content: (
-      <EntryContent
-        type="work"
-        name={experience[2].company}
-        role={experience[2].role}
-        location={experience[2].location}
-        period={experience[2].period}
-        bullets={experience[2].bullets}
-      />
-    ),
-  },
-  {
-    title: "2022",
-    content: (
-      <EntryContent
-        type="work"
-        name={experience[3].company}
-        role={experience[3].role}
-        location={experience[3].location}
-        period={experience[3].period}
-        bullets={experience[3].bullets}
-      />
-    ),
-  },
-  {
-    title: "Early 2022",
-    content: (
-      <EntryContent
-        type="work"
-        name={experience[4].company}
-        role={experience[4].role}
-        location={experience[4].location}
-        period={experience[4].period}
-        bullets={experience[4].bullets}
-      />
-    ),
-  },
+  { title: "2025", content: makeWorkEntry(experience[0]) },
+  { title: "Early 2025", content: makeWorkEntry(experience[1]) },
+  { title: "2023", content: makeWorkEntry(experience[2]) },
+  { title: "2022", content: makeWorkEntry(experience[3]) },
+  { title: "Early 2022", content: makeWorkEntry(experience[4]) },
 ];
 
 const educationData = [
-  {
-    title: "2024",
-    content: (
-      <EntryContent
-        type="education"
-        name={education[0].institution}
-        role={education[0].degree}
-        location={education[0].location}
-        period={education[0].period}
-        gpa={education[0].gpa}
-        bullets={education[0].bullets}
-      />
-    ),
-  },
-  {
-    title: "2018",
-    content: (
-      <EntryContent
-        type="education"
-        name={education[1].institution}
-        role={education[1].degree}
-        location={education[1].location}
-        period={education[1].period}
-        gpa={education[1].gpa}
-        bullets={education[1].bullets}
-      />
-    ),
-  },
+  { title: "2024", content: makeEducationEntry(education[0]) },
+  { title: "2018", content: makeEducationEntry(education[1]) },
 ];
 
 export function TimelineSection() {

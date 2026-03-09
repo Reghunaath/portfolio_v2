@@ -90,6 +90,72 @@
   animation: gradient var(--speed, 4s) linear infinite;
 }
 
+/* ─── Glow Card ─────────────────────────────────────────────────────────── */
+.glow-card-base {
+  --glow-backdrop: hsl(0 0% 97%);
+  --glow-border-color: hsl(0 0% 82%);
+}
+@media (prefers-color-scheme: dark) {
+  .glow-card-base {
+    --glow-backdrop: hsl(0 0% 8% / 0.9);
+    --glow-border-color: hsl(0 0% 20%);
+  }
+}
+
+[data-glow] {
+  --_bs: calc(var(--glow-b, 1) * 1px);
+  --_ss: calc(var(--glow-size, 240) * 1px);
+  --_hue: calc(var(--glow-base, 220) + (var(--xp, 0) * var(--glow-spread, 60)));
+  background-image: radial-gradient(
+    var(--_ss) var(--_ss) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+    hsl(var(--_hue) calc(var(--glow-sat, 70) * 1%) calc(var(--glow-lit, 60) * 1%) / var(--bg-spot-opacity, 0.07)),
+    transparent
+  );
+  background-color: var(--glow-backdrop, transparent);
+  background-size: calc(100% + (2 * var(--_bs))) calc(100% + (2 * var(--_bs)));
+  background-position: 50% 50%;
+  background-attachment: fixed;
+  border: var(--_bs) solid var(--glow-border-color, hsl(0 0% 20%));
+  border-radius: calc(var(--glow-r, 12) * 1px);
+  position: relative;
+}
+
+[data-glow]::before,
+[data-glow]::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: calc(var(--_bs) * -1);
+  border: var(--_bs) solid transparent;
+  border-radius: calc(var(--glow-r, 12) * 1px);
+  background-attachment: fixed;
+  background-size: calc(100% + (2 * var(--_bs))) calc(100% + (2 * var(--_bs)));
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+  mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+}
+
+[data-glow]::before {
+  background-image: radial-gradient(
+    calc(var(--_ss) * 0.75) calc(var(--_ss) * 0.75) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+    hsl(var(--_hue) calc(var(--glow-sat, 70) * 1%) calc(var(--glow-lit, 50) * 1%) / var(--border-spot-opacity, 0.9)),
+    transparent 100%
+  );
+  z-index: 2;
+  filter: brightness(2);
+}
+
+[data-glow]::after {
+  background-image: radial-gradient(
+    calc(var(--_ss) * 0.5) calc(var(--_ss) * 0.5) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+    hsl(0 100% 100% / var(--border-light-opacity, 0.4)),
+    transparent 100%
+  );
+  z-index: 2;
+}
+
 /* ─── CommitsGrid Animations ────────────────────────────────────────────── */
 @keyframes highlight {
   0% { background-color: transparent; }

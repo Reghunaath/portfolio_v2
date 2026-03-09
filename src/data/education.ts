@@ -21,7 +21,7 @@ export const education: Education[] = [
     degree: "Bachelors of Technology in Computer Science and Engineering",
     location: "Vellore, India",
     period: "2018 – 2022",
-    gpa: "8.56/10.00",
+    gpa: "3.42/4.0",
     bullets: [],
   },
 ];
