@@ -3,13 +3,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { LucideIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import dynamic from "next/dynamic";
 import { Typewriter } from "./typewriter-text";
 import { AnimatedGradientText } from "@/registry/magicui/animated-gradient-text";
-
-const Boxes = dynamic(() => import("./boxes").then((m) => m.Boxes), {
-  ssr: false,
-});
 
 interface HeroProps {
   logoText: string;
@@ -69,18 +64,12 @@ export const MinimalistHero = ({
   return (
     <div
       className={cn(
-        "relative flex h-screen w-full flex-col items-center justify-between overflow-hidden bg-background p-8 font-sans md:p-12",
+        "relative flex h-screen w-full flex-col items-center justify-between p-8 font-sans md:p-12",
         className
       )}
     >
-      {/* Background boxes */}
-      <Boxes />
-
-      {/* Gradient overlay for text readability */}
-      <div className="absolute inset-0 z-10 bg-background/70 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
-
       {/* Header */}
-      <header className="z-30 flex w-full max-w-7xl items-center justify-between">
+      <header className="z-30 flex w-full max-w-7xl items-center justify-between pointer-events-auto">
         <div />
         <div className="hidden items-center space-x-8 md:flex">
           {navLinks.map((link) => (
@@ -172,7 +161,7 @@ export const MinimalistHero = ({
       </motion.a>
 
       {/* Footer */}
-      <footer className="z-30 flex w-full max-w-7xl items-center justify-between">
+      <footer className="z-30 flex w-full max-w-7xl items-center justify-between pointer-events-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
