@@ -1,35 +1,28 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Lora } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-inter",
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
-
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "700"],
+  variable: "--font-jetbrains",
 });
 
 export const metadata: Metadata = {
   title: "Reghunaath — Full-Stack Engineer",
   description:
-    "Portfolio of Reghunaath Ajith Kumar Ahila, a full-stack engineer and MS Data Science student at Northeastern University.",
+    "Full-Stack Engineer, AI Developer, 2x Hackathon Winner, Published Researcher. MS Data Science @ Northeastern.",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body suppressHydrationWarning className={`${plusJakartaSans.variable} ${lora.variable} font-sans antialiased`}>
-        {children}
-      </body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${jetbrainsMono.variable} antialiased`}>{children}</body>
     </html>
   );
 }

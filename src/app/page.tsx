@@ -1,26 +1,31 @@
-"use client";
+import { TerminalTitleBar } from "@/components/ui/terminal-title-bar";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { TimelineSection } from "@/components/sections/TimelineSection";
-import dynamic from "next/dynamic";
+import { ProjectsSection } from "@/components/sections/ProjectsSection";
+import { ExperienceSection } from "@/components/sections/ExperienceSection";
+import { EducationSection } from "@/components/sections/EducationSection";
+import { ContactSection } from "@/components/sections/ContactSection";
 
-const Boxes = dynamic(() => import("@/components/ui/boxes").then((m) => m.Boxes), {
-  ssr: false,
-});
+const navLinks = [
+  { label: "~/", href: "#hero" },
+  { label: "projects", href: "#projects" },
+  { label: "experience", href: "#experience" },
+  { label: "education", href: "#education" },
+  { label: "contact", href: "#contact" },
+];
 
 export default function Home() {
   return (
-    <main className="relative">
-      {/* Global animated grid background */}
-      <div className="fixed inset-0 z-0">
-        <Boxes />
-      </div>
-      <div className="fixed inset-0 z-[1] bg-background/70 pointer-events-none" />
-
-      {/* Page content */}
-      <div className="relative z-[2] pointer-events-none">
-        <HeroSection />
-        <TimelineSection />
-      </div>
-    </main>
+    <>
+      <TerminalTitleBar navLinks={navLinks} />
+      <main className="pt-10">
+        <div className="px-6 md:px-12 lg:px-20 pb-24">
+          <HeroSection />
+          <ProjectsSection />
+          <ExperienceSection />
+          <EducationSection />
+          <ContactSection />
+        </div>
+      </main>
+    </>
   );
 }

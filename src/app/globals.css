@@ -1,177 +1,77 @@
 @import "tailwindcss";
 
-/* ─── Design Tokens ─────────────────────────────────────────────────────── */
+/* ─── Terminal Color Tokens ─────────────────────────────────────────────── */
 :root {
-  --background: #f9f8f6;
-  --foreground: #0d0d0b;
-  --card: #ffffff;
-  --card-foreground: #0a0a0a;
-  --primary: #0a0a0a;
-  --primary-foreground: #fafafa;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #0a0a0a;
-  --destructive: #ef4444;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #0a0a0a;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #fafafa;
-    --card: #0a0a0a;
-    --card-foreground: #fafafa;
-    --primary: #fafafa;
-    --primary-foreground: #0a0a0a;
-    --secondary: #171717;
-    --secondary-foreground: #fafafa;
-    --muted: #171717;
-    --muted-foreground: #a3a3a3;
-    --accent: #171717;
-    --accent-foreground: #fafafa;
-    --destructive: #ef4444;
-    --border: #262626;
-    --input: #262626;
-    --ring: #d4d4d4;
-  }
+  --t-bg:      #0d1117;
+  --t-surface: #161b22;
+  --t-border:  #30363d;
+  --t-text:    #c9d1d9;
+  --t-dim:     #8b949e;
+  --t-green:   #3fb950;
+  --t-blue:    #58a6ff;
+  --t-purple:  #a371f7;
+  --t-purple2: #6ea6fa;
+  --t-yellow:  #e3b341;
+  --t-red:     #f85149;
+  --t-cyan:    #79c0ff;
 }
 
 /* ─── Tailwind v4 Theme Mapping ─────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --font-sans: var(--font-inter);
+  --color-t-bg:      var(--t-bg);
+  --color-t-surface: var(--t-surface);
+  --color-t-border:  var(--t-border);
+  --color-t-text:    var(--t-text);
+  --color-t-dim:     var(--t-dim);
+  --color-t-green:   var(--t-green);
+  --color-t-blue:    var(--t-blue);
+  --color-t-purple:  var(--t-purple);
+  --color-t-yellow:  var(--t-yellow);
+  --color-t-red:     var(--t-red);
+  --color-t-cyan:    var(--t-cyan);
+  --font-mono:       var(--font-jetbrains);
 }
 
-/* ─── Base Styles ───────────────────────────────────────────────────────── */
+/* ─── Base ──────────────────────────────────────────────────────────────── */
 @layer base {
-  *,
-  *::before,
-  *::after {
-    border-color: var(--color-border);
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--t-bg);
+    font-size: 14px;
+  }
+
+  @media (min-width: 1280px) {
+    html { font-size: 16px; }
+  }
+
+  @media (min-width: 1536px) {
+    html { font-size: 18px; }
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--t-bg);
+    color: var(--t-text);
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
   }
 
-  html {
-    scroll-behavior: smooth;
+  *,
+  *::before,
+  *::after {
+    border-color: var(--t-border);
   }
-}
 
-/* ─── Gradient Text Animation ───────────────────────────────────────────── */
-@keyframes gradient {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-
-@utility animate-gradient {
-  animation: gradient var(--speed, 4s) linear infinite;
-}
-
-/* ─── Glow Card ─────────────────────────────────────────────────────────── */
-.glow-card-base {
-  --glow-backdrop: hsl(0 0% 97%);
-  --glow-border-color: hsl(0 0% 82%);
-}
-@media (prefers-color-scheme: dark) {
-  .glow-card-base {
-    --glow-backdrop: hsl(0 0% 8% / 0.9);
-    --glow-border-color: hsl(0 0% 20%);
+  ::selection {
+    background-color: #1f6feb;
+    color: #e6edf3;
   }
 }
 
-[data-glow] {
-  --_bs: calc(var(--glow-b, 1) * 1px);
-  --_ss: calc(var(--glow-size, 240) * 1px);
-  --_hue: calc(var(--glow-base, 220) + (var(--xp, 0) * var(--glow-spread, 60)));
-  background-image: radial-gradient(
-    var(--_ss) var(--_ss) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
-    hsl(var(--_hue) calc(var(--glow-sat, 70) * 1%) calc(var(--glow-lit, 60) * 1%) / var(--bg-spot-opacity, 0.07)),
-    transparent
-  );
-  background-color: var(--glow-backdrop, transparent);
-  background-size: calc(100% + (2 * var(--_bs))) calc(100% + (2 * var(--_bs)));
-  background-position: 50% 50%;
-  background-attachment: fixed;
-  border: var(--_bs) solid var(--glow-border-color, hsl(0 0% 20%));
-  border-radius: calc(var(--glow-r, 12) * 1px);
-  position: relative;
+/* ─── Animations ────────────────────────────────────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
-[data-glow]::before,
-[data-glow]::after {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  inset: calc(var(--_bs) * -1);
-  border: var(--_bs) solid transparent;
-  border-radius: calc(var(--glow-r, 12) * 1px);
-  background-attachment: fixed;
-  background-size: calc(100% + (2 * var(--_bs))) calc(100% + (2 * var(--_bs)));
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
-  mask-clip: padding-box, border-box;
-  mask-composite: intersect;
-}
-
-[data-glow]::before {
-  background-image: radial-gradient(
-    calc(var(--_ss) * 0.75) calc(var(--_ss) * 0.75) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
-    hsl(var(--_hue) calc(var(--glow-sat, 70) * 1%) calc(var(--glow-lit, 50) * 1%) / var(--border-spot-opacity, 0.9)),
-    transparent 100%
-  );
-  z-index: 2;
-  filter: brightness(2);
-}
-
-[data-glow]::after {
-  background-image: radial-gradient(
-    calc(var(--_ss) * 0.5) calc(var(--_ss) * 0.5) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
-    hsl(0 100% 100% / var(--border-light-opacity, 0.4)),
-    transparent 100%
-  );
-  z-index: 2;
-}
-
-/* ─── CommitsGrid Animations ────────────────────────────────────────────── */
-@keyframes highlight {
-  0% { background-color: transparent; }
-  50% { background-color: var(--highlight); }
-  100% { background-color: var(--highlight); }
-}
-
-@keyframes flash {
-  0%, 100% { background-color: transparent; }
-  50% { background-color: #0d4429; }
-}
-
-@utility animate-highlight {
-  animation: highlight 0.6s ease-in-out forwards;
-}
-
-@utility animate-flash {
-  animation: flash 2s ease-in-out infinite;
+@utility animate-blink {
+  animation: blink 1s step-end infinite;
 }
