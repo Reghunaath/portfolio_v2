@@ -26,7 +26,7 @@ const Prompt = ({
   </motion.div>
 );
 
-export function HeroSection() {
+export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
   const navItems = [
     { label: "projects/", href: "#projects" },
     { label: "experience/", href: "#experience" },
@@ -38,12 +38,33 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-[calc(100vh-2.5rem)] flex flex-col justify-center py-8"
+      className="min-h-[calc(100vh-2.5rem)] flex flex-col justify-start py-8"
     >
       {/* Last login line */}
-      <motion.p {...fadeUp(0.1)} className="text-xs text-[#8b949e] mb-6">
+      <motion.p {...fadeUp(0.1)} className="text-xs text-[#8b949e] mb-4">
         Last login: Mon Mar 23 2026 from {personal.location}
       </motion.p>
+
+      {/* ASCII art */}
+      <motion.div
+        {...fadeUp(0.15)}
+        className="mb-6 overflow-hidden"
+        style={{ width: "250px", height: "255px" }}
+      >
+        <div
+          className="ascii-art"
+          dangerouslySetInnerHTML={{ __html: asciiHtml }}
+          style={{
+            fontSize: "3.5px",
+            lineHeight: 1.1,
+            letterSpacing: 0,
+            fontFamily: "monospace",
+            fontWeight: "bold",
+            marginTop: "-105px",
+            marginLeft: "-195px",
+          }}
+        />
+      </motion.div>
 
       {/* $ whoami */}
       <div className="flex flex-col gap-1 mb-6">
