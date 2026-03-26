@@ -16,7 +16,11 @@ const navLinks = [
 ];
 
 export default function Home() {
-  const htmlPath = path.join(process.cwd(), "public", "Gemini_Generated_Image_mihbcymihbcymihb_1.html");
+  const htmlPath = path.join(
+    process.cwd(),
+    "public",
+    "Gemini_Generated_Image_mihbcymihbcymihb_1.html"
+  );
   const raw = fs.readFileSync(htmlPath, "utf-8");
   const bodyMatch = raw.match(/<body>([\s\S]*?)<\/body>/i);
   const asciiHtml = bodyMatch ? bodyMatch[1] : "";
