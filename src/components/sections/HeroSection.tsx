@@ -1,7 +1,14 @@
 "use client";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { TypewriterText } from "@/components/ui/typewriter-text";
 import { personal } from "@/data/personal";
+
+const ResumeModal = dynamic(
+  () => import("@/components/ui/resume-modal").then((m) => m.ResumeModal),
+  { ssr: false }
+);
 
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 10 },
@@ -27,12 +34,13 @@ const Prompt = ({
 );
 
 export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
+  const [resumeOpen, setResumeOpen] = useState(false);
+
   const navItems = [
     { label: "projects/", href: "#projects" },
     { label: "experience/", href: "#experience" },
     { label: "education/", href: "#education" },
     { label: "contact/", href: "#contact" },
-    { label: "resume.pdf", href: personal.resumePath },
   ];
 
   return (
@@ -122,9 +130,16 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
               {item.label}
             </a>
           ))}
+          <button
+            onClick={() => setResumeOpen(true)}
+            className="text-xs text-[#8b949e] px-3 py-1 border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] hover:text-[#c9d1d9] transition-colors select-none"
+          >
+            resume.pdf
+          </button>
         </motion.div>
       </div>
 
+      <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} />
     </section>
   );
 }
