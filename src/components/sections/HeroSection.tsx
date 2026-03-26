@@ -128,13 +128,6 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
         </motion.div>
       </div>
 
-      {/* Blinking cursor */}
-      <motion.div {...fadeUp(1.9)} className="flex items-center gap-0">
-        <span className="text-sm text-[#8b949e]">reghu@portfolio:</span>
-        <span className="text-sm text-[#3fb950]">~</span>
-        <span className="text-sm text-[#8b949e]">$ </span>
-        <span className="inline-block w-2 h-4 bg-[#c9d1d9] animate-blink ml-0.5" />
-      </motion.div>
     </section>
   );
 }

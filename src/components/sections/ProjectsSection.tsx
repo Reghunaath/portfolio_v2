@@ -20,16 +20,18 @@ function BracketLink({
 }) {
   if (!href)
     return (
-      <span className="text-sm text-[#8b949e] opacity-50">[ {children} ]</span>
+      <span className="text-xs text-[#8b949e] opacity-40 px-3 py-1 inline-block select-none border border-[#30363d] bg-[#21262d]">
+        {children}
+      </span>
     );
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-sm border border-[#30363d] px-3 py-1 text-[#58a6ff] hover:bg-[#161b22] hover:text-[#79c0ff] transition-colors inline-block"
+      className="text-xs text-[#8b949e] px-3 py-1 inline-block border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] hover:text-[#c9d1d9] transition-colors select-none"
     >
-      [ {children} ↗ ]
+      {children}
     </a>
   );
 }
@@ -63,51 +65,65 @@ export function ProjectsSection() {
         ))}
       </motion.div>
 
-      {/* Individual project cat blocks */}
-      {projects.map((project, i) => (
-        <div key={project.title} className="mb-10">
-          <PromptLine
-            command={`cat ${project.title.toLowerCase().replace(/\s+/g, "-")}/README.md`}
-            path="~/projects"
-          />
-          <motion.div {...fadeUp(0.1)} className="mt-3 pl-0 flex flex-col gap-3">
-            {/* Title */}
-            <div>
-              <span className="text-[#8b949e] text-sm"># </span>
-              <span className="text-[#79c0ff] font-bold text-base">{project.title}</span>
+      {/* Project cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        {projects.map((project, i) => (
+          <motion.div
+            key={project.title}
+            {...fadeUp(0.1 + i * 0.08)}
+            className="border border-[#30363d] bg-[#0d1117]/80 hover:border-[#58a6ff]/50 transition-colors group flex flex-col"
+          >
+            {/* Card title bar */}
+            <div className="flex items-center gap-2 px-4 py-2 border-b border-[#30363d] bg-[#161b22]/60">
+              <span className="text-[#8b949e] text-xs">$</span>
+              <span className="text-[#8b949e] text-xs">
+                cat {project.title.toLowerCase().replace(/\s+/g, "-")}/README.md
+              </span>
             </div>
 
-            {/* Award */}
-            {project.award && (
-              <p className="text-sm text-[#e3b341]">award: {project.award}</p>
-            )}
+            {/* Card body */}
+            <div className="px-4 py-4 flex flex-col gap-3 flex-1">
+              {/* Title + Award */}
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className="text-[#8b949e] text-sm"># </span>
+                  <span className="text-[#79c0ff] font-bold text-base group-hover:text-[#a5d6ff] transition-colors">
+                    {project.title}
+                  </span>
+                </div>
+                {project.award && (
+                  <span className="text-xs text-[#e3b341] whitespace-nowrap shrink-0">
+                    {project.award}
+                  </span>
+                )}
+              </div>
 
-            {/* Description */}
-            <p className="text-sm text-[#c9d1d9] leading-relaxed max-w-2xl">
-              {project.description}
-            </p>
+              {/* Description */}
+              <p className="text-sm text-[#c9d1d9] leading-relaxed">
+                {project.description}
+              </p>
 
-            {/* Tags */}
-            <div className="flex flex-wrap gap-1.5 items-center">
-              <span className="text-sm text-[#8b949e]">stack:</span>
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs text-[#8b949e] border border-[#30363d] px-2 py-0.5"
-                >
-                  [{tag}]
-                </span>
-              ))}
-            </div>
+              {/* Tags */}
+              <div className="flex flex-wrap gap-1.5 items-center mt-auto">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs text-[#8b949e] border border-[#30363d] px-2 py-0.5"
+                  >
+                    [{tag}]
+                  </span>
+                ))}
+              </div>
 
-            {/* Links */}
-            <div className="flex flex-wrap gap-3">
-              <BracketLink href={project.demo}>view demo</BracketLink>
-              <BracketLink href={project.github}>github</BracketLink>
+              {/* Links */}
+              <div className="flex flex-wrap gap-3 pt-1">
+                <BracketLink href={project.demo}>view demo</BracketLink>
+                <BracketLink href={project.github}>github</BracketLink>
+              </div>
             </div>
           </motion.div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {/* Publications */}
       <PromptLine command="cat research/publications.bib" path="~/projects" />
