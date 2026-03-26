@@ -38,17 +38,17 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
   return (
     <section
       id="hero"
-      className="min-h-[calc(100vh-2.5rem)] flex flex-col justify-start py-8"
+      className="min-h-[calc(100vh-2.5rem)] flex flex-col justify-start py-4"
     >
       {/* Last login line */}
-      <motion.p {...fadeUp(0.1)} className="text-xs text-[#8b949e] mb-4">
+      <motion.p {...fadeUp(0.1)} className="text-xs text-[#8b949e] mb-1">
         Last login: Mon Mar 23 2026 from {personal.location}
       </motion.p>
 
       {/* ASCII art */}
       <motion.div
         {...fadeUp(0.15)}
-        className="mb-6 overflow-hidden"
+        className="mb-3 overflow-hidden"
         style={{ width: "250px", height: "255px" }}
       >
         <div
@@ -67,7 +67,7 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
       </motion.div>
 
       {/* $ whoami */}
-      <div className="flex flex-col gap-1 mb-6">
+      <div className="flex flex-col gap-1 mb-4">
         <Prompt command="whoami" delay={0.3} />
         <motion.div {...fadeUp(0.5)} className="mt-1 pl-0">
           <h1
@@ -85,42 +85,39 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
       </div>
 
       {/* $ cat role.txt */}
-      <div className="flex flex-col gap-1 mb-6">
+      <div className="flex flex-col gap-1 mb-4">
         <Prompt command="cat role.txt" delay={0.7} />
-        <motion.div {...fadeUp(0.9)} className="mt-1 text-lg text-[#58a6ff] font-medium">
-          <span className="text-[#3fb950]">&gt; </span>
-          <TypewriterText
-            text={personal.subtitle}
-            loop
-            speed={80}
-            deleteSpeed={40}
-            delay={2000}
-            className="text-[#58a6ff]"
-          />
-        </motion.div>
-      </div>
-
-      {/* $ cat intro.txt */}
-      <div className="flex flex-col gap-1 mb-6">
-        <Prompt command="cat intro.txt" delay={1.1} />
-        <motion.div {...fadeUp(1.3)} className="mt-1 flex flex-col gap-0.5">
-          <p className="text-sm text-[#c9d1d9] leading-relaxed">{personal.intro}</p>
-          <p className="text-sm text-[#c9d1d9] leading-relaxed">{personal.intro2}</p>
+        <motion.div {...fadeUp(0.9)} className="mt-1 flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
+            <p className="text-sm text-[#c9d1d9] leading-relaxed">{personal.intro}</p>
+            <p className="text-sm text-[#c9d1d9] leading-relaxed">{personal.intro2}</p>
+          </div>
+          <div className="text-lg text-[#58a6ff] font-medium">
+            <span className="text-[#3fb950]">&gt; </span>
+            <TypewriterText
+              text={personal.subtitle}
+              loop
+              speed={80}
+              deleteSpeed={40}
+              delay={2000}
+              className="text-[#58a6ff]"
+            />
+          </div>
         </motion.div>
       </div>
 
       {/* $ ls */}
       <div className="flex flex-col gap-1 mb-6">
-        <Prompt command="ls" delay={1.5} />
+        <Prompt command="ls" delay={1.1} />
         <motion.div
-          {...fadeUp(1.7)}
+          {...fadeUp(1.3)}
           className="mt-1 flex flex-wrap items-center gap-x-6 gap-y-1"
         >
           {navItems.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              className="text-sm text-[#58a6ff] hover:text-[#79c0ff] hover:underline underline-offset-4 transition-colors"
+              className="text-xs text-[#8b949e] px-3 py-1 inline-block border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] hover:text-[#c9d1d9] transition-colors select-none"
             >
               {item.label}
             </a>
