@@ -67,25 +67,30 @@
 }
 
 /* ─── Terminal Scrollbar ────────────────────────────────────────────────── */
-.terminal-scroll::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-.terminal-scroll::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: var(--t-surface);
 }
 
-.terminal-scroll::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: var(--t-dim);
   border-radius: 0;
 }
 
-.terminal-scroll::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: var(--t-text);
 }
 
 /* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--t-dim) var(--t-surface);
+}
+
 .terminal-scroll {
   scrollbar-width: thin;
   scrollbar-color: var(--t-dim) var(--t-surface);
