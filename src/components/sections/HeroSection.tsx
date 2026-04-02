@@ -47,7 +47,7 @@ export function HeroSection() {
     >
       {/* Last login line */}
       <motion.p {...fadeUp(0.1)} className="text-xs text-t-dim mb-1">
-        Last login: Mon Mar 23 2026 from {personal.location}
+        Last login: {new Date().toDateString()} from {personal.location}
       </motion.p>
 
       {/* GIF */}

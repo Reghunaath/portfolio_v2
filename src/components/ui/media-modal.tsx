@@ -88,14 +88,14 @@ export function MediaModal(props: MediaModalProps) {
         {/* Title bar */}
         <div className="flex items-center gap-2 px-3 py-2 border-b border-t-border bg-t-surface shrink-0">
           <div className="flex items-center gap-1.5 group">
-            <button onClick={props.onClose} className="w-3 h-3 rounded-full bg-t-red flex items-center justify-center transition-all" aria-label="Close">
-              <span className="text-[#7a0000] opacity-0 group-hover:opacity-100 transition-opacity text-[7px] font-bold leading-none">✕</span>
+            <button onClick={props.onClose} className="w-3 h-3 rounded-full bg-t-red flex items-center justify-center transition-all cursor-pointer" aria-label="Close">
+              <span className="text-black opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-black leading-none">✕</span>
             </button>
-            <span className="w-3 h-3 rounded-full bg-t-yellow flex items-center justify-center">
-              <span className="text-[#7a5000] opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-bold leading-none">−</span>
-            </span>
-            <button onClick={() => setMaximized((m) => !m)} className="w-3 h-3 rounded-full bg-t-green flex items-center justify-center" aria-label="Maximize">
-              <span className="text-[#005a00] opacity-0 group-hover:opacity-100 transition-opacity text-[7px] font-bold leading-none">{maximized ? "↙" : "↗"}</span>
+            <button onClick={props.onClose} className="w-3 h-3 rounded-full bg-t-yellow flex items-center justify-center cursor-pointer" aria-label="Minimize">
+              <span className="text-black opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-black leading-none">−</span>
+            </button>
+            <button onClick={() => setMaximized((m) => !m)} className="w-3 h-3 rounded-full bg-t-green flex items-center justify-center cursor-pointer" aria-label="Maximize">
+              <span className="text-black opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-black leading-none">{maximized ? "↙" : "↗"}</span>
             </button>
           </div>
           <span className="text-t-dim text-xs truncate flex-1 ml-1">{label}</span>
