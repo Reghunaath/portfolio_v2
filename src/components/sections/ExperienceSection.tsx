@@ -34,9 +34,6 @@ export function ExperienceSection() {
                 <span className="text-t-dim text-sm">—</span>
                 <span className="text-t-text text-sm truncate">{exp.role}</span>
               </div>
-              <span className="text-t-dim text-xs hidden md:inline shrink-0">
-                {exp.period} · {computeDuration(exp.period)}
-              </span>
             </div>
 
             {/* Detail card */}
