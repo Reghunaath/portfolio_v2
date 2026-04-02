@@ -131,7 +131,7 @@ Rules:
 
 ## 9. Do NOT Build
 - Animated grid background
-- GlowCard, BackgroundGradient, CommitsGrid, Timeline, MinimalistHero — these components no longer exist
+- GlowCard, BackgroundGradient, Timeline, MinimalistHero — these components no longer exist
 - Blog or writing section
 - CMS or admin interface
 - Contact form or form backend
@@ -162,7 +162,7 @@ Only one custom animation is needed — `blink` for the terminal cursor:
 }
 ```
 
-Do NOT add `highlight`, `flash`, or any other animation keyframes — the components that used them no longer exist.
+The `highlight` and `flash` keyframes are used by `CommitsGrid` — do not remove them.
 
 ## 12. Environment
 - No `.env` file needed. The CounterAPI.dev endpoint is public and requires no key.
