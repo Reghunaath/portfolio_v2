@@ -159,25 +159,34 @@ export function MediaModal(props: MediaModalProps) {
                 />
               </Document>
             </div>
-            {numPages > 1 && (
-              <div className="flex items-center gap-3 px-4 py-2 border-t border-t-border bg-t-surface shrink-0">
-                <button
-                  onClick={() => setPdfPage((p) => Math.max(1, p - 1))}
-                  disabled={pdfPage === 1}
-                  className={pdfBtnClass}
-                >
-                  [prev]
-                </button>
-                <span className="text-xs text-t-dim">{pdfPage} / {numPages}</span>
-                <button
-                  onClick={() => setPdfPage((p) => Math.min(numPages, p + 1))}
-                  disabled={pdfPage === numPages}
-                  className={pdfBtnClass}
-                >
-                  [next]
-                </button>
-              </div>
-            )}
+            <div className="flex items-center gap-3 px-4 py-2 border-t border-t-border bg-t-surface shrink-0">
+              {numPages > 1 && (
+                <>
+                  <button
+                    onClick={() => setPdfPage((p) => Math.max(1, p - 1))}
+                    disabled={pdfPage === 1}
+                    className={pdfBtnClass}
+                  >
+                    [prev]
+                  </button>
+                  <span className="text-xs text-t-dim">{pdfPage} / {numPages}</span>
+                  <button
+                    onClick={() => setPdfPage((p) => Math.min(numPages, p + 1))}
+                    disabled={pdfPage === numPages}
+                    className={pdfBtnClass}
+                  >
+                    [next]
+                  </button>
+                </>
+              )}
+              <a
+                href="/resume.pdf"
+                download="resume.pdf"
+                className={`ml-auto ${pdfBtnClass}`}
+              >
+                [download]
+              </a>
+            </div>
           </>
         )}
       </div>

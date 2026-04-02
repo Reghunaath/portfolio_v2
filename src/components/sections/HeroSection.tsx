@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { posthog } from "@/lib/posthog";
 import { TypewriterText } from "@/components/ui/typewriter-text";
@@ -34,7 +35,7 @@ const Prompt = ({
   </motion.div>
 );
 
-export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
+export function HeroSection() {
   const [resumeOpen, setResumeOpen] = useState(false);
 
   const navItems = navSections.map((s) => ({ label: `${s.label}/`, href: `#${s.id}` }));
@@ -49,24 +50,15 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
         Last login: Mon Mar 23 2026 from {personal.location}
       </motion.p>
 
-      {/* ASCII art */}
-      <motion.div
-        {...fadeUp(0.15)}
-        className="mb-3 overflow-hidden"
-        style={{ width: "250px", height: "255px" }}
-      >
-        <div
-          className="ascii-art"
-          dangerouslySetInnerHTML={{ __html: asciiHtml }}
-          style={{
-            fontSize: "3.5px",
-            lineHeight: 1.1,
-            letterSpacing: 0,
-            fontFamily: "monospace",
-            fontWeight: "bold",
-            marginTop: "-105px",
-            marginLeft: "-195px",
-          }}
+      {/* GIF */}
+      <motion.div {...fadeUp(0.25)} className="mb-4">
+        <Image
+          src="/Man_typing_with_202604020814.gif"
+          alt="Man typing"
+          width={400}
+          height={225}
+          unoptimized
+          className="rounded-sm"
         />
       </motion.div>
 
