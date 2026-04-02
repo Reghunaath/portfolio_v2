@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tooling / local dev artifacts
+.claude/
+.cp-images/
+.playwright-mcp/
+project_memory/screenshots/
+
+# playwright screenshots / loose images
+*.jpg
+*.jpeg
+*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!public/**/*.png

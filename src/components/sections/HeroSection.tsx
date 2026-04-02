@@ -1,33 +1,141 @@
 "use client";
-import { Linkedin, Github, Mail } from "lucide-react";
-import { MinimalistHero } from "@/components/ui/minimalist-hero";
-import { personal } from "@/data/personal";
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import { posthog } from "@/lib/posthog";
+import { TypewriterText } from "@/components/ui/typewriter-text";
+import { personal, navSections } from "@/data/personal";
 
-const navLinks = [
-  { label: "PROJECTS", href: "#projects" },
-  { label: "EXPERIENCE", href: "#experience" },
-  { label: "CONTACT", href: "#contact" },
-];
+const ResumeModal = dynamic(
+  () => import("@/components/ui/resume-modal").then((m) => m.ResumeModal),
+  { ssr: false }
+);
 
-const socialLinks = [
-  { icon: Linkedin, href: personal.linkedin },
-  { icon: Github, href: personal.github || "#" },
-  { icon: Mail, href: `mailto:${personal.email}` },
-];
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4, ease: "easeOut" as const, delay },
+});
 
-export function HeroSection() {
+const Prompt = ({
+  path = "~",
+  command,
+  delay,
+}: {
+  path?: string;
+  command: string;
+  delay: number;
+}) => (
+  <motion.div {...fadeUp(delay)} className="text-sm leading-relaxed">
+    <span className="text-t-dim">reghu@portfolio:</span>
+    <span className="text-t-green">{path}</span>
+    <span className="text-t-dim">$ </span>
+    <span className="text-t-blue">{command}</span>
+  </motion.div>
+);
+
+export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
+  const [resumeOpen, setResumeOpen] = useState(false);
+
+  const navItems = navSections.map((s) => ({ label: `${s.label}/`, href: `#${s.id}` }));
+
   return (
-    <section id="hero">
-      <MinimalistHero
-        logoText="Reghunaath"
-        navLinks={navLinks}
-        name={personal.name}
-        subtitle={personal.subtitle}
-        introText={personal.intro}
-        resumeLink={personal.resumePath}
-        socialLinks={socialLinks}
-        locationText={personal.location}
-      />
+    <section
+      id="hero"
+      className="min-h-[calc(100vh-2.5rem)] flex flex-col justify-start py-4"
+    >
+      {/* Last login line */}
+      <motion.p {...fadeUp(0.1)} className="text-xs text-t-dim mb-1">
+        Last login: Mon Mar 23 2026 from {personal.location}
+      </motion.p>
+
+      {/* ASCII art */}
+      <motion.div
+        {...fadeUp(0.15)}
+        className="mb-3 overflow-hidden"
+        style={{ width: "250px", height: "255px" }}
+      >
+        <div
+          className="ascii-art"
+          dangerouslySetInnerHTML={{ __html: asciiHtml }}
+          style={{
+            fontSize: "3.5px",
+            lineHeight: 1.1,
+            letterSpacing: 0,
+            fontFamily: "monospace",
+            fontWeight: "bold",
+            marginTop: "-105px",
+            marginLeft: "-195px",
+          }}
+        />
+      </motion.div>
+
+      {/* $ whoami */}
+      <div className="flex flex-col gap-1 mb-4">
+        <Prompt command="whoami" delay={0.3} />
+        <motion.div {...fadeUp(0.5)} className="mt-1 pl-0">
+          <h1
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight"
+            style={{
+              background: "linear-gradient(to right, var(--t-purple), var(--t-purple2))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            {personal.name}
+          </h1>
+        </motion.div>
+      </div>
+
+      {/* $ cat role.txt */}
+      <div className="flex flex-col gap-1 mb-4">
+        <Prompt command="cat role.txt" delay={0.7} />
+        <motion.div {...fadeUp(0.9)} className="mt-1 flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
+            <p className="text-sm text-t-text leading-relaxed">{personal.intro}</p>
+            <p className="text-sm text-t-text leading-relaxed">{personal.intro2}</p>
+          </div>
+          <div className="text-lg text-t-blue font-medium">
+            <span className="text-t-green">&gt; </span>
+            <TypewriterText
+              text={personal.subtitle}
+              loop
+              speed={80}
+              deleteSpeed={40}
+              delay={2000}
+              className="text-t-blue"
+            />
+          </div>
+        </motion.div>
+      </div>
+
+      {/* $ ls */}
+      <div className="flex flex-col gap-1 mb-6">
+        <Prompt command="ls" delay={1.1} />
+        <motion.div
+          {...fadeUp(1.3)}
+          className="mt-1 flex flex-wrap items-center gap-x-6 gap-y-1"
+        >
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="text-xs text-t-dim px-3 py-1 inline-block border border-t-border bg-t-button hover:bg-t-border hover:text-t-text transition-colors select-none"
+            >
+              {item.label}
+            </a>
+          ))}
+          <button
+            onClick={() => { posthog.capture("resume_opened"); setResumeOpen(true); }}
+            className="text-xs text-t-dim px-3 py-1 border border-t-border bg-t-button hover:bg-t-border hover:text-t-text transition-colors select-none"
+          >
+            resume.pdf
+          </button>
+        </motion.div>
+      </div>
+
+      <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} />
     </section>
   );
 }

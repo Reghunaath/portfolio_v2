@@ -4,24 +4,21 @@ export interface Education {
   location: string;
   period: string;
   gpa: string;
-  bullets: string[];
 }
 
 export const education: Education[] = [
   {
     institution: "Northeastern University",
-    degree: "Masters of Science in Data Science",
+    degree: "MS Data Science",
     location: "Boston, MA",
     period: "2024 – 2026",
     gpa: "3.9/4.0",
-    bullets: [],
   },
   {
-    institution: "Vellore Institute of Technology",
-    degree: "Bachelors of Technology in Computer Science and Engineering",
-    location: "Vellore, India",
+    institution: "VIT Vellore",
+    degree: "B.Tech Computer Science & Engineering",
+    location: "India",
     period: "2018 – 2022",
-    gpa: "8.56/10.00",
-    bullets: [],
+    gpa: "3.42/4.0",
   },
 ];

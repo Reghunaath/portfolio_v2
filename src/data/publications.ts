@@ -1,10 +1,7 @@
 export interface Publication {
+  key: string;
   title: string;
-  authors: string;
-  highlightedAuthor: string;
   journal: string;
-  volume: string;
-  pages: string;
   year: number;
   citations: number;
   url: string;
@@ -12,16 +9,12 @@ export interface Publication {
 
 export const publications: Publication[] = [
   {
+    key: "ajith2021activity",
     title:
-      "1D Convolution approach to human activity recognition using sensor data and comparison with machine learning algorithms",
-    authors:
-      "Muralidharan, K., Ramesh, A., Rithvik, G., Prem, S., Reghunaath, A. A., & Gopinath, M. P.",
-    highlightedAuthor: "Reghunaath, A. A.",
+      "1D Convolution approach to human activity recognition using wearable sensors in the wild",
     journal: "International Journal of Cognitive Computing in Engineering",
-    volume: "2",
-    pages: "130-143",
     year: 2021,
     citations: 56,
-    url: "", // TODO: add paper link
+    url: "https://www.sciencedirect.com/science/article/pii/S2666307421000140",
   },
 ];
