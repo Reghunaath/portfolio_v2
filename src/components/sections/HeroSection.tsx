@@ -2,6 +2,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import { posthog } from "@/lib/posthog";
 import { TypewriterText } from "@/components/ui/typewriter-text";
 import { personal, navSections } from "@/data/personal";
 
@@ -126,7 +127,7 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
             </a>
           ))}
           <button
-            onClick={() => setResumeOpen(true)}
+            onClick={() => { posthog.capture("resume_opened"); setResumeOpen(true); }}
             className="text-xs text-t-dim px-3 py-1 border border-t-border bg-t-button hover:bg-t-border hover:text-t-text transition-colors select-none"
           >
             resume.pdf

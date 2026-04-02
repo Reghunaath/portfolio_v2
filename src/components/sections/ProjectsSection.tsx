@@ -2,6 +2,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
+import { posthog } from "@/lib/posthog";
 import { PromptLine } from "@/components/ui/prompt-line";
 import { BracketLink } from "@/components/ui/bracket-link";
 import type { MediaModalProps } from "@/components/ui/media-modal";
@@ -87,7 +88,7 @@ export function ProjectsSection() {
                 )}
                 {project.demoVideo && (
                   <button
-                    onClick={() => setModal({ type: "video", title: project.title, url: project.demoVideo!, onClose: () => setModal(null) })}
+                    onClick={() => { posthog.capture("demo_video_opened", { project: project.title }); setModal({ type: "video", title: project.title, url: project.demoVideo!, onClose: () => setModal(null) }); }}
                     className="text-xs text-t-dim px-3 py-1 border border-t-border bg-t-button hover:bg-t-border hover:text-t-text transition-colors"
                   >
                     watch demo

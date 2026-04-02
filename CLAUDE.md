@@ -135,7 +135,7 @@ Rules:
 - Blog or writing section
 - CMS or admin interface
 - Contact form or form backend
-- Analytics or tracking (beyond the view counter)
+- ~~Analytics or tracking~~ (PostHog is now integrated — see Section 10)
 - Light mode / dark mode toggle
 - Authentication
 - Comments or social features
@@ -144,7 +144,7 @@ Rules:
 
 ## 10. Dependencies to Install
 ```
-npm install framer-motion lucide-react clsx tailwind-merge class-variance-authority @radix-ui/react-slot
+npm install framer-motion lucide-react clsx tailwind-merge class-variance-authority @radix-ui/react-slot posthog-js
 ```
 
 No other packages should be added without asking me first.
