@@ -108,3 +108,21 @@ html {
 @utility animate-blink {
   animation: blink 1s step-end infinite;
 }
+
+@keyframes highlight {
+  0%   { background-color: transparent; }
+  100% { background-color: var(--highlight); }
+}
+
+@utility animate-highlight {
+  animation: highlight 0.5s ease-in forwards;
+}
+
+@keyframes flash {
+  0%, 100% { background-color: transparent; }
+  50%       { background-color: var(--t-border); }
+}
+
+@utility animate-flash {
+  animation: flash 1.5s ease-in-out infinite;
+}
