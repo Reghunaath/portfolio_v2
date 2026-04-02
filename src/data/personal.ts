@@ -1,3 +1,10 @@
+export const navSections = [
+  { id: "projects", label: "projects" },
+  { id: "experience", label: "experience" },
+  { id: "education", label: "education" },
+  { id: "contact", label: "contact" },
+];
+
 export const personal = {
   name: "Reghunaath Ajith Kumar Ahila",
   subtitle: ["Full-Stack Engineer", "AI Developer", "2x Hackathon Winner", "Published Researcher"],
@@ -7,6 +14,5 @@ export const personal = {
   email: "ajithkumarahila.r@northeastern.edu",
   phone: "(857)-351-9009",
   linkedin: "https://www.linkedin.com/in/reghunaath",
-  github: "", // TODO: add GitHub URL
-  resumePath: "/resume.pdf",
+  github: "https://github.com/Reghunaath/",
 };

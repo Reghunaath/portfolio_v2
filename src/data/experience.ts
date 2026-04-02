@@ -4,6 +4,7 @@ export interface Experience {
   location: string;
   period: string;
   bullets: string[];
+  tech?: string[];
 }
 
 export const experience: Experience[] = [
@@ -17,6 +18,7 @@ export const experience: Experience[] = [
       "Identified and fixed a critical paywall bypass vulnerability in the first week, strengthening platform security.",
       "Designed and implemented authentication and authorization systems addressing all security and compliance requirements for ISO and SOC2 certification.",
     ],
+    tech: ["React", "FastAPI", "Python", "Auth"],
   },
   {
     company: "Northeastern University",
@@ -27,6 +29,7 @@ export const experience: Experience[] = [
       "Served as TA for CS6620 Fundamentals of Cloud Computing and DS3000 Foundations of Data Science, supporting a combined cohort of graduate and undergraduate students.",
       "Assisted in grading, designing assignments, and holding office hours to clarify concepts and guide students through course material.",
     ],
+    tech: ["Cloud Computing", "Data Science"],
   },
   {
     company: "Infosys",
@@ -38,6 +41,7 @@ export const experience: Experience[] = [
       "Built a .NET rule-based recommendation engine integrating 9 external systems through gRPC, SOAP, and REST APIs, with SQL caching for efficient rule evaluation and policy recommendations.",
       "Developed a Python script to auto-generate unit test cases and Postman integration test cases from business-owned Excel sheets, saving over 65 hours of manual effort long term.",
     ],
+    tech: [".NET", "React", "Redux", "gRPC", "SQL", "Python"],
   },
   {
     company: "Danske IT",
@@ -50,6 +54,7 @@ export const experience: Experience[] = [
       "Integrated automated load testing with Grafana K6 into the CD pipeline to evaluate system performance and ensure scalability under high traffic.",
       "Independently implemented a monitoring solution using Kibana (Elastic Stack) to provide real-time insights across multiple team projects.",
     ],
+    tech: ["Camunda BPM", ".NET", "Azure DevOps", "K6", "Kibana"],
   },
   {
     company: "Danske IT",
@@ -60,5 +65,6 @@ export const experience: Experience[] = [
       "Gained comprehensive experience in fintech software development, working across testing, DevOps, frontend, and backend in an agile environment.",
       "Improved unit test line coverage from 60% to 95% for .NET backend.",
     ],
+    tech: [".NET", "Unit Testing"],
   },
 ];

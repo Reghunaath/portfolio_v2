@@ -2,96 +2,74 @@
 import { motion } from "framer-motion";
 import { PromptLine } from "@/components/ui/prompt-line";
 import { experience } from "@/data/experience";
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 8 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.35, ease: "easeOut" as const, delay },
-});
+import { computeDuration } from "@/lib/duration";
+import { fadeUp } from "@/lib/animations";
 
 export function ExperienceSection() {
   return (
     <section id="experience" className="pt-16 md:pt-24">
-      {/* Summary table */}
       <PromptLine command="history --jobs" />
 
-      <motion.div {...fadeUp(0.1)} className="mt-3 mb-10 text-sm">
-        {/* Desktop table */}
-        <div className="hidden md:block">
-          <div className="text-[#8b949e] text-xs flex gap-3 mb-1">
-            <span className="w-6 shrink-0">#</span>
-            <span className="w-52 shrink-0">COMPANY</span>
-            <span className="w-60 shrink-0">ROLE</span>
-            <span className="w-44 shrink-0">PERIOD</span>
-          </div>
-          <div className="text-[#8b949e] text-xs flex gap-3 mb-2">
-            <span className="w-6 shrink-0">{"─".repeat(2)}</span>
-            <span className="w-52 shrink-0">{"─".repeat(22)}</span>
-            <span className="w-60 shrink-0">{"─".repeat(26)}</span>
-            <span className="w-44 shrink-0">{"─".repeat(18)}</span>
-          </div>
-          {experience.map((exp, i) => (
-            <div key={i} className="flex gap-3 leading-relaxed">
-              <span className="w-6 shrink-0 text-[#8b949e]">{i + 1}</span>
-              <span className="w-52 shrink-0 text-[#79c0ff]">{exp.company}</span>
-              <span className="w-60 shrink-0 text-[#c9d1d9]">{exp.role}</span>
-              <span className="w-44 shrink-0 text-[#8b949e]">{exp.period}</span>
-            </div>
-          ))}
-        </div>
-        {/* Mobile stacked list */}
-        <div className="md:hidden flex flex-col gap-3">
-          {experience.map((exp, i) => (
-            <div key={i} className="flex flex-col gap-0.5">
-              <div className="flex gap-2 items-start">
-                <span className="text-[#8b949e] text-xs shrink-0 mt-0.5">{i + 1}.</span>
-                <div className="flex flex-col">
-                  <span className="text-[#79c0ff]">{exp.company}</span>
-                  <span className="text-[#c9d1d9] text-xs">{exp.role}</span>
-                </div>
-              </div>
-              <span className="text-[#8b949e] text-xs pl-4">{exp.period}</span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
+      <div className="mt-6 ml-1 flex flex-col max-w-5xl">
+        {experience.map((exp, i) => (
+          <motion.div key={i} {...fadeUp(0.05 * i)} className="relative">
+            {/* Spine */}
+            <div
+              className="absolute left-[3px] w-px bg-t-border"
+              style={{
+                top: i === 0 ? "10px" : "0",
+                bottom: i === experience.length - 1 ? "calc(100% - 10px)" : "0",
+              }}
+            />
 
-      {/* Individual job detail blocks */}
-      {experience.map((exp, i) => {
-        const role = exp.role.toLowerCase();
-        const companySuffix = role.includes("apprentice") ? "-apprentice"
-          : role.includes("associate") ? "-associate"
-          : "";
-        const slug = `${exp.company.toLowerCase().replace(/\s+/g, "-")}${companySuffix}`;
-        return (
-          <div key={i} className="mb-10">
-            <PromptLine command={`cat jobs/${i + 1}-${slug}.txt`} />
-            <motion.div {...fadeUp(0.1)} className="mt-3 flex flex-col gap-2 text-sm">
-              {/* Job header */}
-              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-sm">
-                <span className="text-[#79c0ff] font-medium">[{exp.company}]</span>
-                <span className="text-[#c9d1d9]">{exp.role}</span>
-                <span className="text-[#8b949e]">·</span>
-                <span className="text-[#8b949e]">{exp.location}</span>
-                <span className="text-[#8b949e]">·</span>
-                <span className="text-[#8b949e]">{exp.period}</span>
+            {/* Dot */}
+            <div className="absolute left-0 top-[10px] w-[7px] h-[7px] rounded-full bg-t-blue z-10" />
+
+            {/* Header row */}
+            <div className="pl-5 pr-3 py-2.5 flex items-center gap-3">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="text-t-cyan font-medium text-sm whitespace-nowrap">
+                  {exp.company}
+                </span>
+                <span className="text-t-dim text-sm">—</span>
+                <span className="text-t-text text-sm truncate">{exp.role}</span>
               </div>
-              {/* Separator */}
-              <div className="text-[#30363d] text-xs">{"─".repeat(60)}</div>
-              {/* Bullets */}
+              <span className="text-t-dim text-xs hidden md:inline shrink-0">
+                {exp.period} · {computeDuration(exp.period)}
+              </span>
+            </div>
+
+            {/* Detail card */}
+            <div className="ml-5 mb-4 bg-t-surface border border-t-border rounded px-4 py-3">
+              <div className="text-t-dim text-xs mb-2">
+                {exp.location} · {exp.period} · {computeDuration(exp.period)}
+              </div>
+              <div className="border-t border-t-border mb-3" />
               <ul className="flex flex-col gap-1.5">
                 {exp.bullets.map((bullet, j) => (
-                  <li key={j} className="flex gap-2 leading-relaxed">
-                    <span className="text-[#3fb950] shrink-0">&gt;</span>
-                    <span className="text-[#c9d1d9]">{bullet}</span>
+                  <li key={j} className="flex gap-2 text-sm leading-relaxed">
+                    <span className="text-t-green shrink-0 mt-px">&gt;</span>
+                    <span className="text-t-text">{bullet}</span>
                   </li>
                 ))}
               </ul>
-            </motion.div>
-          </div>
-        );
-      })}
+
+              {exp.tech && exp.tech.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-t-border">
+                  {exp.tech.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs text-t-dim border border-t-border px-2 py-0.5"
+                    >
+                      [{tag}]
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </section>
   );
 }

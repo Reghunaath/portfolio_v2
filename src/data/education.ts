@@ -4,7 +4,6 @@ export interface Education {
   location: string;
   period: string;
   gpa: string;
-  bullets: string[];
 }
 
 export const education: Education[] = [
@@ -14,7 +13,6 @@ export const education: Education[] = [
     location: "Boston, MA",
     period: "2024 – 2026",
     gpa: "3.9/4.0",
-    bullets: [],
   },
   {
     institution: "VIT Vellore",
@@ -22,6 +20,5 @@ export const education: Education[] = [
     location: "India",
     period: "2018 – 2022",
     gpa: "3.42/4.0",
-    bullets: [],
   },
 ];

@@ -10,7 +10,6 @@ export interface Project {
   github: string;
   githubBackend?: string;
   githubFrontend?: string;
-  demo: string;
   demoVideo?: string;
   award?: string;
   images?: ProjectImage[];
@@ -25,7 +24,6 @@ export const projects: Project[] = [
     github: "",
     githubBackend: "https://github.com/Reghunaath/RescueLine-AI",
     githubFrontend: "https://github.com/Reghunaath/RescueLineAI-frontend",
-    demo: "https://example.com", // TODO
     award: "🏆 1st Place — $700",
     images: [
       { src: "/images/projects/rescueline-ai/1772765427156.jpg", label: "live-dashboard.jpg" },
@@ -38,7 +36,6 @@ export const projects: Project[] = [
       "AI chat assistant powered by ChatGPT and Twilio APIs to turn missed calls into booked appointments for small businesses. Designed a scalable Python backend for multi-user handling and automated SMS-based lead conversion.",
     tags: ["Python", "ChatGPT", "Twilio", "SMS", "FastAPI"],
     github: "https://github.com/pavithralagisetty/LeadCatch.ai",
-    demo: "https://example.com", // TODO
     demoVideo: "https://drive.google.com/file/d/1SYBqNUoYoWbJGfC8LH-QmF_O3aPF1Yn1/view?usp=sharing",
     award: "🥈 2nd Place — $1,500 · Yconic AI Hackathon",
     images: [

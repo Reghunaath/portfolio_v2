@@ -5,6 +5,7 @@
   --t-bg:      #0d1117;
   --t-surface: #161b22;
   --t-border:  #30363d;
+  --t-button:  #21262d;
   --t-text:    #c9d1d9;
   --t-dim:     #8b949e;
   --t-green:   #3fb950;
@@ -21,11 +22,13 @@
   --color-t-bg:      var(--t-bg);
   --color-t-surface: var(--t-surface);
   --color-t-border:  var(--t-border);
+  --color-t-button:  var(--t-button);
   --color-t-text:    var(--t-text);
   --color-t-dim:     var(--t-dim);
   --color-t-green:   var(--t-green);
   --color-t-blue:    var(--t-blue);
   --color-t-purple:  var(--t-purple);
+  --color-t-purple2: var(--t-purple2);
   --color-t-yellow:  var(--t-yellow);
   --color-t-red:     var(--t-red);
   --color-t-cyan:    var(--t-cyan);

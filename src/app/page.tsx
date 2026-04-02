@@ -6,13 +6,11 @@ import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
 import { EducationSection } from "@/components/sections/EducationSection";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { navSections } from "@/data/personal";
 
 const navLinks = [
   { label: "~/", href: "#hero" },
-  { label: "projects", href: "#projects" },
-  { label: "experience", href: "#experience" },
-  { label: "education", href: "#education" },
-  { label: "contact", href: "#contact" },
+  ...navSections.map((s) => ({ label: s.label, href: `#${s.id}` })),
 ];
 
 export default function Home() {

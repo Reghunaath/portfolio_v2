@@ -17,10 +17,10 @@ export function PromptLine({
 }: PromptLineProps) {
   const content = (
     <div className={cn("text-sm leading-relaxed select-none", className)}>
-      <span className="text-[#8b949e]">reghu@portfolio:</span>
-      <span className="text-[#3fb950]">{path}</span>
-      <span className="text-[#8b949e]">$ </span>
-      <span className="text-[#58a6ff]">{command}</span>
+      <span className="text-t-dim">reghu@portfolio:</span>
+      <span className="text-t-green">{path}</span>
+      <span className="text-t-dim">$ </span>
+      <span className="text-t-blue">{command}</span>
     </div>
   );
 

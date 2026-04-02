@@ -45,6 +45,7 @@ html { font-size: 14px; }
 - Section-level components go in `src/components/sections/`.
 - `cn()` utility lives in `src/lib/utils.ts`.
 - Static assets (ASCII art HTML, favicon, resume PDF) go in `public/`.
+- Project images go in `public/images/projects/<project-slug>/` (e.g. `rescueline-ai/`, `leadcatch-ai/`).
 
 ```
 src/
@@ -75,7 +76,11 @@ src/
 public/
 ├── favicon.svg
 ├── Gemini_Generated_Image_mihbcymihbcymihb_1.html   ← ASCII art (loaded by page.tsx)
-└── resume.pdf
+├── resume.pdf
+└── images/
+    └── projects/
+        ├── rescueline-ai/     ← screenshots for RescueLine AI
+        └── leadcatch-ai/      ← screenshots for LeadCatch AI
 project_memory/
 └── portfolio-prd.md   ← requirements reference
 ```
@@ -114,7 +119,7 @@ Rules:
 - All images use `next/image` with proper alt text and placeholder fallbacks.
 - Font loaded via `next/font/google` to prevent layout shift.
 - Animations must be GPU-accelerated (transform/opacity only).
-- No images inside project cards — terminal doesn't render images.
+- Project cards may include a small image window styled as a mini terminal window (macOS traffic dots title bar + `next/image`). The `image` field on `Project` is optional — cards without an image render normally.
 - Every section must handle: content loading gracefully, and failed API calls (view counter fallback to `...`).
 
 ## 8. Data Management
@@ -135,7 +140,6 @@ Rules:
 - Authentication
 - Comments or social features
 - Loading spinners between sections (content is static)
-- Images inside project cards
 - Any section or feature not in the PRD
 
 ## 10. Dependencies to Install

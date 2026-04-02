@@ -3,7 +3,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { TypewriterText } from "@/components/ui/typewriter-text";
-import { personal } from "@/data/personal";
+import { personal, navSections } from "@/data/personal";
 
 const ResumeModal = dynamic(
   () => import("@/components/ui/resume-modal").then((m) => m.ResumeModal),
@@ -26,22 +26,17 @@ const Prompt = ({
   delay: number;
 }) => (
   <motion.div {...fadeUp(delay)} className="text-sm leading-relaxed">
-    <span className="text-[#8b949e]">reghu@portfolio:</span>
-    <span className="text-[#3fb950]">{path}</span>
-    <span className="text-[#8b949e]">$ </span>
-    <span className="text-[#58a6ff]">{command}</span>
+    <span className="text-t-dim">reghu@portfolio:</span>
+    <span className="text-t-green">{path}</span>
+    <span className="text-t-dim">$ </span>
+    <span className="text-t-blue">{command}</span>
   </motion.div>
 );
 
 export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
   const [resumeOpen, setResumeOpen] = useState(false);
 
-  const navItems = [
-    { label: "projects/", href: "#projects" },
-    { label: "experience/", href: "#experience" },
-    { label: "education/", href: "#education" },
-    { label: "contact/", href: "#contact" },
-  ];
+  const navItems = navSections.map((s) => ({ label: `${s.label}/`, href: `#${s.id}` }));
 
   return (
     <section
@@ -49,7 +44,7 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
       className="min-h-[calc(100vh-2.5rem)] flex flex-col justify-start py-4"
     >
       {/* Last login line */}
-      <motion.p {...fadeUp(0.1)} className="text-xs text-[#8b949e] mb-1">
+      <motion.p {...fadeUp(0.1)} className="text-xs text-t-dim mb-1">
         Last login: Mon Mar 23 2026 from {personal.location}
       </motion.p>
 
@@ -81,7 +76,7 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
           <h1
             className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight"
             style={{
-              background: "linear-gradient(to right, #a371f7, #6ea6fa)",
+              background: "linear-gradient(to right, var(--t-purple), var(--t-purple2))",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -97,18 +92,18 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
         <Prompt command="cat role.txt" delay={0.7} />
         <motion.div {...fadeUp(0.9)} className="mt-1 flex flex-col gap-1">
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm text-[#c9d1d9] leading-relaxed">{personal.intro}</p>
-            <p className="text-sm text-[#c9d1d9] leading-relaxed">{personal.intro2}</p>
+            <p className="text-sm text-t-text leading-relaxed">{personal.intro}</p>
+            <p className="text-sm text-t-text leading-relaxed">{personal.intro2}</p>
           </div>
-          <div className="text-lg text-[#58a6ff] font-medium">
-            <span className="text-[#3fb950]">&gt; </span>
+          <div className="text-lg text-t-blue font-medium">
+            <span className="text-t-green">&gt; </span>
             <TypewriterText
               text={personal.subtitle}
               loop
               speed={80}
               deleteSpeed={40}
               delay={2000}
-              className="text-[#58a6ff]"
+              className="text-t-blue"
             />
           </div>
         </motion.div>
@@ -125,14 +120,14 @@ export function HeroSection({ asciiHtml }: { asciiHtml: string }) {
             <a
               key={item.label}
               href={item.href}
-              className="text-xs text-[#8b949e] px-3 py-1 inline-block border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] hover:text-[#c9d1d9] transition-colors select-none"
+              className="text-xs text-t-dim px-3 py-1 inline-block border border-t-border bg-t-button hover:bg-t-border hover:text-t-text transition-colors select-none"
             >
               {item.label}
             </a>
           ))}
           <button
             onClick={() => setResumeOpen(true)}
-            className="text-xs text-[#8b949e] px-3 py-1 border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] hover:text-[#c9d1d9] transition-colors select-none"
+            className="text-xs text-t-dim px-3 py-1 border border-t-border bg-t-button hover:bg-t-border hover:text-t-text transition-colors select-none"
           >
             resume.pdf
           </button>

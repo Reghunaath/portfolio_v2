@@ -12,7 +12,7 @@ export function TerminalTitleBar({ navLinks, className }: TerminalTitleBarProps)
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 h-10 flex items-center justify-between px-4",
-        "bg-[#161b22] border-b border-[#30363d]",
+        "bg-t-surface border-b border-t-border",
         className
       )}
     >
@@ -23,7 +23,7 @@ export function TerminalTitleBar({ navLinks, className }: TerminalTitleBarProps)
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full bg-[#28c840]" />
         </div>
-        <span className="text-xs text-[#8b949e] hidden sm:block">
+        <span className="text-xs text-t-dim hidden sm:block">
           reghu@portfolio — bash
         </span>
       </div>
@@ -34,19 +34,12 @@ export function TerminalTitleBar({ navLinks, className }: TerminalTitleBarProps)
           <a
             key={link.label}
             href={link.href}
-            className="text-xs text-[#8b949e] hover:text-[#c9d1d9] transition-colors tracking-wider"
+            className="text-xs text-t-dim hover:text-t-text transition-colors tracking-wider"
           >
             {link.label}
           </a>
         ))}
       </nav>
-
-      {/* Mobile: hamburger */}
-      <button className="flex flex-col gap-1 md:hidden" aria-label="Menu">
-        <span className="block h-0.5 w-5 bg-[#8b949e]" />
-        <span className="block h-0.5 w-5 bg-[#8b949e]" />
-        <span className="block h-0.5 w-3.5 bg-[#8b949e]" />
-      </button>
     </header>
   );
 }

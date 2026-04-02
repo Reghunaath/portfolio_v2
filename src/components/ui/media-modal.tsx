@@ -8,6 +8,9 @@ import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+const pdfBtnClass =
+  "text-xs text-t-dim px-3 py-1 border border-t-border bg-t-button hover:bg-t-border hover:text-t-text transition-colors select-none disabled:opacity-30 disabled:cursor-not-allowed";
+
 function toGDriveEmbed(url: string): string {
   const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if (match) return `https://drive.google.com/file/d/${match[1]}/preview`;
@@ -75,7 +78,7 @@ export function MediaModal(props: MediaModalProps) {
       onClick={props.onClose}
     >
       <div
-        className={`border border-[#30363d] bg-[#0d1117] overflow-hidden flex flex-col transition-all duration-200 ${
+        className={`border border-t-border bg-t-bg overflow-hidden flex flex-col transition-all duration-200 ${
           maximized
             ? "w-full h-full max-w-none"
             : `w-full max-w-3xl ${props.type === "pdf" ? "h-[90vh]" : ""}`
@@ -83,24 +86,24 @@ export function MediaModal(props: MediaModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Title bar */}
-        <div className="flex items-center gap-2 px-3 py-2 border-b border-[#30363d] bg-[#161b22] shrink-0">
+        <div className="flex items-center gap-2 px-3 py-2 border-b border-t-border bg-t-surface shrink-0">
           <div className="flex items-center gap-1.5 group">
-            <button onClick={props.onClose} className="w-3 h-3 rounded-full bg-[#f85149] flex items-center justify-center transition-all" aria-label="Close">
+            <button onClick={props.onClose} className="w-3 h-3 rounded-full bg-t-red flex items-center justify-center transition-all" aria-label="Close">
               <span className="text-[#7a0000] opacity-0 group-hover:opacity-100 transition-opacity text-[7px] font-bold leading-none">✕</span>
             </button>
-            <span className="w-3 h-3 rounded-full bg-[#e3b341] flex items-center justify-center">
+            <span className="w-3 h-3 rounded-full bg-t-yellow flex items-center justify-center">
               <span className="text-[#7a5000] opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-bold leading-none">−</span>
             </span>
-            <button onClick={() => setMaximized((m) => !m)} className="w-3 h-3 rounded-full bg-[#3fb950] flex items-center justify-center" aria-label="Maximize">
+            <button onClick={() => setMaximized((m) => !m)} className="w-3 h-3 rounded-full bg-t-green flex items-center justify-center" aria-label="Maximize">
               <span className="text-[#005a00] opacity-0 group-hover:opacity-100 transition-opacity text-[7px] font-bold leading-none">{maximized ? "↙" : "↗"}</span>
             </button>
           </div>
-          <span className="text-[#8b949e] text-xs truncate flex-1 ml-1">{label}</span>
+          <span className="text-t-dim text-xs truncate flex-1 ml-1">{label}</span>
           {props.type === "images" && images.length > 1 && (
-            <span className="text-[#8b949e] text-xs shrink-0">{imgIdx + 1}/{images.length}</span>
+            <span className="text-t-dim text-xs shrink-0">{imgIdx + 1}/{images.length}</span>
           )}
           {props.type === "pdf" && numPages > 0 && (
-            <span className="text-[#8b949e] text-xs shrink-0 opacity-50">page {pdfPage}/{numPages}</span>
+            <span className="text-t-dim text-xs shrink-0 opacity-50">page {pdfPage}/{numPages}</span>
           )}
         </div>
 
@@ -117,9 +120,9 @@ export function MediaModal(props: MediaModalProps) {
               />
             </div>
             {images.length > 1 && (
-              <div className="flex justify-between px-3 py-2 border-t border-[#30363d] bg-[#161b22]">
-                <button onClick={prev} className="text-[#8b949e] hover:text-[#c9d1d9] text-xs transition-colors">‹ prev</button>
-                <button onClick={next} className="text-[#8b949e] hover:text-[#c9d1d9] text-xs transition-colors">next ›</button>
+              <div className="flex justify-between px-3 py-2 border-t border-t-border bg-t-surface">
+                <button onClick={prev} className="text-t-dim hover:text-t-text text-xs transition-colors">‹ prev</button>
+                <button onClick={next} className="text-t-dim hover:text-t-text text-xs transition-colors">next ›</button>
               </div>
             )}
           </>
@@ -140,13 +143,13 @@ export function MediaModal(props: MediaModalProps) {
           <>
             <div
               ref={containerRef}
-              className="terminal-scroll flex-1 overflow-y-auto overflow-x-hidden flex justify-center bg-[#0d1117] py-4"
+              className="terminal-scroll flex-1 overflow-y-auto overflow-x-hidden flex justify-center bg-t-bg py-4"
             >
               <Document
                 file="/resume.pdf"
                 onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                loading={<p className="text-xs text-[#8b949e] mt-8">loading resume.pdf...</p>}
-                error={<p className="text-xs text-[#f85149] mt-8">error: failed to load resume.pdf</p>}
+                loading={<p className="text-xs text-t-dim mt-8">loading resume.pdf...</p>}
+                error={<p className="text-xs text-t-red mt-8">error: failed to load resume.pdf</p>}
               >
                 <Page
                   pageNumber={pdfPage}
@@ -157,19 +160,19 @@ export function MediaModal(props: MediaModalProps) {
               </Document>
             </div>
             {numPages > 1 && (
-              <div className="flex items-center gap-3 px-4 py-2 border-t border-[#30363d] bg-[#161b22] shrink-0">
+              <div className="flex items-center gap-3 px-4 py-2 border-t border-t-border bg-t-surface shrink-0">
                 <button
                   onClick={() => setPdfPage((p) => Math.max(1, p - 1))}
                   disabled={pdfPage === 1}
-                  className="text-xs text-[#8b949e] px-3 py-1 border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] hover:text-[#c9d1d9] transition-colors select-none disabled:opacity-30 disabled:cursor-not-allowed"
+                  className={pdfBtnClass}
                 >
                   [prev]
                 </button>
-                <span className="text-xs text-[#8b949e]">{pdfPage} / {numPages}</span>
+                <span className="text-xs text-t-dim">{pdfPage} / {numPages}</span>
                 <button
                   onClick={() => setPdfPage((p) => Math.min(numPages, p + 1))}
                   disabled={pdfPage === numPages}
-                  className="text-xs text-[#8b949e] px-3 py-1 border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] hover:text-[#c9d1d9] transition-colors select-none disabled:opacity-30 disabled:cursor-not-allowed"
+                  className={pdfBtnClass}
                 >
                   [next]
                 </button>
