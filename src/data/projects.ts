@@ -25,11 +25,18 @@ export const projects: Project[] = [
     github: "",
     githubBackend: "https://github.com/Reghunaath/RescueLine-AI",
     githubFrontend: "https://github.com/Reghunaath/RescueLineAI-frontend",
-    demoVideo: "https://drive.google.com/file/d/1bkyEA9-o23lN8rB-SmwH0s5kbimgiejv/view",
-    award: "🏆 1st Place — $700",
+    demoVideo:
+      "https://drive.google.com/file/d/1bkyEA9-o23lN8rB-SmwH0s5kbimgiejv/view",
+    award: "🏆 1st Place — $700 · Innovaite Hackathon",
     images: [
-      { src: "/images/projects/rescueline-ai/1772765427156.jpg", label: "live-dashboard.jpg" },
-      { src: "/images/projects/rescueline-ai/1772765427362.jpg", label: "prize-check.jpg" },
+      {
+        src: "/images/projects/rescueline-ai/1772765427156.jpg",
+        label: "live-dashboard.jpg",
+      },
+      {
+        src: "/images/projects/rescueline-ai/1772765427362.jpg",
+        label: "prize-check.jpg",
+      },
     ],
   },
   {
@@ -39,12 +46,22 @@ export const projects: Project[] = [
     tags: ["Next.js", "TypeScript", "Gemini", "Vercel", "AI Image Gen"],
     github: "https://lnkd.in/e4BRHtGs",
     live: "https://doodlpop.vercel.app/",
-    demoVideo: "https://drive.google.com/file/d/1i0BSCTNWsOek9I7soPHZM4jRBfzFTQMW/view?usp=drive_link",
-    award: "🏆 1st Place — SharkHack",
+    demoVideo:
+      "https://drive.google.com/file/d/1i0BSCTNWsOek9I7soPHZM4jRBfzFTQMW/view?usp=drive_link",
+    award: "🏆 1st Place · SharkHack",
     images: [
-      { src: "/images/projects/doodlpop/screenshot-app.png", label: "app-screenshot.png" },
-      { src: "/images/projects/doodlpop/team-1.jpeg", label: "hackathon-1.jpeg" },
-      { src: "/images/projects/doodlpop/team-2.jpeg", label: "hackathon-2.jpeg" },
+      {
+        src: "/images/projects/doodlpop/screenshot-app.png",
+        label: "app-screenshot.png",
+      },
+      {
+        src: "/images/projects/doodlpop/team-1.jpeg",
+        label: "hackathon-1.jpeg",
+      },
+      {
+        src: "/images/projects/doodlpop/team-2.jpeg",
+        label: "hackathon-2.jpeg",
+      },
       { src: "/images/projects/doodlpop/award.jpg", label: "award.jpg" },
     ],
   },
@@ -54,11 +71,18 @@ export const projects: Project[] = [
       "AI chat assistant powered by ChatGPT and Twilio APIs to turn missed calls into booked appointments for small businesses. Designed a scalable Python backend for multi-user handling and automated SMS-based lead conversion.",
     tags: ["Python", "ChatGPT", "Twilio", "SMS", "FastAPI"],
     github: "https://github.com/pavithralagisetty/LeadCatch.ai",
-    demoVideo: "https://drive.google.com/file/d/1SYBqNUoYoWbJGfC8LH-QmF_O3aPF1Yn1/view?usp=sharing",
+    demoVideo:
+      "https://drive.google.com/file/d/1SYBqNUoYoWbJGfC8LH-QmF_O3aPF1Yn1/view?usp=sharing",
     award: "🥈 2nd Place — $1,500 · Yconic AI Hackathon",
     images: [
-      { src: "/images/projects/leadcatch-ai/Screenshot 2026-04-01 025549.png", label: "sms-conversation-demo.png" },
-      { src: "/images/projects/leadcatch-ai/WhatsApp Image 2026-04-01 at 2.57.30 AM.jpeg", label: "hackathon-award.jpeg" },
+      {
+        src: "/images/projects/leadcatch-ai/Screenshot 2026-04-01 025549.png",
+        label: "sms-conversation-demo.png",
+      },
+      {
+        src: "/images/projects/leadcatch-ai/WhatsApp Image 2026-04-01 at 2.57.30 AM.jpeg",
+        label: "hackathon-award.jpeg",
+      },
     ],
   },
 ];
