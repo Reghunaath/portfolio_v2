@@ -25,6 +25,7 @@ export const projects: Project[] = [
     github: "",
     githubBackend: "https://github.com/Reghunaath/RescueLine-AI",
     githubFrontend: "https://github.com/Reghunaath/RescueLineAI-frontend",
+    demoVideo: "https://drive.google.com/file/d/1bkyEA9-o23lN8rB-SmwH0s5kbimgiejv/view",
     award: "🏆 1st Place — $700",
     images: [
       { src: "/images/projects/rescueline-ai/1772765427156.jpg", label: "live-dashboard.jpg" },
@@ -39,7 +40,7 @@ export const projects: Project[] = [
     github: "https://lnkd.in/e4BRHtGs",
     live: "https://doodlpop.vercel.app/",
     demoVideo: "https://drive.google.com/file/d/1i0BSCTNWsOek9I7soPHZM4jRBfzFTQMW/view?usp=drive_link",
-    award: "🏆 1st Place — Riot in the Gallery · SharkHack",
+    award: "🏆 1st Place — SharkHack",
     images: [
       { src: "/images/projects/doodlpop/screenshot-app.png", label: "app-screenshot.png" },
       { src: "/images/projects/doodlpop/team-1.jpeg", label: "hackathon-1.jpeg" },
