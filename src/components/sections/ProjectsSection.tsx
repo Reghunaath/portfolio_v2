@@ -86,6 +86,9 @@ export function ProjectsSection() {
                 ) : (
                   <BracketLink href={project.github}>github</BracketLink>
                 )}
+                {project.live && (
+                  <BracketLink href={project.live}>live demo</BracketLink>
+                )}
                 {project.demoVideo && (
                   <button
                     onClick={() => { posthog.capture("demo_video_opened", { project: project.title }); setModal({ type: "video", title: project.title, url: project.demoVideo!, onClose: () => setModal(null) }); }}

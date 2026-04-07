@@ -10,6 +10,7 @@ export interface Project {
   github: string;
   githubBackend?: string;
   githubFrontend?: string;
+  live?: string;
   demoVideo?: string;
   award?: string;
   images?: ProjectImage[];
@@ -24,10 +25,27 @@ export const projects: Project[] = [
     github: "",
     githubBackend: "https://github.com/Reghunaath/RescueLine-AI",
     githubFrontend: "https://github.com/Reghunaath/RescueLineAI-frontend",
+    demoVideo: "https://drive.google.com/file/d/1bkyEA9-o23lN8rB-SmwH0s5kbimgiejv/view",
     award: "🏆 1st Place — $700",
     images: [
       { src: "/images/projects/rescueline-ai/1772765427156.jpg", label: "live-dashboard.jpg" },
       { src: "/images/projects/rescueline-ai/1772765427362.jpg", label: "prize-check.jpg" },
+    ],
+  },
+  {
+    title: "Doodlpop",
+    description:
+      "AI-powered comic book generator that turns a single sentence into a fully illustrated comic. Type a story idea — Doodlpop generates a panel-by-panel script with dialogue and visual descriptions, lets you pick an art style (manga, western, watercolor storybook), edit the script, then illustrates every panel with AI. Supports shareable links, QR code sharing, and PDF export.",
+    tags: ["Next.js", "TypeScript", "Gemini", "Vercel", "AI Image Gen"],
+    github: "https://lnkd.in/e4BRHtGs",
+    live: "https://doodlpop.vercel.app/",
+    demoVideo: "https://drive.google.com/file/d/1i0BSCTNWsOek9I7soPHZM4jRBfzFTQMW/view?usp=drive_link",
+    award: "🏆 1st Place — SharkHack",
+    images: [
+      { src: "/images/projects/doodlpop/screenshot-app.png", label: "app-screenshot.png" },
+      { src: "/images/projects/doodlpop/team-1.jpeg", label: "hackathon-1.jpeg" },
+      { src: "/images/projects/doodlpop/team-2.jpeg", label: "hackathon-2.jpeg" },
+      { src: "/images/projects/doodlpop/award.jpg", label: "award.jpg" },
     ],
   },
   {

@@ -14,7 +14,7 @@ export const publications: Publication[] = [
       "1D Convolution approach to human activity recognition using wearable sensors in the wild",
     journal: "International Journal of Cognitive Computing in Engineering",
     year: 2021,
-    citations: 56,
+    citations: 62,
     url: "https://www.sciencedirect.com/science/article/pii/S2666307421000140",
   },
 ];
