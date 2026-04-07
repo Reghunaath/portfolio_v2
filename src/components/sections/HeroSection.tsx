@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -37,6 +37,17 @@ const Prompt = ({
 
 export function HeroSection() {
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [visitorLocation, setVisitorLocation] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((r) => r.json())
+      .then((d: { city?: string; country_name?: string }) => {
+        if (d.city && d.country_name) setVisitorLocation(`${d.city}, ${d.country_name}`);
+        else if (d.city) setVisitorLocation(d.city);
+      })
+      .catch(() => {});
+  }, []);
 
   const navItems = navSections.map((s) => ({ label: `${s.label}/`, href: `#${s.id}` }));
 
@@ -47,7 +58,7 @@ export function HeroSection() {
     >
       {/* Last login line */}
       <motion.p {...fadeUp(0.1)} className="text-xs text-t-dim mb-1">
-        Last login: {new Date().toDateString()} from {personal.location}
+        Last login: {new Date().toDateString()}{visitorLocation && ` from ${visitorLocation}`}
       </motion.p>
 
       {/* GIF */}
