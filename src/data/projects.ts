@@ -85,4 +85,18 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    title: "SNAPBACK",
+    description:
+      "Computer vision tool that measures athletic mobility loss after injury or a long break — no wearables, no clinic visit. Pick your sport, stand in front of your camera, and get a mobility score out of 100 benchmarked against clinical reference ranges. MediaPipe and OpenCV track 33 skeletal landmarks at 30fps and compute joint angles in real time. Outputs a sport-specific gap analysis and a personalised week-by-week return-to-sport exercise plan with sets, reps, and reasoning.",
+    tags: ["Python", "MediaPipe", "OpenCV", "Computer Vision", "AI"],
+    github: "https://github.com/Srini-5303/SNAPBACK",
+    award: "🥈 2nd Place · Babson Generator Build-a-thon",
+    images: [
+      { src: "/images/projects/snapback/demo-screenshot.png", label: "demo-screenshot.png" },
+      { src: "/images/projects/snapback/cv-screenshot.png", label: "cv-screenshot.png" },
+      { src: "/images/projects/snapback/plan-screenshot.png", label: "plan-screenshot.png" },
+      { src: "/images/projects/snapback/team.jpeg", label: "team.jpeg" },
+    ],
+  },
 ];

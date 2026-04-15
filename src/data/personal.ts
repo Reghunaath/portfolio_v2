@@ -10,12 +10,12 @@ export const personal = {
   subtitle: [
     "Full-Stack Engineer",
     "AI Developer",
-    "3x Hackathon Winner",
+    "4x Hackathon Winner",
     "Published Researcher",
   ],
   intro: "I build full-stack products end-to-end and ship fast.",
   intro2:
-    "MS Data Science @ Northeastern · 3x Hackathon Winner · Published Researcher.",
+    "MS Data Science @ Northeastern · 4x Hackathon Winner · Published Researcher.",
   location: "Boston, MA",
   email: "ajithkumarahila.r@northeastern.edu",
   phone: "(857)-351-9009",
