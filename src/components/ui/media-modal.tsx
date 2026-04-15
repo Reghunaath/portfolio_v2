@@ -87,14 +87,14 @@ export function MediaModal(props: MediaModalProps) {
       >
         {/* Title bar */}
         <div className="flex items-center gap-2 px-3 py-2 border-b border-t-border bg-t-surface shrink-0">
-          <div className="flex items-center gap-1.5 group">
-            <button onClick={props.onClose} className="w-3 h-3 rounded-full bg-t-red flex items-center justify-center transition-all cursor-pointer" aria-label="Close">
+          <div className="flex items-center gap-2 md:gap-1.5 group">
+            <button onClick={props.onClose} className="w-5 h-5 md:w-3 md:h-3 rounded-full bg-t-red flex items-center justify-center transition-all cursor-pointer" aria-label="Close">
               <span className="text-black opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-black leading-none">✕</span>
             </button>
-            <button onClick={props.onClose} className="w-3 h-3 rounded-full bg-t-yellow flex items-center justify-center cursor-pointer" aria-label="Minimize">
+            <button onClick={props.onClose} className="w-5 h-5 md:w-3 md:h-3 rounded-full bg-t-yellow flex items-center justify-center cursor-pointer" aria-label="Minimize">
               <span className="text-black opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-black leading-none">−</span>
             </button>
-            <button onClick={() => setMaximized((m) => !m)} className="w-3 h-3 rounded-full bg-t-green flex items-center justify-center cursor-pointer" aria-label="Maximize">
+            <button onClick={() => setMaximized((m) => !m)} className="w-5 h-5 md:w-3 md:h-3 rounded-full bg-t-green flex items-center justify-center cursor-pointer" aria-label="Maximize">
               <span className="text-black opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-black leading-none">{maximized ? "↙" : "↗"}</span>
             </button>
           </div>
@@ -110,7 +110,7 @@ export function MediaModal(props: MediaModalProps) {
         {/* Content */}
         {props.type === "images" && (
           <>
-            <div className="relative w-full aspect-video">
+            <div className={`relative w-full ${maximized ? "flex-1 min-h-0" : "aspect-video"}`}>
               <Image
                 src={images[imgIdx].src}
                 alt={`${props.title} — ${images[imgIdx].label}`}
