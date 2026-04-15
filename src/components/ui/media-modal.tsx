@@ -86,7 +86,7 @@ export function MediaModal(props: MediaModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Title bar */}
-        <div className="flex items-center gap-2 px-3 py-2 border-b border-t-border bg-t-surface shrink-0">
+        <div className="flex items-center gap-2 px-3 py-3 md:py-2 border-b border-t-border bg-t-surface shrink-0">
           <div className="flex items-center gap-2 md:gap-1.5 group">
             <button onClick={props.onClose} className="w-5 h-5 md:w-3 md:h-3 rounded-full bg-t-red flex items-center justify-center transition-all cursor-pointer" aria-label="Close">
               <span className="text-black opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-black leading-none">✕</span>
@@ -121,8 +121,8 @@ export function MediaModal(props: MediaModalProps) {
             </div>
             {images.length > 1 && (
               <div className="flex justify-between px-3 py-2 border-t border-t-border bg-t-surface">
-                <button onClick={prev} className="text-t-dim hover:text-t-text text-xs transition-colors">‹ prev</button>
-                <button onClick={next} className="text-t-dim hover:text-t-text text-xs transition-colors">next ›</button>
+                <button onClick={prev} className="text-t-dim hover:text-t-text text-xl md:text-xs transition-colors py-1">‹ prev</button>
+                <button onClick={next} className="text-t-dim hover:text-t-text text-xl md:text-xs transition-colors py-1">next ›</button>
               </div>
             )}
           </>
