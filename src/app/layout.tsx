@@ -10,9 +10,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Reghunaath — Full-Stack Engineer",
+  title: "Reghunaath — Full-Stack Developer",
   description:
-    "Full-Stack Engineer, AI Developer, 3x Hackathon Winner, Published Researcher. MS Data Science @ Northeastern.",
+    "Full-Stack Developer, AI Developer, 4x Hackathon Winner, Published Researcher. MS Data Science @ Northeastern.",
   icons: { icon: "/favicon.svg" },
 };
 
