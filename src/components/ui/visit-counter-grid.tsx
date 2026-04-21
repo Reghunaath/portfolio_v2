@@ -4,16 +4,13 @@ import { useEffect, useState } from "react";
 import { CommitsGrid } from "@/components/ui/commits-grid";
 import { PromptLine } from "@/components/ui/prompt-line";
 
-const COUNTER_URL =
-  "https://api.counterapi.dev/v1/reghu-portfolio/page-views/up";
-
 export function VisitCounterGrid() {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch(COUNTER_URL)
+    fetch("/api/visitors")
       .then((res) => res.json())
-      .then((data: { count?: number }) => {
+      .then((data: { count?: number | null }) => {
         if (typeof data.count === "number") setCount(data.count);
       })
       .catch(() => {});
@@ -21,7 +18,7 @@ export function VisitCounterGrid() {
 
   return (
     <section className="pt-16 pb-24">
-      <PromptLine command="echo $VISIT_COUNT" />
+      <PromptLine command="echo $UNIQUE_VISITORS" />
 
       <div className="mt-4 flex flex-col gap-4">
         {/* pixel grid — only shown once count is resolved */}
