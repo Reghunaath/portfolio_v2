@@ -152,6 +152,9 @@ export function ProjectsSection() {
               {/* Link */}
               <div className="flex flex-wrap gap-3 pt-1">
                 <BracketLink href={pub.url}>read paper</BracketLink>
+                {pub.scholarUrl && (
+                  <BracketLink href={pub.scholarUrl}>google scholar</BracketLink>
+                )}
               </div>
             </div>
           </motion.div>

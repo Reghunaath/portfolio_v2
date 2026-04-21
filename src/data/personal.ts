@@ -18,7 +18,9 @@ export const personal = {
     "MS Data Science @ Northeastern · 4x Hackathon Winner · Published Researcher.",
   location: "Boston, MA",
   email: "ajithkumarahila.r@northeastern.edu",
-  phone: "(857)-351-9009",
+  personalEmail: "reghunaath4@gmail.com",
+  phone: "+18573519009",
+  whatsapp: "+917708418298",
   linkedin: "https://www.linkedin.com/in/reghunaath",
   github: "https://github.com/Reghunaath/",
 };
