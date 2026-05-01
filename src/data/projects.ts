@@ -99,4 +99,16 @@ export const projects: Project[] = [
       { src: "/images/projects/snapback/team.jpeg", label: "team.jpeg" },
     ],
   },
+  {
+    title: "DEADPOOL",
+    description:
+      "DEADPOOL (Dependency Evaluation And Downstream Prediction Of Operational Liabilities) — a multi-agent AI system that identifies operational risks and failure cascades in startups before they become catastrophic. Orchestrated 6 specialist agents (People, Finance, Infrastructure, Product, Legal, Code Audit) running concurrently via LangGraph. Cross-domain cascade expansion using Gemini 2.5 Pro traces how a single failure propagates across the org — producing a 0–100 composite risk score and a plain-language founder briefing.",
+    tags: ["LangGraph", "Gemini 2.5 Pro", "FastAPI", "React", "Python", "Multi-Agent"],
+    github: "https://github.com/Ackshay206/DEADPOOL",
+    images: [
+      { src: "/images/projects/deadpool/landing.png", label: "landing.png" },
+      { src: "/images/projects/deadpool/dashboard.png", label: "dashboard.png" },
+      { src: "/images/projects/deadpool/cascade-chains.png", label: "cascade-chains.png" },
+    ],
+  },
 ];
