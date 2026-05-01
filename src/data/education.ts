@@ -17,7 +17,7 @@ export const education: Education[] = [
   {
     institution: "VIT Vellore",
     degree: "B.Tech Computer Science & Engineering",
-    location: "India",
+    location: "Vellore, India",
     period: "2018 – 2022",
     gpa: "3.42/4.0",
   },
