@@ -2,37 +2,37 @@
 
 /* ─── Terminal Color Tokens ─────────────────────────────────────────────── */
 :root {
-  --t-bg:      #0d1117;
+  --t-bg: #0d1117;
   --t-surface: #161b22;
-  --t-border:  #30363d;
-  --t-button:  #21262d;
-  --t-text:    #c9d1d9;
-  --t-dim:     #8b949e;
-  --t-green:   #3fb950;
-  --t-blue:    #58a6ff;
-  --t-purple:  #a371f7;
+  --t-border: #30363d;
+  --t-button: #21262d;
+  --t-text: #c9d1d9;
+  --t-dim: #8b949e;
+  --t-green: #3fb950;
+  --t-blue: #58a6ff;
+  --t-purple: #a371f7;
   --t-purple2: #6ea6fa;
-  --t-yellow:  #e3b341;
-  --t-red:     #f85149;
-  --t-cyan:    #79c0ff;
+  --t-yellow: #e3b341;
+  --t-red: #f85149;
+  --t-cyan: #79c0ff;
 }
 
 /* ─── Tailwind v4 Theme Mapping ─────────────────────────────────────────── */
 @theme inline {
-  --color-t-bg:      var(--t-bg);
+  --color-t-bg: var(--t-bg);
   --color-t-surface: var(--t-surface);
-  --color-t-border:  var(--t-border);
-  --color-t-button:  var(--t-button);
-  --color-t-text:    var(--t-text);
-  --color-t-dim:     var(--t-dim);
-  --color-t-green:   var(--t-green);
-  --color-t-blue:    var(--t-blue);
-  --color-t-purple:  var(--t-purple);
+  --color-t-border: var(--t-border);
+  --color-t-button: var(--t-button);
+  --color-t-text: var(--t-text);
+  --color-t-dim: var(--t-dim);
+  --color-t-green: var(--t-green);
+  --color-t-blue: var(--t-blue);
+  --color-t-purple: var(--t-purple);
   --color-t-purple2: var(--t-purple2);
-  --color-t-yellow:  var(--t-yellow);
-  --color-t-red:     var(--t-red);
-  --color-t-cyan:    var(--t-cyan);
-  --font-mono:       var(--font-jetbrains);
+  --color-t-yellow: var(--t-yellow);
+  --color-t-red: var(--t-red);
+  --color-t-cyan: var(--t-cyan);
+  --font-mono: var(--font-jetbrains);
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────── */
@@ -44,11 +44,15 @@
   }
 
   @media (min-width: 1280px) {
-    html { font-size: 16px; }
+    html {
+      font-size: 16px;
+    }
   }
 
   @media (min-width: 1536px) {
-    html { font-size: 18px; }
+    html {
+      font-size: 18px;
+    }
   }
 
   body {
@@ -64,8 +68,32 @@
   }
 
   ::selection {
-    background-color: #1f6feb;
+    background-color: color-mix(in srgb, var(--t-green) 30%, transparent);
     color: #e6edf3;
+  }
+}
+
+/* ─── CRT Ambiance ──────────────────────────────────────────────────────── */
+/* Scanlines: fixed glass layer over everything; pointer-events off so it
+   never blocks interaction. Kept extremely faint — ambiance, not effect. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.06) 0px,
+    rgba(0, 0, 0, 0.06) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    display: none;
   }
 }
 
@@ -101,17 +129,31 @@ html {
 
 /* ─── Animations ────────────────────────────────────────────────────────── */
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 @utility animate-blink {
   animation: blink 1s step-end infinite;
 }
 
+/* CRT phosphor glow — inherits the element's own color */
+@utility crt-glow {
+  text-shadow: 0 0 6px color-mix(in srgb, currentColor 45%, transparent);
+}
+
 @keyframes highlight {
-  0%   { background-color: transparent; }
-  100% { background-color: var(--highlight); }
+  0% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: var(--highlight);
+  }
 }
 
 @utility animate-highlight {
@@ -119,8 +161,13 @@ html {
 }
 
 @keyframes flash {
-  0%, 100% { background-color: transparent; }
-  50%       { background-color: var(--t-border); }
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--t-border);
+  }
 }
 
 @utility animate-flash {

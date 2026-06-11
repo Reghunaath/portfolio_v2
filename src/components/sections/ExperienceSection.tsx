@@ -1,9 +1,8 @@
 "use client";
-import { motion } from "framer-motion";
 import { PromptLine } from "@/components/ui/prompt-line";
+import { FadeIn } from "@/components/ui/fade-in";
 import { experience } from "@/data/experience";
 import { computeDuration } from "@/lib/duration";
-import { fadeUp } from "@/lib/animations";
 
 export function ExperienceSection() {
   return (
@@ -12,7 +11,7 @@ export function ExperienceSection() {
 
       <div className="mt-6 ml-1 flex flex-col max-w-5xl">
         {experience.map((exp, i) => (
-          <motion.div key={i} {...fadeUp(0.05 * i)} className="relative">
+          <FadeIn key={i} delay={0.05 * i} className="relative">
             {/* Spine */}
             <div
               className="absolute left-[3px] w-px bg-t-border"
@@ -64,7 +63,7 @@ export function ExperienceSection() {
                 </div>
               )}
             </div>
-          </motion.div>
+          </FadeIn>
         ))}
       </div>
     </section>

@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Mail, Linkedin, Github, Phone, Copy, Check } from "lucide-react";
 import { PromptLine } from "@/components/ui/prompt-line";
+import { FadeIn } from "@/components/ui/fade-in";
 import { personal } from "@/data/personal";
-import { fadeUp } from "@/lib/animations";
 
 const linkedinDisplay = personal.linkedin.replace("https://www.", "").replace("https://", "");
 const githubDisplay = personal.github
@@ -41,8 +40,8 @@ export function ContactSection() {
     <section id="contact" className="pt-16 md:pt-24 pb-12">
       <PromptLine command="cat contact.json" />
 
-      <motion.div
-        {...fadeUp(0.1)}
+      <FadeIn
+        delay={0.1}
         className="mt-4 max-w-lg border border-t-border bg-t-bg/80 rounded overflow-hidden"
       >
         {/* Title bar */}
@@ -101,7 +100,7 @@ export function ContactSection() {
             </a>
           </div>
         </div>
-      </motion.div>
+      </FadeIn>
     </section>
   );
 }

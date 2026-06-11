@@ -29,9 +29,9 @@ const Prompt = ({
 }) => (
   <motion.div {...fadeUp(delay)} className="text-sm leading-relaxed">
     <span className="text-t-dim">reghu@portfolio:</span>
-    <span className="text-t-green">{path}</span>
+    <span className="text-t-green crt-glow">{path}</span>
     <span className="text-t-dim">$ </span>
-    <span className="text-t-blue">{command}</span>
+    <span className="text-t-blue crt-glow">{command}</span>
   </motion.div>
 );
 
@@ -84,6 +84,9 @@ export function HeroSection() {
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
+              // Gradient text is fill-transparent, so text-shadow (crt-glow)
+              // won't render — drop-shadow on the glyphs works instead.
+              filter: "drop-shadow(0 0 10px color-mix(in srgb, var(--t-purple) 35%, transparent))",
             }}
           >
             {personal.name}
@@ -100,14 +103,14 @@ export function HeroSection() {
             <p className="text-sm text-t-text leading-relaxed">{personal.intro2}</p>
           </div>
           <div className="text-lg text-t-blue font-medium">
-            <span className="text-t-green">&gt; </span>
+            <span className="text-t-green crt-glow">&gt; </span>
             <TypewriterText
               text={personal.subtitle}
               loop
               speed={80}
               deleteSpeed={40}
               delay={2000}
-              className="text-t-blue"
+              className="text-t-blue crt-glow"
             />
           </div>
         </motion.div>
