@@ -87,8 +87,13 @@ body::after {
     rgba(0, 0, 0, 0.06) 0px,
     rgba(0, 0, 0, 0.06) 1px,
     transparent 1px,
-    transparent 3px
+    transparent 4px
   );
+  /* Promote to its own compositor layer: without this, every repaint of the
+     page underneath (typewriter, fades) re-rasterizes the full-screen overlay,
+     which flickers on some GPUs. */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
