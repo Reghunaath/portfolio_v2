@@ -1,6 +1,3 @@
-"use client";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 
 interface PortfolioCardProps {
@@ -12,7 +9,6 @@ interface PortfolioCardProps {
   body: React.ReactNode;
   tags: string[];
   links: React.ReactNode;
-  delay?: number;
 }
 
 export function PortfolioCard({
@@ -24,13 +20,11 @@ export function PortfolioCard({
   body,
   tags,
   links,
-  delay = 0,
 }: PortfolioCardProps) {
   const isPublication = variant === "publication";
 
   return (
-    <motion.div
-      {...fadeUp(delay)}
+    <div
       className={cn(
         "border border-t-border bg-t-bg/80 transition-colors group flex flex-col",
         isPublication ? "hover:border-t-purple/50" : "hover:border-t-blue/50"
@@ -42,12 +36,12 @@ export function PortfolioCard({
       </div>
 
       <div className="px-4 py-4 flex flex-col gap-3 flex-1">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
           <div>
             <span className="text-t-dim text-sm">{titlePrefix} </span>
             <span
               className={cn(
-                "font-bold text-base transition-colors",
+                "font-bold text-base transition-colors crt-glow",
                 isPublication
                   ? "text-t-purple group-hover:text-[#c49bf7]"
                   : "text-t-cyan group-hover:text-[#a5d6ff]"
@@ -57,7 +51,7 @@ export function PortfolioCard({
             </span>
           </div>
           {badge && (
-            <span className="text-xs text-t-yellow whitespace-nowrap shrink-0">
+            <span className="text-xs text-t-yellow sm:whitespace-nowrap sm:shrink-0">
               {badge}
             </span>
           )}
@@ -78,6 +72,6 @@ export function PortfolioCard({
 
         <div className="flex flex-wrap gap-3 pt-1">{links}</div>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -27,10 +27,9 @@ export function ProjectsSection() {
       <PromptLine command="ls -la projects/" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-10">
-        {projects.map((project, i) => (
+        {projects.map((project) => (
           <PortfolioCard
             key={project.title}
-            delay={0.1 + i * 0.08}
             variant="project"
             command={`cat ${project.title.toLowerCase().replace(/\s+/g, "-")}/README.md`}
             titlePrefix="#"
@@ -83,10 +82,9 @@ export function ProjectsSection() {
           />
         ))}
 
-        {publications.map((pub, i) => (
+        {publications.map((pub) => (
           <PortfolioCard
             key={pub.key}
-            delay={0.1 + (projects.length + i) * 0.08}
             variant="publication"
             command={`cat research/${pub.key}.pdf`}
             titlePrefix="@"

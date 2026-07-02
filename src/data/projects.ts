@@ -44,7 +44,7 @@ export const projects: Project[] = [
     description:
       "AI-powered comic book generator that turns a single sentence into a fully illustrated comic. Type a story idea — Doodlpop generates a panel-by-panel script with dialogue and visual descriptions, lets you pick an art style (manga, western, watercolor storybook), edit the script, then illustrates every panel with AI. Supports shareable links, QR code sharing, and PDF export.",
     tags: ["Next.js", "TypeScript", "Gemini", "Vercel", "AI Image Gen"],
-    github: "https://lnkd.in/e4BRHtGs",
+    github: "https://github.com/Reghunaath/doodlpop",
     live: "https://doodlpop.vercel.app/",
     demoVideo:
       "https://drive.google.com/file/d/1i0BSCTNWsOek9I7soPHZM4jRBfzFTQMW/view?usp=drive_link",
