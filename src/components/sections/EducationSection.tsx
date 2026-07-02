@@ -1,7 +1,5 @@
-"use client";
 import Image from "next/image";
 import { PromptLine } from "@/components/ui/prompt-line";
-import { FadeIn } from "@/components/ui/fade-in";
 import { education } from "@/data/education";
 import { computeDuration } from "@/lib/duration";
 
@@ -12,8 +10,10 @@ export function EducationSection() {
 
       <div className="mt-6 ml-1 flex flex-col max-w-3xl">
         {education.map((edu, i) => (
-          <FadeIn key={i} delay={0.05 * i}>
-            <div className="my-1.5 border-t-2 border-t-t-purple bg-t-surface/60 border-x border-b border-t-border rounded-b px-4 py-4 flex items-center gap-4">
+          <div
+            key={i}
+            className="my-1.5 border-t-2 border-t-t-purple bg-t-surface/60 border-x border-b border-t-border rounded-b px-4 py-4 flex items-center gap-4"
+          >
               <Image
                 src={edu.logo}
                 alt={edu.institution}
@@ -33,8 +33,7 @@ export function EducationSection() {
                   </span>
                 </div>
               </div>
-            </div>
-          </FadeIn>
+          </div>
         ))}
       </div>
     </section>

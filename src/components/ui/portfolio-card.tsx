@@ -1,5 +1,3 @@
-"use client";
-import { FadeIn } from "@/components/ui/fade-in";
 import { cn } from "@/lib/utils";
 
 interface PortfolioCardProps {
@@ -11,7 +9,6 @@ interface PortfolioCardProps {
   body: React.ReactNode;
   tags: string[];
   links: React.ReactNode;
-  delay?: number;
 }
 
 export function PortfolioCard({
@@ -23,13 +20,11 @@ export function PortfolioCard({
   body,
   tags,
   links,
-  delay = 0,
 }: PortfolioCardProps) {
   const isPublication = variant === "publication";
 
   return (
-    <FadeIn
-      delay={delay}
+    <div
       className={cn(
         "border border-t-border bg-t-bg/80 transition-colors group flex flex-col",
         isPublication ? "hover:border-t-purple/50" : "hover:border-t-blue/50"
@@ -77,6 +72,6 @@ export function PortfolioCard({
 
         <div className="flex flex-wrap gap-3 pt-1">{links}</div>
       </div>
-    </FadeIn>
+    </div>
   );
 }

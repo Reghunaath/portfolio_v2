@@ -1,6 +1,4 @@
-"use client";
 import { PromptLine } from "@/components/ui/prompt-line";
-import { FadeIn } from "@/components/ui/fade-in";
 import { experience } from "@/data/experience";
 import { computeDuration } from "@/lib/duration";
 
@@ -11,7 +9,7 @@ export function ExperienceSection() {
 
       <div className="mt-6 ml-1 flex flex-col max-w-5xl">
         {experience.map((exp, i) => (
-          <FadeIn key={i} delay={0.05 * i} className="relative">
+          <div key={i} className="relative">
             {/* Spine */}
             <div
               className="absolute left-[3px] w-px bg-t-border"
@@ -63,7 +61,7 @@ export function ExperienceSection() {
                 </div>
               )}
             </div>
-          </FadeIn>
+          </div>
         ))}
       </div>
     </section>
