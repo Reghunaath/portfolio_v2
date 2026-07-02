@@ -158,43 +158,16 @@ window.Sprites = (function () {
   /* ── tiles ─────────────────────────────────────────────────────────── */
   const T = 16;
 
-  function floorWood(ctx, tx, ty) {
-    const x = tx * T, y = ty * T;
-    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#43322a" : "#3e2e26";
-    ctx.fillRect(x, y, T, T);
-    ctx.fillStyle = "#33261d";
-    ctx.fillRect(x, y + T - 1, T, 1); // plank seam
-    if (hash2(tx, ty) < 12) {
-      ctx.fillRect(x + 3 + (hash2(ty, tx) % 9), y + 4 + (hash2(tx * 3, ty) % 8), 2, 1); // knot
-    }
-  }
-
-  function floorDark(ctx, tx, ty) {
-    const x = tx * T, y = ty * T;
-    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#20242c" : "#1c2027";
-    ctx.fillRect(x, y, T, T);
-    ctx.fillStyle = "#171a20";
-    ctx.fillRect(x, y + T - 1, T, 1);
-  }
-
-  function floorTileLib(ctx, tx, ty) {
-    const x = tx * T, y = ty * T;
-    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#3a3129" : "#352d26";
-    ctx.fillRect(x, y, T, T);
-    ctx.fillStyle = "#2b241e";
-    ctx.fillRect(x, y + T - 1, T, 1);
-    ctx.fillRect(x + T - 1, y, 1, T);
-  }
-
+  /* warm brick: hotel reds — every room's '#' tiles and window backing */
   function wall(ctx, tx, ty) {
     const x = tx * T, y = ty * T;
-    ctx.fillStyle = "#232936";
+    ctx.fillStyle = "#332522";
     ctx.fillRect(x, y, T, T);
-    ctx.fillStyle = "#2c3547";
+    ctx.fillStyle = "#3e2e29";
     ctx.fillRect(x, y, T, 3); // top highlight
-    ctx.fillStyle = "#1a202b";
+    ctx.fillStyle = "#241a17";
     ctx.fillRect(x, y + T - 3, T, 3); // base lip
-    ctx.fillStyle = "#272f3e";
+    ctx.fillStyle = "#3c2b26";
     if ((tx + ty) % 2 === 0) ctx.fillRect(x + 2, y + 6, 5, 4); // brick hint
     else ctx.fillRect(x + 9, y + 6, 5, 4);
   }
@@ -217,20 +190,35 @@ window.Sprites = (function () {
     ctx.fillRect(x + 5, y, 1, 9); // mullion
   }
 
-  /* lobby: lighter, warmer wood so the entrance feels welcoming */
-  function floorLobby(ctx, tx, ty) {
+  /* lobby: plush burgundy hotel carpet with a diamond pin-dot pattern */
+  function floorLobbyCarpet(ctx, tx, ty) {
     const x = tx * T, y = ty * T;
-    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#503c2e" : "#4a372b";
+    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#4e2b28" : "#4a2926";
     ctx.fillRect(x, y, T, T);
-    ctx.fillStyle = "#3a2b21";
-    ctx.fillRect(x, y + T - 1, T, 1);
-    if (hash2(tx, ty) < 10) {
-      ctx.fillStyle = "#5a4435";
-      ctx.fillRect(x + 3 + (hash2(ty, tx) % 9), y + 4 + (hash2(tx * 3, ty) % 8), 2, 1);
+    for (let k = 0; k < 6; k++) {
+      ctx.fillStyle = k % 2 ? "#553130" : "#43231f"; // pile stipple
+      ctx.fillRect(x + (hash2(tx * 3 + k, ty) % 15), y + (hash2(tx, ty * 3 + k) % 15), 1, 1);
+    }
+    ctx.fillStyle = "#6b4a3a";
+    for (let j = 0; j < T; j += 4) {
+      for (let i = 0; i < T; i += 4) {
+        if ((i + j) % 8 === 0) ctx.fillRect(x + i, y + j, 1, 1); // pin-dots
+      }
     }
   }
 
-  const TILES = { floorWood, floorDark, floorTileLib, floorLobby, wall, windowNight };
+  /* section rooms: wine carpet tiles — fibre squares, tone alternates */
+  function floorCarpetTiles(ctx, tx, ty) {
+    const x = tx * T, y = ty * T;
+    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#3c2428" : "#362023";
+    ctx.fillRect(x, y, T, T);
+    for (let k = 0; k < 6; k++) {
+      ctx.fillStyle = k % 2 ? "#472a2f" : "#2c191c"; // fibre stipple
+      ctx.fillRect(x + (hash2(tx * 7 + k, ty) % 15), y + (hash2(tx, ty * 7 + k) % 15), 1, 1);
+    }
+  }
+
+  const TILES = { floorLobbyCarpet, floorCarpetTiles, wall, windowNight };
 
   /* ── furniture painters ────────────────────────────────────────────── */
   /* each painter: (ctx, px, py, w, h, t, obj) — px/py/w/h in pixels     */

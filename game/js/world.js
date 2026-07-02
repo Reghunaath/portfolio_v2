@@ -15,7 +15,7 @@ window.World = (function () {
   const rooms = {
     hub: {
       label: "~/lobby",
-      floor: "floorLobby",
+      floor: "floorLobbyCarpet",
       map: [
         "###~~####nn####~~###",
         "#..................#",
@@ -52,8 +52,8 @@ window.World = (function () {
         { painter: "receptionDesk", x: 7, y: 4, w: 6, h: 2, dialog: "lobby-reception" },
         { painter: "lobbyLamp", x: 5, y: 4, w: 1, h: 2 },
         { painter: "lobbyLamp", x: 14, y: 4, w: 1, h: 2 },
-        /* warm rug in front of the desk */
-        { painter: "rug", x: 6, y: 7, w: 8, h: 3, solid: false, c1: "#5f2f26", c2: "#8a4a33" },
+        /* forest-green rug with a brass ring — sits against the burgundy carpet */
+        { painter: "rug", x: 6, y: 7, w: 8, h: 3, solid: false, c1: "#24422e", c2: "#a87e3e" },
         /* west waiting corner */
         { painter: "couch", x: 2, y: 7, w: 3, h: 1.4 },
         { painter: "tableMug", x: 2, y: 9, w: 2, h: 1, dialog: "hub-mug" },
@@ -70,7 +70,7 @@ window.World = (function () {
 
     arcade: {
       label: "~/projects",
-      floor: "floorDark",
+      floor: "floorCarpetTiles",
       map: [
         "####################",
         "#..................#",
@@ -103,7 +103,7 @@ window.World = (function () {
 
     office: {
       label: "~/experience",
-      floor: "floorWood",
+      floor: "floorCarpetTiles",
       map: [
         "####################",
         "#..................#",
@@ -136,7 +136,7 @@ window.World = (function () {
 
     library: {
       label: "~/education",
-      floor: "floorTileLib",
+      floor: "floorCarpetTiles",
       map: [
         "####################",
         "#..................#",
@@ -169,7 +169,7 @@ window.World = (function () {
 
     comms: {
       label: "~/contact",
-      floor: "floorDark",
+      floor: "floorCarpetTiles",
       map: [
         "#########nn#########",
         "#..................#",

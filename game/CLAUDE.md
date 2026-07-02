@@ -78,6 +78,8 @@ matters; each file exposes one global:
   in css/style.css), JetBrains Mono for dialog text, Press Start 2P for HUD;
   dialogs are terminal windows with traffic dots and `~/section/...` paths.
 - Interactable accent is phosphor green `#3fb950`; awards gold `#e3b341`; the
-  lobby is deliberately warmer (own floor tile, terracotta rug, amber `tint`).
+  lobby is deliberately warmer (burgundy pin-dot carpet floor, forest-green
+  rug with a brass ring, amber `tint`); the four section rooms share a wine
+  carpet-tile floor (`floorCarpetTiles`); all walls are warm brick.
 - New content goes in data.js (dialog) + world.js (placement) + sprites.js
   (painter, only if a new object type is needed).
