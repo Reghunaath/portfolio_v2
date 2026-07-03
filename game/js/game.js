@@ -162,9 +162,11 @@
     return true;
   }
   function roomSolids() {
-    return room.solids.filter(function (s) {
+    const list = room.solids.filter(function (s) {
       return !s.furn || furnitureActive(s.furn);
     });
+    if (room.cat) list.push(cat.rect());
+    return list;
   }
 
   /* ── quest ────────────────────────────────────────────────────────── */
@@ -501,7 +503,7 @@
         y: cat.y + 4,
         draw: function () {
           const facingLeft = cat.tx < cat.x;
-          Sprites.drawGrid(ctx, Sprites.CAT_FRAMES[cat.frame], Math.round(cat.x - 6), Math.round(cat.y - 4), facingLeft);
+          Sprites.drawGrid(ctx, Sprites.CAT_FRAMES[cat.frame], Math.round(cat.x - 6), Math.round(cat.y - 4), facingLeft, Sprites.PAL_CAT);
         },
       });
     }

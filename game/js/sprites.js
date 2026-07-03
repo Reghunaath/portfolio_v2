@@ -101,14 +101,14 @@ window.Sprites = (function () {
     left: [P_SIDE_STAND, P_SIDE_A, P_SIDE_STAND, P_SIDE_A], // drawn flipped
   };
 
-  /* 12x8 cat, two tail frames */
+  /* 12x8 ginger cat, two tail frames */
   const CAT_A = [
     "..C..C......",
     "..CCCC......",
     "..CcCc......",
     "..CCCC...C..",
-    ".CCCCCCCCC..",
-    ".CCCCCCCC...",
+    ".CCtCCtCCC..",
+    ".CCtCCtCC...",
     ".CC..CC.....",
     "............",
   ];
@@ -117,12 +117,13 @@ window.Sprites = (function () {
     "..CCCC......",
     "..CcCc......",
     "..CCCC......",
-    ".CCCCCCCC.C.",
-    ".CCCCCCCCC..",
+    ".CCtCCtCC.C.",
+    ".CCtCCtCCC..",
     ".CC..CC.....",
     "............",
   ];
   const CAT_FRAMES = [CAT_A, CAT_B];
+  const PAL_CAT = { C: "#d97a3d", c: "#3a2010", t: "#a8531f" };
 
   /* warm variant used by the lobby receptionist */
   const PAL_RECEPTIONIST = Object.assign({}, PAL, {
@@ -257,23 +258,6 @@ window.Sprites = (function () {
     ctx.fillRect(px + 2, py + 2, w - 4, h - 4);
   }
 
-  function couch(ctx, px, py, w, h) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#6e3b2a";
-    ctx.fillRect(px + 1, py, w - 2, 4); // back rest
-    ctx.fillStyle = "#8a4a33";
-    ctx.fillRect(px + 1, py + 4, w - 2, h - 4); // seat base
-    ctx.fillStyle = "#9c5a3d";
-    const cw = (w - 10) / 2;
-    ctx.fillRect(px + 5, py + 5, cw, h - 8); // cushions
-    ctx.fillRect(px + 5 + cw + 1, py + 5, cw, h - 8);
-    ctx.fillStyle = "#5a2f20";
-    ctx.fillRect(px + 1, py + 3, 4, h - 4); // armrests
-    ctx.fillRect(px + w - 5, py + 3, 4, h - 4);
-  }
-
   function tvUnit(ctx, px, py, w, h, t) {
     ctx.fillStyle = "#2b2117";
     ctx.fillRect(px, py + h - 5, w, 5); // console
@@ -319,21 +303,17 @@ window.Sprites = (function () {
     ctx.fillRect(px + w / 2 - 4, py + h - 5, 8, 2); // keyboard
   }
 
-  function tableMug(ctx, px, py, w, h, t) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px, py + 3, w, h - 3);
-    ctx.fillStyle = "#3a2d1f";
-    ctx.fillRect(px, py + 3, w, 2);
-    /* mug */
+  /* just the mug — no table beneath it, drawn near the top of its box so it
+     sits on a counter even when the box is stretched tall for hit-testing */
+  function mug(ctx, px, py, w, h, t) {
     ctx.fillStyle = "#f85149";
-    ctx.fillRect(px + w / 2 - 2, py + 5, 4, 4);
+    ctx.fillRect(px + w / 2 - 2, py + 6, 4, 4);
     ctx.fillStyle = "#c93c35";
-    ctx.fillRect(px + w / 2 + 2, py + 6, 1, 2);
+    ctx.fillRect(px + w / 2 + 2, py + 7, 1, 2);
     /* steam */
     const s = Math.floor(t * 3) % 3;
     ctx.fillStyle = "rgba(230,237,243,0.5)";
-    ctx.fillRect(px + w / 2 - 1 + s, py + 2 - s, 1, 1);
+    ctx.fillRect(px + w / 2 - 1 + s, py + 3 - s, 1, 1);
   }
 
   function plant(ctx, px, py, w, h) {
@@ -348,17 +328,6 @@ window.Sprites = (function () {
     ctx.fillStyle = "#1f7a33";
     ctx.fillRect(px + w / 2 - 3, py + 5, 2, 1);
     ctx.fillRect(px + w / 2 + 2, py + 4, 2, 1);
-  }
-
-  function bookpile(ctx, px, py, w, h) {
-    const colors = ["#a371f7", "#58a6ff", "#e3b341", "#f85149"];
-    for (let i = 0; i < 4; i++) {
-      ctx.fillStyle = colors[i];
-      const bw = w - 2 - i;
-      ctx.fillRect(px + 1 + i * 0.5, py + h - 3 * (i + 1), bw, 3);
-      ctx.fillStyle = "rgba(0,0,0,0.25)";
-      ctx.fillRect(px + 1 + i * 0.5, py + h - 3 * (i + 1) + 2, bw, 1);
-    }
   }
 
   function arcadeCab(ctx, px, py, w, h, t, obj) {
@@ -654,11 +623,6 @@ window.Sprites = (function () {
     for (let sx = px + 8; sx < px + w - 4; sx += 10) {
       ctx.fillRect(sx, py + 15, 1, h - 17);
     }
-    /* guest book */
-    ctx.fillStyle = "#e6edf3";
-    ctx.fillRect(px + 5, py + 8, 6, 4);
-    ctx.fillStyle = "#8b949e";
-    ctx.fillRect(px + 6, py + 9, 4, 1);
     /* flower in a vase (offset so it doesn't overlap the receptionist) */
     const fx = px + w - 20;
     ctx.fillStyle = "#58a6ff";
@@ -718,11 +682,6 @@ window.Sprites = (function () {
   }
 
   function lobbyLamp(ctx, px, py, w, h, t) {
-    /* warm pool of light on the floor */
-    const flicker = 0.10 + 0.04 * ((Math.sin(t * 2.3) + 1) / 2);
-    ctx.fillStyle = "rgba(227,179,65," + flicker.toFixed(2) + ")";
-    ctx.fillRect(px - 8, py + h - 6, w + 16, 8);
-    ctx.fillRect(px - 4, py + h - 10, w + 8, 4);
     /* pole + base */
     ctx.fillStyle = "#2b2117";
     ctx.fillRect(px + w / 2 - 1, py + 6, 2, h - 8);
@@ -735,7 +694,7 @@ window.Sprites = (function () {
   }
 
   const PAINTERS = {
-    rug, neonRug, doormat, couch, tvUnit, deskPC, tableMug, plant, bookpile,
+    rug, neonRug, doormat, tvUnit, deskPC, mug, plant,
     arcadeCab, clawMachine, deskStation, waterCooler, whiteboard, bookshelf,
     diploma, lectern, globe, kiosk, printer, serverRack, trophyBig,
     receptionDesk, receptionist, lobbyLamp, welcomeSign,
@@ -752,5 +711,5 @@ window.Sprites = (function () {
     ctx.fillRect(cx - 1, y + 6, 3, 2);
   }
 
-  return { PAL, PLAYER_FRAMES, CAT_FRAMES, drawGrid, TILES, PAINTERS, glint, hash2, T };
+  return { PAL, PLAYER_FRAMES, CAT_FRAMES, PAL_CAT, drawGrid, TILES, PAINTERS, glint, hash2, T };
 })();

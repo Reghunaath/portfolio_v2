@@ -55,12 +55,6 @@ window.GAME_DATA = (function () {
       coffee: true,
       hint: "drink the coffee",
     },
-    "hub-books": {
-      path: "~/lobby/bookpile",
-      title: "Reading Pile",
-      body: ["Designing Data-Intensive Applications, a stack of ML papers, and one very dog-eared copy of Cracking the Coding Interview that no longer gets opened."],
-      hint: "browse the book pile",
-    },
     "hub-trophy": {
       path: "~/achievement",
       title: "FULL-STACK EXPLORER",

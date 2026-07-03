@@ -48,19 +48,20 @@ window.World = (function () {
         { painter: "plant", x: 18, y: 1, w: 1, h: 2 },
         /* centered reception */
         { painter: "welcomeSign", x: 8.75, y: 1.125, w: 2.5, h: 0.875, solid: false, overhead: true },
-        { painter: "receptionist", x: 9.5, y: 3, w: 1, h: 1 },
+        { painter: "receptionist", x: 9.5, y: 3.5, w: 1, h: 1 },
         { painter: "receptionDesk", x: 7, y: 4, w: 6, h: 2, dialog: "lobby-reception" },
-        { painter: "lobbyLamp", x: 5, y: 4, w: 1, h: 2 },
-        { painter: "lobbyLamp", x: 14, y: 4, w: 1, h: 2 },
+        /* coffee mug on the counter's left end; overhead so it draws above the
+           desk instead of being painted over by it. Hitbox matches the desk's
+           full height so the front-facing interact probe (which lands well
+           below the visual counter line) can still reach it */
+        { painter: "mug", x: 8, y: 4, w: 1, h: 2, solid: false, overhead: true, dialog: "hub-mug" },
+        /* tucked right against the desk; non-solid so the col 6/13 aisles stay walkable */
+        { painter: "lobbyLamp", x: 6, y: 4, w: 1, h: 2, solid: false },
+        { painter: "lobbyLamp", x: 13, y: 4, w: 1, h: 2, solid: false },
         /* forest-green rug with a brass ring — sits against the burgundy carpet */
         { painter: "rug", x: 6, y: 7, w: 8, h: 3, solid: false, c1: "#24422e", c2: "#a87e3e" },
-        /* west waiting corner */
-        { painter: "couch", x: 2, y: 7, w: 3, h: 1.4 },
-        { painter: "tableMug", x: 2, y: 9, w: 2, h: 1, dialog: "hub-mug" },
+        /* corner plant */
         { painter: "plant", x: 1, y: 10, w: 1, h: 2 },
-        /* east waiting corner */
-        { painter: "couch", x: 15, y: 7, w: 3, h: 1.4 },
-        { painter: "bookpile", x: 18, y: 9, w: 1, h: 1, dialog: "hub-books" },
         /* entrance */
         { painter: "doormat", x: 8, y: 11, w: 4, h: 1, solid: false },
         { painter: "trophyBig", x: 12, y: 6, w: 1, h: 1, dialog: "hub-trophy", requires: "questDone" },
