@@ -226,14 +226,26 @@ body {
   background: rgba(2, 4, 8, 0.55);
 }
 
+/* cream RPG message box: dark frame, gold inner ring, red nameplate title */
 .dlg-window {
+  position: relative;
   width: min(680px, 100%);
   max-height: 78%;
   display: flex;
   flex-direction: column;
-  background: var(--t-bg);
-  border: 1px solid var(--t-border);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65);
+  background: #fff8e6;
+  border: 3px solid #454552;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 3px #e8c46a, 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+.dlg-window::after {
+  content: "▼";
+  position: absolute;
+  bottom: 6px;
+  right: 12px;
+  font-size: 11px;
+  color: #d84848;
+  animation: blink 1s step-end infinite;
 }
 
 .dlg-titlebar {
@@ -242,55 +254,58 @@ body {
   gap: 8px;
   height: 30px;
   padding: 0 10px;
-  background: var(--t-surface);
-  border-bottom: 1px solid var(--t-border);
+  border-bottom: 2px solid #e8c46a;
   flex: none;
 }
 
 #dialog-path {
   flex: 1;
   font-size: 11px;
-  color: var(--t-dim);
+  color: #8a7a56;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 #dialog-close {
-  background: var(--t-button);
-  border: 1px solid var(--t-border);
-  color: var(--t-dim);
+  background: #454552;
+  border: none;
+  border-radius: 5px;
+  color: #fff8e6;
   font-family: var(--mono-font);
-  font-size: 11px;
+  font-size: 12px;
   padding: 2px 8px;
   cursor: pointer;
 }
-#dialog-close:hover { color: var(--t-red); background: var(--t-border); }
+#dialog-close:hover { background: #d84848; }
 
 #dialog-body {
   padding: 14px 16px 16px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--t-dim) var(--t-surface);
+  scrollbar-color: #cbb271 #fff8e6;
 }
 
 #dialog-body h2 {
+  display: inline-block;
   font-family: var(--px-font);
   font-size: 12px;
   line-height: 1.7;
-  color: var(--t-blue);
-  text-shadow: 0 0 8px rgba(88, 166, 255, 0.4);
+  background: #d84848;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
   margin-bottom: 8px;
 }
 
 #dialog-body .dlg-sub {
-  color: var(--t-dim);
+  color: #8a7a56;
   font-size: 12px;
   margin-bottom: 8px;
 }
 
 #dialog-body .dlg-badge {
-  color: var(--t-yellow);
+  color: #b06a10;
   font-size: 12px;
   margin-bottom: 8px;
 }
@@ -299,6 +314,7 @@ body {
   font-size: 13px;
   line-height: 1.65;
   margin-bottom: 8px;
+  color: #3c3c46;
 }
 
 #dialog-body ul { list-style: none; margin-bottom: 8px; }
@@ -308,65 +324,72 @@ body {
   padding-left: 16px;
   position: relative;
   margin-bottom: 6px;
+  color: #3c3c46;
 }
 #dialog-body li::before {
-  content: ">";
+  content: "▸";
   position: absolute;
   left: 0;
-  color: var(--t-green);
+  color: #d84848;
 }
+
+/* chips, link pills and input rows stay invisible (space reserved) while
+   the dialog text is still typewriting — no empty boxes on screen */
+.dlg-streaming { visibility: hidden; }
 
 .dlg-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
 .dlg-tags span {
   font-size: 11px;
-  color: var(--t-dim);
-  border: 1px solid var(--t-border);
+  color: #6d5c34;
+  border: 1px solid #cbb271;
   padding: 2px 6px;
-  background: var(--t-surface);
+  background: #f3e6c4;
 }
 
 .dlg-input { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .dlg-input input {
   flex: 1;
   min-width: 150px;
-  background: var(--t-bg);
-  border: 1px solid var(--t-border);
-  color: var(--t-green);
+  background: #fff;
+  border: 2px solid #cbb271;
+  border-radius: 5px;
+  color: #3c3c46;
   font-family: var(--mono-font);
   font-size: 13px;
   padding: 6px 10px;
-  caret-color: var(--t-green);
+  caret-color: #d84848;
 }
-.dlg-input input::placeholder { color: var(--t-dim); }
+.dlg-input input::placeholder { color: #8a7a56; }
 .dlg-input input:focus {
-  outline: 2px solid var(--t-green);
+  outline: 2px solid #d84848;
   outline-offset: 1px;
 }
 .dlg-input button {
   font-family: var(--mono-font);
   font-size: 12px;
-  color: var(--t-blue);
-  background: var(--t-button);
-  border: 1px solid var(--t-border);
+  color: #fff;
+  background: #3a5aa8;
+  border: 2px solid #2a4079;
+  border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
 }
-.dlg-input button:hover { background: var(--t-border); color: #e6edf3; }
+.dlg-input button:hover { background: #4a6cc0; }
 
 .dlg-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .dlg-links a, .dlg-links button {
   font-family: var(--mono-font);
   font-size: 12px;
-  color: var(--t-blue);
-  background: var(--t-button);
-  border: 1px solid var(--t-border);
+  color: #fff;
+  background: #3a5aa8;
+  border: 2px solid #2a4079;
+  border-radius: 5px;
   padding: 5px 10px;
   text-decoration: none;
   cursor: pointer;
 }
 .dlg-links a:hover, .dlg-links button:hover {
-  background: var(--t-border);
-  color: #e6edf3;
+  background: #4a6cc0;
 }
 
 /* ── toast ─────────────────────────────────────────────────────────────── */
@@ -454,6 +477,7 @@ button:focus-visible, a:focus-visible {
 /* ── reduced motion ────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   #boot-text::after { animation: none; }
+  .dlg-window::after { animation: none; }
   #toast { transition: none; }
 }
 
@@ -467,3 +491,4 @@ button:focus-visible, a:focus-visible {
   .dlg-window { max-height: 88%; }
   #dialog { padding: 8px; }
 }
+

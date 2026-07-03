@@ -43,11 +43,8 @@ window.World = (function () {
       furniture: [
         /* north corners */
         { painter: "plant", x: 1, y: 1, w: 1, h: 2 },
-        { painter: "tvUnit", x: 2, y: 1, w: 4, h: 2, dialog: "hub-tv" },
-        { painter: "deskPC", x: 14, y: 1, w: 4, h: 2, dialog: "hub-desk" },
         { painter: "plant", x: 18, y: 1, w: 1, h: 2 },
         /* centered reception */
-        { painter: "welcomeSign", x: 8.75, y: 1.125, w: 2.5, h: 0.875, solid: false, overhead: true },
         { painter: "receptionist", x: 9.5, y: 3.5, w: 1, h: 1 },
         { painter: "receptionDesk", x: 7, y: 4, w: 6, h: 2, dialog: "lobby-reception" },
         /* coffee mug on the counter's left end; overhead so it draws above the

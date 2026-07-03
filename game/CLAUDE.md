@@ -56,9 +56,14 @@ matters; each file exposes one global:
 - **Save** (`localStorage["reghu-quest-v1"]`): `{seen[], rooms[], coffee, sound,
   done, name, nameSkipped}`. Quest % = seen∩coreIds / coreIds. Changing dialog
   ids invalidates existing saves' progress for those items.
-- **Check-in flow**: on first start `openNamePrompt(true)` auto-opens (skip sets
-  `nameSkipped` so it never nags again); the reception desk dialog is built
-  dynamically in game.js (`openReception`), not read verbatim from data.js.
+- **Check-in flow**: on first start the player spawns on the doormat and
+  auto-walks up col 10 to the reception desk (`intro` state in game.js; input
+  ignored while it runs, reduced-motion places the player at the desk
+  directly), then the check-in prompt opens (`openCheckIn`; skip sets
+  `nameSkipped` so it never nags again). The reception desk dialog
+  (`openReception`) embeds the same name input inline. Both are built
+  dynamically in game.js via `UI.openNamePrompt` (which typewrites like every
+  dialog), not read verbatim from data.js.
 - **Reduced motion**: honored everywhere — boot/typewriter/confetti skipped, cat
   naps, glints stop bobbing.
 
@@ -75,8 +80,10 @@ matters; each file exposes one global:
 ## Style
 
 - Visual language mirrors the main portfolio: GitHub-dark palette (`--t-*` vars
-  in css/style.css), JetBrains Mono for dialog text, Press Start 2P for HUD;
-  dialogs are terminal windows with traffic dots and `~/section/...` paths.
+  in css/style.css), JetBrains Mono for dialog text, Press Start 2P for HUD.
+  Dialogs are cream RPG message boxes (dark `#454552` frame, gold inner ring,
+  red nameplate title, blinking ▼) with a `~/section/...` path caption — the
+  terminal chrome lives in the HUD/shell, not the dialogs.
 - Interactable accent is phosphor green `#3fb950`; awards gold `#e3b341`; the
   lobby is deliberately warmer (burgundy pin-dot carpet floor, forest-green
   rug with a brass ring, amber `tint`); the four section rooms share a wine

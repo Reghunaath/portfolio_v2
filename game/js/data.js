@@ -21,31 +21,16 @@ window.GAME_DATA = (function () {
   /* Dialog definitions. `core: true` items count toward quest completion. */
   const dialogs = {
     /* ── hub ── */
-    "hub-desk": {
-      path: "~/whoami",
-      title: personal.name,
-      sub: personal.roles.join(" · "),
-      body: [personal.intro, personal.intro2 + " Based in " + personal.location + "."],
-      tags: ["python", "typescript", "react", "fastapi", "ai/ml"],
-      core: true,
-      hint: "check the battlestation",
-    },
     "lobby-reception": {
       path: "~/lobby/reception",
       title: "Front Desk",
       body: ["Welcome to REGHU.EXE — Reghu's walkable portfolio!"],
       hint: "check in at the front desk",
     },
-    "hub-tv": {
-      path: "~/lobby/tv",
-      title: "CRT Television",
-      body: ["The TV is stuck on a channel that only plays green text raining down a black screen. You feel like you have seen this movie before."],
-      hint: "watch the TV",
-    },
     "hub-cat": {
       path: "~/lobby/cat",
       title: "pixel.cat",
-      body: ["meow. (the cat looks at you, then at the arcade room, then back at you — as if to say the projects are that way.)"],
+      body: ["meow meow meow. (roughly translates to: Reghu is awesome and you should give him a job.)"],
       hint: "pet the cat",
     },
     "hub-mug": {

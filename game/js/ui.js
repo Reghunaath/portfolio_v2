@@ -79,15 +79,26 @@ window.UI = (function () {
     return row;
   }
 
-  /* reveal all text nodes progressively; instantly on reduced motion */
-  function typewrite(container) {
+  /* reveal all text nodes progressively; instantly on reduced motion.
+     Tag chips, link pills and input rows are kept invisible until the text
+     is done streaming (their labels don't stream) so no empty boxes show;
+     onDone fires once everything is revealed */
+  function typewrite(container, onDone) {
+    const deferred = Array.prototype.slice.call(
+      container.querySelectorAll(".dlg-tags, .dlg-links, .dlg-input")
+    );
     const nodes = [];
     (function collect(n) {
+      if (deferred.indexOf(n) !== -1) return;
       if (n.nodeType === 3 && n.textContent.trim().length) nodes.push(n);
       else n.childNodes && Array.prototype.forEach.call(n.childNodes, collect);
     })(container);
     const fulls = nodes.map(function (n) { return n.textContent; });
-    if (reduceMotion) return;
+    if (reduceMotion) {
+      if (onDone) onDone();
+      return;
+    }
+    deferred.forEach(function (d) { d.classList.add("dlg-streaming"); });
     nodes.forEach(function (n) { n.textContent = ""; });
     let ni = 0, ci = 0;
     typing = { done: false };
@@ -102,6 +113,8 @@ window.UI = (function () {
     }, 12);
     typing.finish = function () {
       nodes.forEach(function (n, i) { n.textContent = fulls[i]; });
+      deferred.forEach(function (d) { d.classList.remove("dlg-streaming"); });
+      if (onDone) onDone();
     };
   }
 
@@ -171,7 +184,7 @@ window.UI = (function () {
   /* check-in prompt: text input + submit/skip, reusing the dialog chrome */
   function openNamePrompt(cfg) {
     finishTyping();
-    onCloseCb = null;
+    onCloseCb = cfg.onClose || null;
     el.dialogPath.textContent = cfg.path || "~/lobby/reception";
     el.dialogBody.innerHTML = "";
 
@@ -197,17 +210,17 @@ window.UI = (function () {
     submit.textContent = "[ " + (cfg.submitLabel || "check in") + " ]";
     const skip = document.createElement("button");
     skip.type = "button";
-    skip.textContent = "[ " + (cfg.skipLabel || "just browsing") + " ]";
+    skip.textContent = "[ " + (cfg.skipLabel || "skip") + " ]";
 
     const doSubmit = function () {
       const v = input.value.trim().slice(0, 16);
       closeDialog();
       if (v) cfg.onSubmit(v);
-      else cfg.onSkip();
+      else if (cfg.onSkip) cfg.onSkip();
     };
     const doSkip = function () {
       closeDialog();
-      cfg.onSkip();
+      if (cfg.onSkip) cfg.onSkip();
     };
     input.addEventListener("keydown", function (e) {
       e.stopPropagation(); // typing must never move the player
@@ -224,7 +237,11 @@ window.UI = (function () {
 
     el.dialog.classList.remove("hidden");
     el.dialogBody.scrollTop = 0;
-    input.focus({ preventScroll: true });
+    /* the input row appears (and takes focus) once the text finishes —
+       a hidden input can't be focused */
+    typewrite(el.dialogBody, function () {
+      input.focus({ preventScroll: true });
+    });
   }
 
   /* returns true if it consumed the action (skip-to-end vs close) */

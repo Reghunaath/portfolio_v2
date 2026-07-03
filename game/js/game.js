@@ -85,7 +85,9 @@
     }
     if (ev.code === "KeyE" || ev.code === "Enter" || ev.code === "Space") {
       ev.preventDefault();
-      actionQueued = true;
+      /* ignore key auto-repeat: a held key must not insta-skip the
+         dialog typewriter or re-trigger interactions */
+      if (!ev.repeat) actionQueued = true;
       return;
     }
     const k = KEYMAP[ev.code];
@@ -145,6 +147,14 @@
   let fade = { a: 0, dir: 0, cb: null }; // screen fade for transitions
   let transitionLock = false;
 
+  /* first-visit check-in cutscene: the player enters through the front door
+     and walks up the center aisle to the reception desk before the
+     receptionist greets them. Input is ignored while it runs. */
+  let intro = null; // { ty: target feet y, wait: pause before the prompt }
+  const INTRO_X = 160; // center of the doormat / desk front
+  const INTRO_DOOR_Y = 186; // standing on the doormat
+  const INTRO_DESK_Y = 103; // right below the reception desk, facing up
+
   /* the cat (hub only) */
   const cat = {
     x: 220, y: 120, tx: 220, ty: 120, frame: 0, animT: 0, waitT: 2,
@@ -200,8 +210,6 @@
             UI.confetti();
             UI.toast("★ 100% EXPLORED — a trophy appeared in the hub ★", 4200);
           }, 350);
-        } else {
-          UI.toast("STAMP GET — explored " + pct + "%", 1600);
         }
       }
     }
@@ -252,53 +260,59 @@
   }
 
   /* ── reception & check-in ─────────────────────────────────────────── */
-  function openReception() {
-    const base = GAME_DATA.dialogs["lobby-reception"];
-    const greet = save.name
-      ? "Welcome back, " + save.name + "! Great to see you again."
-      : "Welcome to REGHU.EXE — Reghu's walkable portfolio!";
-    const def = {
-      path: base.path,
-      title: base.title,
-      body: [
-        greet,
-        "Projects are through the north door, experience is east, education west, and every way to reach Reghu is south.",
-      ],
-      links: [
-        {
-          label: save.name ? "change name" : "tell me your name",
-          onClick: function () { openNamePrompt(false); },
-        },
-      ],
-    };
-    UI.openDialog(def, { onClose: function () { sfx.close(); } });
+  function checkInAs(name) {
+    save.name = name;
+    save.nameSkipped = false;
+    persist();
+    sfx.stamp();
+    UI.toast("checked in — welcome, " + name + "!", 2600);
   }
 
-  function openNamePrompt(first) {
+  const DIRECTIONS =
+    "Projects are through the north door, experience is east, education west, and every way to reach Reghu is south.";
+
+  /* desk dialog: welcome + directions with the guest-book input inline —
+     no extra click needed to enter or change the name */
+  function openReception() {
+    const base = GAME_DATA.dialogs["lobby-reception"];
+    UI.openNamePrompt({
+      path: base.path,
+      title: base.title,
+      body: save.name
+        ? [
+            "Welcome back, " + save.name + "! Great to see you again.",
+            DIRECTIONS,
+            "Checked in under the wrong name? Type a new one below.",
+          ]
+        : [
+            "Welcome to REGHU.EXE — Reghu's walkable portfolio!",
+            DIRECTIONS,
+            "Could you enter your name below so I can greet you by it?",
+          ],
+      placeholder: "your name",
+      submitLabel: save.name ? "update name" : "check in",
+      skipLabel: save.name ? "close" : "skip",
+      onSubmit: checkInAs,
+      onClose: function () { sfx.close(); },
+    });
+  }
+
+  /* first-visit prompt the receptionist opens after the intro walk */
+  function openCheckIn() {
     UI.openNamePrompt({
       path: "~/lobby/reception",
       title: "Front Desk",
       body: [
-        first
-          ? "Welcome to REGHU.EXE — Reghu's walkable portfolio! I'm at the front desk if you need anything."
-          : "Updating the guest book.",
-        "Who do I have the pleasure of checking in?",
+        "Hello, visitor — welcome to Reghu's portfolio!",
+        "Could you enter your name so I can greet you by it? You're welcome to skip this.",
       ],
       placeholder: "your name",
       submitLabel: "check in",
-      skipLabel: "just browsing",
-      onSubmit: function (name) {
-        save.name = name;
-        save.nameSkipped = false;
-        persist();
-        sfx.stamp();
-        UI.toast("checked in — welcome, " + name + "!", 2600);
-      },
+      skipLabel: "skip",
+      onSubmit: checkInAs,
       onSkip: function () {
-        if (first) {
-          save.nameSkipped = true;
-          persist();
-        }
+        save.nameSkipped = true;
+        persist();
         UI.toast("no problem — enjoy the tour!", 2000);
       },
     });
@@ -347,7 +361,28 @@
       return;
     }
 
-    if (!transitionLock) {
+    if (!transitionLock && intro) {
+      /* scripted check-in walk — steered by the game, not the keys. The
+         route (col 10 from the doormat to the desk) crosses no solid
+         furniture, so collision is skipped on purpose */
+      actionQueued = false;
+      UI.setHint("");
+      if (player.y > intro.ty) {
+        player.dir = "up";
+        player.moving = true;
+        player.y = Math.max(intro.ty, player.y - 84 * dt);
+        player.animT += dt * 8;
+      } else {
+        player.moving = false;
+        player.animT = 0;
+        intro.wait -= dt;
+        if (intro.wait <= 0) {
+          intro = null;
+          sfx.open();
+          openCheckIn();
+        }
+      }
+    } else if (!transitionLock) {
       /* movement */
       let dx = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
       let dy = (keys.down ? 1 : 0) - (keys.up ? 1 : 0);
@@ -594,8 +629,16 @@
     if (save.name) {
       UI.toast("welcome back, " + save.name + (save.seen.length > 0 ? " — progress restored" : "!"), 2600);
     } else if (!save.nameSkipped) {
-      /* first visit: the receptionist checks the guest in */
-      setTimeout(function () { sfx.open(); openNamePrompt(true); }, 600);
+      /* first visit: enter through the front door and walk to reception */
+      player.x = INTRO_X;
+      player.dir = "up";
+      if (reduceMotion) {
+        player.y = INTRO_DESK_Y;
+        setTimeout(function () { sfx.open(); openCheckIn(); }, 400);
+      } else {
+        player.y = INTRO_DOOR_Y;
+        intro = { ty: INTRO_DESK_Y, wait: 0.35 };
+      }
     } else if (save.seen.length > 0) {
       UI.toast("welcome back — progress restored", 2200);
     } else {
@@ -637,7 +680,7 @@
 
   /* dev/debug introspection (used by automated playtests) */
   window.__DBG = function () {
-    return { x: player.x, y: player.y, room: room.id, dir: player.dir, boot: bootDone, fade: fade.a, lock: transitionLock };
+    return { x: player.x, y: player.y, room: room.id, dir: player.dir, boot: bootDone, fade: fade.a, lock: transitionLock, intro: !!intro };
   };
 
   UI.init();

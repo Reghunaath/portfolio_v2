@@ -258,51 +258,6 @@ window.Sprites = (function () {
     ctx.fillRect(px + 2, py + 2, w - 4, h - 4);
   }
 
-  function tvUnit(ctx, px, py, w, h, t) {
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px, py + h - 5, w, 5); // console
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px + 2, py, w - 4, h - 6); // tv body
-    ctx.fillStyle = "#05070a";
-    ctx.fillRect(px + 4, py + 2, w - 8, h - 11); // screen
-    /* matrix drip */
-    const cols = Math.floor((w - 8) / 3);
-    for (let i = 0; i < cols; i++) {
-      const speed = 6 + (hash2(i, 7) % 7);
-      const yy = (t * speed + hash2(i, 3)) % (h - 11);
-      ctx.fillStyle = "#3fb950";
-      ctx.fillRect(px + 5 + i * 3, py + 2 + yy, 1, 2);
-      ctx.fillStyle = "#1b4c27";
-      ctx.fillRect(px + 5 + i * 3, py + 2 + ((yy + 4) % (h - 11)), 1, 1);
-    }
-  }
-
-  function deskPC(ctx, px, py, w, h, t) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px, py + h - 6, w, 6); // desk
-    ctx.fillStyle = "#3a2d1f";
-    ctx.fillRect(px, py + h - 6, w, 1);
-    /* two monitors */
-    const mw = (w - 10) / 2;
-    for (let m = 0; m < 2; m++) {
-      const mx = px + 3 + m * (mw + 4);
-      ctx.fillStyle = "#10141a";
-      ctx.fillRect(mx, py, mw, h - 8);
-      const on = (Math.sin(t * 3 + m * 2) + 1) / 2 > 0.1;
-      ctx.fillStyle = on ? "#0d1117" : "#05070a";
-      ctx.fillRect(mx + 1, py + 1, mw - 2, h - 11);
-      ctx.fillStyle = "#3fb950";
-      const lines = 3;
-      for (let l = 0; l < lines; l++) {
-        const lw = 2 + ((hash2(m * 5 + l, Math.floor(t * 2)) % (mw - 6)));
-        ctx.fillRect(mx + 2, py + 2 + l * 2, Math.max(2, lw * 0.5), 1);
-      }
-    }
-    ctx.fillStyle = "#464f5d";
-    ctx.fillRect(px + w / 2 - 4, py + h - 5, 8, 2); // keyboard
-  }
-
   /* just the mug — no table beneath it, drawn near the top of its box so it
      sits on a counter even when the box is stretched tall for hit-testing */
   function mug(ctx, px, py, w, h, t) {
@@ -646,41 +601,6 @@ window.Sprites = (function () {
     drawGrid(ctx, P_DOWN_STAND, px + (w - 10) / 2, py + h - 14 - bob, false, PAL_RECEPTIONIST);
   }
 
-  /* hanging WELCOME sign, lettered in a 3x5 pixel font */
-  function welcomeSign(ctx, px, py, w, h, t) {
-    ctx.fillStyle = "#8b949e";
-    ctx.fillRect(px + 6, py - 4, 1, 4);
-    ctx.fillRect(px + w - 7, py - 4, 1, 4);
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px - 1, py - 1, w + 2, h + 2);
-    ctx.fillStyle = "#6b4226";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#e3b341";
-    ctx.fillRect(px, py, w, 1);
-    ctx.fillRect(px, py + h - 1, w, 1);
-    const F = {
-      W: ["#.#", "#.#", "#.#", "###", "#.#"],
-      E: ["###", "#..", "##.", "#..", "###"],
-      L: ["#..", "#..", "#..", "#..", "###"],
-      C: [".##", "#..", "#..", "#..", ".##"],
-      O: ["###", "#.#", "#.#", "#.#", "###"],
-      M: ["#.#", "###", "#.#", "#.#", "#.#"],
-    };
-    const word = "WELCOME";
-    let lx = px + Math.floor((w - (word.length * 4 - 1)) / 2);
-    const ly = py + Math.floor((h - 5) / 2);
-    ctx.fillStyle = "#fff8c5";
-    for (let i = 0; i < word.length; i++) {
-      const g = F[word[i]];
-      for (let r = 0; r < 5; r++) {
-        for (let c = 0; c < 3; c++) {
-          if (g[r][c] === "#") ctx.fillRect(lx + c, ly + r, 1, 1);
-        }
-      }
-      lx += 4;
-    }
-  }
-
   function lobbyLamp(ctx, px, py, w, h, t) {
     /* pole + base */
     ctx.fillStyle = "#2b2117";
@@ -694,10 +614,10 @@ window.Sprites = (function () {
   }
 
   const PAINTERS = {
-    rug, neonRug, doormat, tvUnit, deskPC, mug, plant,
+    rug, neonRug, doormat, mug, plant,
     arcadeCab, clawMachine, deskStation, waterCooler, whiteboard, bookshelf,
     diploma, lectern, globe, kiosk, printer, serverRack, trophyBig,
-    receptionDesk, receptionist, lobbyLamp, welcomeSign,
+    receptionDesk, receptionist, lobbyLamp,
   };
 
   /* bobbing "!" glint above an interactable */
