@@ -40,6 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# game assets
+game/assets/
+game/tools/asset-manifest.js
+
 # tooling / local dev artifacts
 .claude/
 .cp-images/

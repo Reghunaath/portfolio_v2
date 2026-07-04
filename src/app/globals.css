@@ -102,6 +102,11 @@ body::after {
   }
 }
 
+/* Suppressed while a modal (image/video/resume viewer) is open. */
+body.crt-suspended::after {
+  display: none;
+}
+
 /* ─── Terminal Scrollbar ────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
