@@ -26,8 +26,9 @@
   }
   .folder-label {
     color: var(--dim); text-transform: uppercase; font-size: 10px;
-    letter-spacing: 0.05em; margin: 12px 0 4px;
+    letter-spacing: 0.05em; margin: 12px 0 4px; cursor: pointer; user-select: none;
   }
+  .folder-label:hover { color: var(--text); }
   .file-item {
     padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -138,34 +139,78 @@
   var current = null; // { entry, img }
   var selection = null; // { x, y, w, h } in source pixels
   var drag = null; // { startCellX, startCellY }
+  var expanded = {}; // "path/segments" -> manually opened (ignored while a search filter is active)
 
   function tileW() { return Math.max(1, parseInt(tileWEl.value, 10) || 16); }
   function tileH() { return Math.max(1, parseInt(tileHEl.value, 10) || 16); }
   function zoom() { return parseInt(zoomEl.value, 10) || 1; }
 
-  /* ── file list ─────────────────────────────────────────────────────── */
+  /* ── file list (nested category tree, built from folder path segments) ── */
+
+  function buildTree(filter) {
+    var root = { children: {}, files: [] };
+    manifest.forEach(function (e) {
+      if (filter && e.path.toLowerCase().indexOf(filter) === -1) return;
+      var parts = e.folder === "." ? [] : e.folder.split("/");
+      var node = root;
+      parts.forEach(function (part) {
+        if (!node.children[part]) node.children[part] = { children: {}, files: [] };
+        node = node.children[part];
+      });
+      node.files.push(e);
+    });
+    return root;
+  }
+
+  function countFiles(node) {
+    var n = node.files.length;
+    Object.keys(node.children).forEach(function (k) { n += countFiles(node.children[k]); });
+    return n;
+  }
+
+  function expandPath(folder) {
+    if (folder === ".") return;
+    var path = "";
+    folder.split("/").forEach(function (part) {
+      path = path ? path + "/" + part : part;
+      expanded[path] = true;
+    });
+  }
+
+  function renderNode(node, path, depth, filter) {
+    node.files.forEach(function (entry) {
+      var item = document.createElement("div");
+      item.className = "file-item";
+      item.style.paddingLeft = (8 + depth * 12) + "px";
+      if (current && current.entry === entry) item.className += " active";
+      item.innerHTML = entry.name + '<div class="file-dims">' + entry.width + "×" + entry.height + "</div>";
+      item.addEventListener("click", function () { loadFile(entry); });
+      fileListEl.appendChild(item);
+    });
+
+    Object.keys(node.children).sort().forEach(function (name) {
+      var child = node.children[name];
+      var childPath = path ? path + "/" + name : name;
+      var total = countFiles(child);
+      var isOpen = !!filter || !!expanded[childPath]; // searching auto-expands matches
+
+      var label = document.createElement("div");
+      label.className = "folder-label";
+      label.style.paddingLeft = (depth * 12) + "px";
+      label.textContent = (isOpen ? "▾ " : "▸ ") + name + " (" + total + ")";
+      label.addEventListener("click", function () {
+        expanded[childPath] = !isOpen;
+        renderFileList(searchEl.value.trim().toLowerCase());
+      });
+      fileListEl.appendChild(label);
+
+      if (isOpen) renderNode(child, childPath, depth + 1, filter);
+    });
+  }
 
   function renderFileList(filter) {
     fileListEl.innerHTML = "";
-    var byFolder = {};
-    manifest.forEach(function (e) {
-      if (filter && e.path.toLowerCase().indexOf(filter) === -1) return;
-      (byFolder[e.folder] = byFolder[e.folder] || []).push(e);
-    });
-    Object.keys(byFolder).sort().forEach(function (folder) {
-      var label = document.createElement("div");
-      label.className = "folder-label";
-      label.textContent = folder;
-      fileListEl.appendChild(label);
-      byFolder[folder].forEach(function (entry) {
-        var item = document.createElement("div");
-        item.className = "file-item";
-        if (current && current.entry === entry) item.className += " active";
-        item.innerHTML = entry.name + '<div class="file-dims">' + entry.width + "×" + entry.height + "</div>";
-        item.addEventListener("click", function () { loadFile(entry); });
-        fileListEl.appendChild(item);
-      });
-    });
+    renderNode(buildTree(filter), "", 0, filter);
   }
 
   searchEl.addEventListener("input", function () {
@@ -178,6 +223,7 @@
     var img = new Image();
     img.onload = function () {
       current = { entry: entry, img: img };
+      expandPath(entry.folder);
       selection = null;
       galleryEl.innerHTML = '<div id="gallery-hint">"extract tiles" slices the whole sheet into a gallery using the tile size above — click a thumbnail to select it.</div>';
       emptyHint.style.display = "none";

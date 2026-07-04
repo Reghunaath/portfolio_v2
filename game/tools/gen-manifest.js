@@ -12,7 +12,7 @@ const rootArg = rawArgs.find(function (a) { return !a.startsWith("--"); });
 const outArg = rawArgs.find(function (a) { return a.startsWith("--out="); });
 
 const toolsDir = __dirname;
-const root = path.resolve(toolsDir, rootArg || "../Modern tiles_Free");
+const root = path.resolve(toolsDir, rootArg || "../assets");
 const outFile = outArg
   ? path.resolve(process.cwd(), outArg.slice("--out=".length))
   : path.join(toolsDir, "asset-manifest.js");

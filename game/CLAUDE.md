@@ -87,13 +87,16 @@ game.
 | File | Role |
 | --- | --- |
 | `tools/png-to-grid.js` | Node script (built-in `zlib` only, no npm install) — slices a PNG region into the string-grid + palette format `sprites.js` uses (see `drawGrid()`), including multi-frame strips (`--frames`). Run with no args for usage. |
-| `tools/gen-manifest.js` | Scans a folder of PNGs and writes `tools/asset-manifest.js` (file paths + dimensions only) for the viewer's file list. Defaults to scanning `../Modern tiles_Free` next to `game/` — pass a different root as the first arg if the pack lives elsewhere. Re-run after adding/replacing pack files. |
+| `tools/gen-manifest.js` | Scans a folder of PNGs and writes `tools/asset-manifest.js` (file paths + dimensions only) for the viewer's file list. Defaults to scanning `game/assets` — pass a different root as the first arg if the pack lives elsewhere. Re-run after adding/replacing pack files. |
 | `tools/asset-viewer.html` | Standalone browser tool — open directly (or serve `game/` so the transparency-skip in "extract tiles → gallery" works; file:// taints canvas readback). Browse a pack's sheets at adjustable zoom with a grid overlay, click or drag to select a region, and it generates the exact `png-to-grid.js` command for that selection. |
 
-- There's no asset pack folder committed to the repo — it's a local download
-  the tools point at. Convert only the specific sprites you actually intend to
-  use; the pack's commercial license still applies to whatever gets copied in,
-  same as if the PNG were used directly.
+- `game/assets/` (the pack itself: `1_Interiors`, `2_Characters`,
+  `3_Animated_objects`, `4_User_Interface_Elements`, `6_Home_Designs`,
+  `Palettes`, plus its `LICENSE.txt`/`READ_ME.txt`) is a local download, not
+  committed to the repo (its PNGs fall under the root `.gitignore`'s `*.png`
+  rule). Convert only the specific sprites you actually intend to use; the
+  pack's commercial license still applies to whatever gets copied in, same as
+  if the PNG were used directly.
 
 ## Style
 
