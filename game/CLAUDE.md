@@ -77,6 +77,24 @@ matters; each file exposes one global:
 - Syntax check after edits: `node --check js/*.js` (files are plain ES5-ish JS —
   no TS, no modules).
 
+## Asset tooling (`tools/` — dev-only, not shipped)
+
+Utilities for hand-porting specific sprites from a purchased pixel-art pack
+into the procedural grid format below, without adding image loading/`drawImage`
+to the engine. None of this is referenced by `index.html` or served with the
+game.
+
+| File | Role |
+| --- | --- |
+| `tools/png-to-grid.js` | Node script (built-in `zlib` only, no npm install) — slices a PNG region into the string-grid + palette format `sprites.js` uses (see `drawGrid()`), including multi-frame strips (`--frames`). Run with no args for usage. |
+| `tools/gen-manifest.js` | Scans a folder of PNGs and writes `tools/asset-manifest.js` (file paths + dimensions only) for the viewer's file list. Defaults to scanning `../Modern tiles_Free` next to `game/` — pass a different root as the first arg if the pack lives elsewhere. Re-run after adding/replacing pack files. |
+| `tools/asset-viewer.html` | Standalone browser tool — open directly (or serve `game/` so the transparency-skip in "extract tiles → gallery" works; file:// taints canvas readback). Browse a pack's sheets at adjustable zoom with a grid overlay, click or drag to select a region, and it generates the exact `png-to-grid.js` command for that selection. |
+
+- There's no asset pack folder committed to the repo — it's a local download
+  the tools point at. Convert only the specific sprites you actually intend to
+  use; the pack's commercial license still applies to whatever gets copied in,
+  same as if the PNG were used directly.
+
 ## Style
 
 - Visual language mirrors the main portfolio: GitHub-dark palette (`--t-*` vars
