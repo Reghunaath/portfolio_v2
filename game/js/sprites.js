@@ -205,36 +205,226 @@ window.Sprites = (function () {
     "mcccccccccccccmg",
   ];
 
-  /* warm brick: hotel reds — every room's '#' tiles and window backing */
-  function wall(ctx, tx, ty) {
+  /* walls hand-ported from the pack's Generic_Home_1 (6_Home_Designs):
+     white wall-top strips with navy outlines, light-gray face on the top
+     wall, shaded top-of-wall bands running down the sides, white strip +
+     void along the bottom. wall() picks the grid from the tile's border
+     position and closes runs with a 1px outline cap beside door gaps. */
+  const PAL_WALL = {
+    o: "#3a3a50", // navy outline
+    W: "#fdfdfd", // horizontal top-strip white
+    w: "#f8f8f8", // vertical-strip / south-strip white
+    F: "#cccccc", // face
+    L: "#c6c6c6", // face light row under the cap
+    T: "#b4b4b4", // face shadow band / lit east band
+    D: "#a1a1a1", // dark west band / face bottom shade
+    V: "#10141a", // void outside the south wall
+  };
+  function wallRows(row) {
+    const g = [];
+    for (let i = 0; i < 16; i++) g.push(row);
+    return g;
+  }
+  /* the top wall is two tiles tall, like the pack's reference design:
+     row 0 = white top strip + start of the face, row 1 = rest of the face */
+  const WALL_N_GRID = [
+    "oooooooooooooooo",
+    "WWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWW",
+    "oooooooooooooooo",
+    "TTTTTTTTTTTTTTTT",
+    "LLLLLLLLLLLLLLLL",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+  ];
+  const WALL_N2_GRID = [
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFF",
+    "TTTTTTTTTTTTTTTT",
+    "DDDDDDDDDDDDDDDD",
+    "oooooooooooooooo",
+  ];
+  const WALL_S_GRID = [
+    "oooooooooooooooo",
+    "wwwwwwwwwwwwwwww",
+    "wwwwwwwwwwwwwwww",
+    "wwwwwwwwwwwwwwww",
+    "wwwwwwwwwwwwwwww",
+    "oooooooooooooooo",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+  ];
+  const WALL_W_GRID = wallRows("owwwwwoDDDDDDDDo");
+  const WALL_E_GRID = wallRows("oDTTTTTTTowwwwwo");
+  const CORNER_TL_GRID = [
+    "oooooooooooooooo",
+    "owwwwwoWWWWWWWWW",
+    "owwwwwoWWWWWWWWW",
+    "owwwwwoWWWWWWWWW",
+    "owwwwwoWWWWWWWWW",
+    "oooooooooooooooo",
+    "owwwwwoTTTTTTTTT",
+    "owwwwwoDDDDDLLLL",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+  ];
+  const CORNER_TL2_GRID = [
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDFFFF",
+    "owwwwwoDDDDDDTTT",
+    "owwwwwoDDDDDDDDD",
+    "owwwwwoDDDDDDDDo",
+  ];
+  const CORNER_TR_GRID = [
+    "oooooooooooooooo",
+    "WWWWWWWWWowwwwwo",
+    "WWWWWWWWWowwwwwo",
+    "WWWWWWWWWowwwwwo",
+    "WWWWWWWWWowwwwwo",
+    "oooooooooooooooo",
+    "TTTTTTTTTowwwwwo",
+    "LLLTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+  ];
+  const CORNER_TR2_GRID = [
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "FFFTTTTTTowwwwwo",
+    "TTTTTTTTTowwwwwo",
+    "DDDDDDDDDowwwwwo",
+    "oDTTTTTTTowwwwwo",
+  ];
+  const CORNER_BL_GRID = [
+    "owwwwwoooooooooo",
+    "owwwwwwwwwwwwwww",
+    "owwwwwwwwwwwwwww",
+    "owwwwwwwwwwwwwww",
+    "owwwwwwwwwwwwwww",
+    "oooooooooooooooo",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV",
+  ];
+
+  function wall(ctx, tx, ty, map) {
     const x = tx * T, y = ty * T;
-    ctx.fillStyle = "#332522";
-    ctx.fillRect(x, y, T, T);
-    ctx.fillStyle = "#3e2e29";
-    ctx.fillRect(x, y, T, 3); // top highlight
-    ctx.fillStyle = "#241a17";
-    ctx.fillRect(x, y + T - 3, T, 3); // base lip
-    ctx.fillStyle = "#3c2b26";
-    if ((tx + ty) % 2 === 0) ctx.fillRect(x + 2, y + 6, 5, 4); // brick hint
-    else ctx.fillRect(x + 9, y + 6, 5, 4);
+    const rows = map ? map.length : 13;
+    const cols = map ? map[0].length : 20;
+    let grid, flip = false;
+    if (ty === 0) {
+      grid = tx === 0 ? CORNER_TL_GRID : tx === cols - 1 ? CORNER_TR_GRID : WALL_N_GRID;
+    } else if (ty === 1) {
+      grid = tx === 0 ? CORNER_TL2_GRID : tx === cols - 1 ? CORNER_TR2_GRID : WALL_N2_GRID;
+    } else if (ty === rows - 1) {
+      if (tx === 0) grid = CORNER_BL_GRID;
+      else if (tx === cols - 1) { grid = CORNER_BL_GRID; flip = true; }
+      else grid = WALL_S_GRID;
+    } else if (tx === 0) grid = WALL_W_GRID;
+    else grid = WALL_E_GRID;
+    drawGrid(ctx, grid, x, y, flip, PAL_WALL);
+    if (!map) return;
+    /* door caps: close the wall run with a 1px outline beside a gap */
+    function open(r, c) {
+      const ch = map[r][c];
+      return "#~".indexOf(ch) === -1;
+    }
+    ctx.fillStyle = PAL_WALL.o;
+    if (ty <= 1 || ty === rows - 1) {
+      const capH = ty === rows - 1 ? 6 : T; // south strip is only 6px tall
+      if (tx > 0 && open(ty, tx - 1)) ctx.fillRect(x, y, 1, capH);
+      if (tx < cols - 1 && open(ty, tx + 1)) ctx.fillRect(x + T - 1, y, 1, capH);
+    } else {
+      if (ty > 0 && open(ty - 1, tx)) ctx.fillRect(x, y, T, 1);
+      if (ty < rows - 1 && open(ty + 1, tx)) ctx.fillRect(x, y + T - 1, T, 1);
+    }
   }
 
-  function windowNight(ctx, tx, ty, t) {
-    wall(ctx, tx, ty);
-    const x = tx * T + 2, y = ty * T + 3;
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(x - 1, y - 1, 14, 11);
+  /* window on the lower face row (map '~' goes in row 1, under the strip) */
+  function windowNight(ctx, tx, ty, t, map) {
+    wall(ctx, tx, ty, map);
+    const x = tx * T, y = ty * T;
+    ctx.fillStyle = PAL_WALL.o;
+    ctx.fillRect(x + 1, y + 1, 14, 12);
     ctx.fillStyle = "#0b1524";
-    ctx.fillRect(x, y, 12, 9);
+    ctx.fillRect(x + 2, y + 2, 12, 10);
     for (let i = 0; i < 5; i++) {
-      const sx = x + (hash2(tx * 7 + i, ty) % 12);
-      const sy = y + (hash2(i, ty * 5 + tx) % 9);
+      const sx = x + 2 + (hash2(tx * 7 + i, ty) % 12);
+      const sy = y + 2 + (hash2(i, ty * 5 + tx) % 10);
       const tw = (Math.sin(t * 2 + i * 1.7 + tx) + 1) / 2;
       ctx.fillStyle = tw > 0.55 ? "#9ecbff" : "#40506b";
       ctx.fillRect(sx, sy, 1, 1);
     }
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(x + 5, y, 1, 9); // mullion
+    ctx.fillStyle = PAL_WALL.o;
+    ctx.fillRect(x + 7, y + 2, 1, 10); // mullion
+    ctx.fillRect(x + 2, y + 6, 12, 1); // transom
   }
 
   /* lobby: Modern Interiors tan/cream diamond-weave carpet tile */

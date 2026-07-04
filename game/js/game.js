@@ -494,8 +494,8 @@
     for (let r = 0; r < World.ROWS; r++) {
       for (let c = 0; c < World.COLS; c++) {
         const ch = room.map[r][c];
-        if (ch === "#") Sprites.TILES.wall(ctx, c, r);
-        else if (ch === "~") Sprites.TILES.windowNight(ctx, c, r, t);
+        if (ch === "#") Sprites.TILES.wall(ctx, c, r, room.map);
+        else if (ch === "~") Sprites.TILES.windowNight(ctx, c, r, t, room.map);
         else floorPainter(ctx, c, r);
       }
     }

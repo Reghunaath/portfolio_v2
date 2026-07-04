@@ -34,6 +34,11 @@ matters; each file exposes one global:
   (projects), `office` (experience), `library` (education), `comms` (contact).
 - **Map legend**: `#` wall, `~` window wall, `.` floor, `n/s/e/w` walkable door
   tiles that trigger transitions.
+- **Top wall is two tile rows** (rows 0–1), like the pack's reference design:
+  row 0 = white top strip + start of the face, row 1 = rest of the face.
+  Windows (`~`) go in row 1. A north door gap is `n` tiles in row 0 (the dark
+  opening that triggers the transition) over plain `.` corridor tiles in row 1.
+  First walkable row is row 2 — furniture against the top wall starts at y 2.
 - **Furniture schema** (`world.js`): `{painter, x, y, w, h}` in tiles (fractions
   OK) plus flags: `dialog` (id into `GAME_DATA.dialogs`), `solid: false`
   (walkable, drawn beneath actors), `wallMounted` (drawn beneath, no collision —
@@ -111,6 +116,9 @@ game.
 - Interactable accent is phosphor green `#3fb950`; awards gold `#e3b341`; the
   lobby is deliberately warmer (burgundy pin-dot carpet floor, forest-green
   rug with a brass ring, amber `tint`); the four section rooms share a wine
-  carpet-tile floor (`floorCarpetTiles`); all walls are warm brick.
+  carpet-tile floor (`floorCarpetTiles`); walls are the pack's Generic_Home_1
+  system (white wall-top strips, two-tile light-gray face on the top wall, navy
+  outlines) — `wall()` in sprites.js is position-aware (corners/sides/second
+  face row/door caps) and needs the room map passed in.
 - New content goes in data.js (dialog) + world.js (placement) + sprites.js
   (painter, only if a new object type is needed).
