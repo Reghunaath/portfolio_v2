@@ -18,7 +18,7 @@ window.World = (function () {
       floor: "floorLobbyCarpet",
       map: [
         "#########nn#########",
-        "###~~####..####~~###",
+        "#########..#########",
         "#..................#",
         "#..................#",
         "#..................#",
@@ -41,9 +41,6 @@ window.World = (function () {
          side (cols 6 and 13), symmetric waiting corners, warm accents */
       tint: "rgba(240,160,70,0.05)",
       furniture: [
-        /* north corners */
-        { painter: "plant", x: 1, y: 2, w: 1, h: 2 },
-        { painter: "plant", x: 18, y: 2, w: 1, h: 2 },
         /* centered reception */
         { painter: "receptionist", x: 9.5, y: 3.5, w: 1, h: 1 },
         { painter: "receptionDesk", x: 7, y: 4, w: 6, h: 2, dialog: "lobby-reception" },
@@ -57,8 +54,6 @@ window.World = (function () {
         { painter: "lobbyLamp", x: 13, y: 4, w: 1, h: 2, solid: false },
         /* forest-green rug with a brass ring — sits against the burgundy carpet */
         { painter: "rug", x: 6, y: 7, w: 8, h: 3, solid: false, c1: "#24422e", c2: "#a87e3e" },
-        /* corner plant */
-        { painter: "plant", x: 1, y: 10, w: 1, h: 2 },
         /* entrance */
         { painter: "doormat", x: 8, y: 11, w: 4, h: 1, solid: false },
         { painter: "trophyBig", x: 12, y: 6, w: 1, h: 1, dialog: "hub-trophy", requires: "questDone" },

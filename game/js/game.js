@@ -494,31 +494,43 @@
     for (let r = 0; r < World.ROWS; r++) {
       for (let c = 0; c < World.COLS; c++) {
         const ch = room.map[r][c];
-        if (ch === "#") Sprites.TILES.wall(ctx, c, r, room.map);
+        if (ch === "#" || ch === "n") Sprites.TILES.wall(ctx, c, r, room.map);
         else if (ch === "~") Sprites.TILES.windowNight(ctx, c, r, t, room.map);
         else floorPainter(ctx, c, r);
       }
     }
-    /* doors: dark opening + chevron */
-    room.doorRects.forEach(function (d) {
-      ctx.fillStyle = "#05070a";
-      ctx.fillRect(d.x, d.y, d.w, d.h);
-      ctx.fillStyle = "#1a202b";
-      if (d.ch === "n" || d.ch === "s") {
-        ctx.fillRect(d.x, d.y, 1, d.h);
-        ctx.fillRect(d.x + d.w - 1, d.y, 1, d.h);
-      } else {
-        ctx.fillRect(d.x, d.y, d.w, 1);
-        ctx.fillRect(d.x, d.y + d.h - 1, d.w, 1);
+    /* north doors: the pair swings open when the player is in front of
+       the two-tile gap (within it sideways, approaching from below) */
+    function northSwing(c) {
+      if (Math.abs((c + 1) * World.T - player.x) > World.T) return 0;
+      const dist = Math.max(0, player.y - 2 * World.T);
+      return Math.floor((21 - dist) / 3); // starts opening at 18px, open at 9px
+    }
+    for (let c = 0; c < World.COLS; c++) {
+      if (room.map[0][c] === "n" && room.map[0][c - 1] !== "n") {
+        Sprites.TILES.doorNorth(ctx, c, 0, northSwing(c));
       }
-      const bob = reduceMotion ? 0 : Math.floor(((Math.sin(t * 3) + 1) / 2) * 2);
-      ctx.fillStyle = "#3fb950";
-      const cx = d.x + d.w / 2, cy = d.y + d.h / 2;
-      if (d.ch === "n") { ctx.fillRect(cx - 1, cy - 2 - bob, 2, 2); ctx.fillRect(cx - 2, cy - bob, 4, 1); }
-      else if (d.ch === "s") { ctx.fillRect(cx - 1, cy + 1 + bob, 2, 2); ctx.fillRect(cx - 2, cy + bob, 4, 1); }
-      else if (d.ch === "w") { ctx.fillRect(cx - 2 - bob, cy - 1, 2, 2); ctx.fillRect(cx - bob, cy - 2, 1, 4); }
-      else { ctx.fillRect(cx + 1 + bob, cy - 1, 2, 2); ctx.fillRect(cx + bob, cy - 2, 1, 4); }
-    });
+    }
+    /* side doors: the leaf swings open as the player approaches the gap.
+       vertical_left_1's frames swing into the room on the east wall; the
+       west wall gets the same frames mirrored */
+    function sideSwing(tc, tr) {
+      /* only react to a player standing in front of the doorway (on the
+         gap's row) — beside the wall above/below it stays closed */
+      if (Math.abs(tr * World.T + 8 - player.y) > 8) return 0;
+      const dist = Math.abs(tc * World.T + 8 - player.x);
+      return Math.floor((21 - dist) / 3); // starts opening at 18px, open at 9px
+    }
+    for (let r = 1; r < World.ROWS; r++) {
+      if (room.map[r][0] === "w") Sprites.TILES.doorSide(ctx, 0, r, true, sideSwing(0, r));
+      if (room.map[r][World.COLS - 1] === "e") Sprites.TILES.doorSide(ctx, World.COLS - 1, r, false, sideSwing(World.COLS - 1, r));
+    }
+    /* south doors: the back of the closed pair peeking below the strip */
+    for (let c = 0; c < World.COLS; c++) {
+      if (room.map[World.ROWS - 1][c] === "s" && room.map[World.ROWS - 1][c - 1] !== "s") {
+        Sprites.TILES.doorSouth(ctx, c, World.ROWS - 1);
+      }
+    }
 
     /* draw furniture + player + cat in y-order for depth */
     const drawables = [];
