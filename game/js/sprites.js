@@ -159,6 +159,52 @@ window.Sprites = (function () {
   /* ── tiles ─────────────────────────────────────────────────────────── */
   const T = 16;
 
+  /* floor tiles hand-ported from the Modern Interiors "Room Builder" floor
+     sheet via tools/png-to-grid.js (see game/CLAUDE.md) */
+  const PAL_FLOOR_LOBBY = { a: "#b99e86", b: "#d0be9c" };
+  const FLOOR_LOBBY_GRID = [
+    "abababababababab",
+    "babababababababa",
+    "abaaaaaaaaaaaaab",
+    "baabbbbbbbbbbaba",
+    "ababaaaaaaaabaab",
+    "baabaaaaaaaababa",
+    "ababaabbbbaabaab",
+    "baabaabbbbaababa",
+    "ababaabbbbaabaab",
+    "baabaabbbbaababa",
+    "ababaaaaaaaabaab",
+    "baabaaaaaaaababa",
+    "ababbbbbbbbbbaab",
+    "baaaaaaaaaaaaaba",
+    "abababababababab",
+    "babababababababa",
+  ];
+
+  const PAL_FLOOR_ROOM = {
+    a: "#e8d8cb", b: "#e1d1c5", c: "#bfb2a7", d: "#e9d8cc", e: "#ebdace",
+    f: "#dfd0c3", g: "#d5c7bb", h: "#d9cabe", i: "#d7c9bc", j: "#dbccc0",
+    k: "#e7d7ca", l: "#e0d1c4", m: "#ccbbb3",
+  };
+  const FLOOR_ROOM_GRID = [
+    "aaaaaaaaaaaaaaam",
+    "fhigffhiglfhigfc",
+    "abbjaabbjaabbjac",
+    "deekddeekddeekdc",
+    "fhiglfhiglfhigfc",
+    "abbjaabbjaabbjac",
+    "deekddeekddeekdc",
+    "fhiglfhiglfhigfc",
+    "abbjaabbjaabbjac",
+    "deekddeekddeekdc",
+    "fhiglfhiglfhigfc",
+    "abbjaabbjaabbjac",
+    "deekddeekddeekdc",
+    "fhiglfhiglfhigfc",
+    "abbjaabbjaabbjam",
+    "mcccccccccccccmg",
+  ];
+
   /* warm brick: hotel reds — every room's '#' tiles and window backing */
   function wall(ctx, tx, ty) {
     const x = tx * T, y = ty * T;
@@ -191,32 +237,14 @@ window.Sprites = (function () {
     ctx.fillRect(x + 5, y, 1, 9); // mullion
   }
 
-  /* lobby: plush burgundy hotel carpet with a diamond pin-dot pattern */
+  /* lobby: Modern Interiors tan/cream diamond-weave carpet tile */
   function floorLobbyCarpet(ctx, tx, ty) {
-    const x = tx * T, y = ty * T;
-    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#4e2b28" : "#4a2926";
-    ctx.fillRect(x, y, T, T);
-    for (let k = 0; k < 6; k++) {
-      ctx.fillStyle = k % 2 ? "#553130" : "#43231f"; // pile stipple
-      ctx.fillRect(x + (hash2(tx * 3 + k, ty) % 15), y + (hash2(tx, ty * 3 + k) % 15), 1, 1);
-    }
-    ctx.fillStyle = "#6b4a3a";
-    for (let j = 0; j < T; j += 4) {
-      for (let i = 0; i < T; i += 4) {
-        if ((i + j) % 8 === 0) ctx.fillRect(x + i, y + j, 1, 1); // pin-dots
-      }
-    }
+    drawGrid(ctx, FLOOR_LOBBY_GRID, tx * T, ty * T, false, PAL_FLOOR_LOBBY);
   }
 
-  /* section rooms: wine carpet tiles — fibre squares, tone alternates */
+  /* section rooms: Modern Interiors warm herringbone-weave floor tile */
   function floorCarpetTiles(ctx, tx, ty) {
-    const x = tx * T, y = ty * T;
-    ctx.fillStyle = (tx + ty) % 2 === 0 ? "#3c2428" : "#362023";
-    ctx.fillRect(x, y, T, T);
-    for (let k = 0; k < 6; k++) {
-      ctx.fillStyle = k % 2 ? "#472a2f" : "#2c191c"; // fibre stipple
-      ctx.fillRect(x + (hash2(tx * 7 + k, ty) % 15), y + (hash2(tx, ty * 7 + k) % 15), 1, 1);
-    }
+    drawGrid(ctx, FLOOR_ROOM_GRID, tx * T, ty * T, false, PAL_FLOOR_ROOM);
   }
 
   const TILES = { floorLobbyCarpet, floorCarpetTiles, wall, windowNight };

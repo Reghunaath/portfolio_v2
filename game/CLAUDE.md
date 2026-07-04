@@ -69,6 +69,9 @@ matters; each file exposes one global:
 
 ## Testing / debugging
 
+- Don't launch a Playwright playtest on your own initiative after a change —
+  only do it when the user explicitly asks for one. This overrides the general
+  "test UI changes in a browser before reporting done" default for this game.
 - `window.__DBG()` returns `{x, y, room, dir, boot, fade, lock}` — used by
   automated Playwright playtests to steer the player.
 - When driving with Playwright: call `page.bringToFront()` first (occluded
