@@ -44,9 +44,11 @@ export function MediaModal(props: MediaModalProps) {
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    document.body.classList.add("crt-suspended");
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      document.body.classList.remove("crt-suspended");
     };
   }, [props, prev, next]);
 
