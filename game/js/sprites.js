@@ -216,8 +216,8 @@ window.Sprites = (function () {
     w: "#f8f8f8", // vertical-strip / south-strip white
     F: "#cccccc", // face
     L: "#c6c6c6", // face light row under the cap
-    T: "#b4b4b4", // face shadow band / lit east band
-    D: "#a1a1a1", // dark west band / face bottom shade
+    T: "#b4b4b4", // face shadow row
+    D: "#a1a1a1", // side band / corner bevel / face bottom shade
     V: "#10141a", // void outside the south wall
   };
   function wallRows(row) {
@@ -281,8 +281,11 @@ window.Sprites = (function () {
     "VVVVVVVVVVVVVVVV",
     "VVVVVVVVVVVVVVVV",
   ];
-  const WALL_W_GRID = wallRows("owwwwwoDDDDDDDDo");
-  const WALL_E_GRID = wallRows("oDTTTTTTTowwwwwo");
+  /* side walls: white top strip outside, shaded band inside — the right
+     side is this grid mirrored (flipX), same for the corners below */
+  const WALL_SIDE_GRID = wallRows("owwwwwoDDDDDDDDo");
+  /* the face's edge shading widens diagonally toward the interior corner,
+     one step every ~3 rows (staircase measured off the reference design) */
   const CORNER_TL_GRID = [
     "oooooooooooooooo",
     "owwwwwoWWWWWWWWW",
@@ -291,69 +294,33 @@ window.Sprites = (function () {
     "owwwwwoWWWWWWWWW",
     "oooooooooooooooo",
     "owwwwwoTTTTTTTTT",
-    "owwwwwoDDDDDLLLL",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
+    "owwwwwoDLLLLLLLL",
+    "owwwwwoDFFFFFFFF",
+    "owwwwwoDDFFFFFFF",
+    "owwwwwoDDFFFFFFF",
+    "owwwwwoDDFFFFFFF",
+    "owwwwwoDDDFFFFFF",
+    "owwwwwoDDDFFFFFF",
+    "owwwwwoDDDFFFFFF",
+    "owwwwwoDDDDFFFFF",
   ];
   const CORNER_TL2_GRID = [
+    "owwwwwoDDDDFFFFF",
+    "owwwwwoDDDDFFFFF",
+    "owwwwwoDDDDFFFFF",
     "owwwwwoDDDDDFFFF",
     "owwwwwoDDDDDFFFF",
     "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDFFFF",
-    "owwwwwoDDDDDDTTT",
+    "owwwwwoDDDDDDFFF",
+    "owwwwwoDDDDDDFFF",
+    "owwwwwoDDDDDDFFF",
+    "owwwwwoDDDDDDDFF",
+    "owwwwwoDDDDDDDFF",
+    "owwwwwoDDDDDDDFF",
+    "owwwwwoDDDDDDDDF",
+    "owwwwwoDDDDDDDDT",
     "owwwwwoDDDDDDDDD",
     "owwwwwoDDDDDDDDo",
-  ];
-  const CORNER_TR_GRID = [
-    "oooooooooooooooo",
-    "WWWWWWWWWowwwwwo",
-    "WWWWWWWWWowwwwwo",
-    "WWWWWWWWWowwwwwo",
-    "WWWWWWWWWowwwwwo",
-    "oooooooooooooooo",
-    "TTTTTTTTTowwwwwo",
-    "LLLTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-  ];
-  const CORNER_TR2_GRID = [
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "FFFTTTTTTowwwwwo",
-    "TTTTTTTTTowwwwwo",
-    "DDDDDDDDDowwwwwo",
-    "oDTTTTTTTowwwwwo",
   ];
   const CORNER_BL_GRID = [
     "owwwwwoooooooooo",
@@ -378,17 +345,13 @@ window.Sprites = (function () {
     const x = tx * T, y = ty * T;
     const rows = map ? map.length : 13;
     const cols = map ? map[0].length : 20;
-    let grid, flip = false;
-    if (ty === 0) {
-      grid = tx === 0 ? CORNER_TL_GRID : tx === cols - 1 ? CORNER_TR_GRID : WALL_N_GRID;
-    } else if (ty === 1) {
-      grid = tx === 0 ? CORNER_TL2_GRID : tx === cols - 1 ? CORNER_TR2_GRID : WALL_N2_GRID;
-    } else if (ty === rows - 1) {
-      if (tx === 0) grid = CORNER_BL_GRID;
-      else if (tx === cols - 1) { grid = CORNER_BL_GRID; flip = true; }
-      else grid = WALL_S_GRID;
-    } else if (tx === 0) grid = WALL_W_GRID;
-    else grid = WALL_E_GRID;
+    const edge = tx === 0 || tx === cols - 1;
+    const flip = tx === cols - 1; // right side mirrors the left grids
+    let grid;
+    if (ty === 0) grid = edge ? CORNER_TL_GRID : WALL_N_GRID;
+    else if (ty === 1) grid = edge ? CORNER_TL2_GRID : WALL_N2_GRID;
+    else if (ty === rows - 1) grid = edge ? CORNER_BL_GRID : WALL_S_GRID;
+    else grid = WALL_SIDE_GRID;
     drawGrid(ctx, grid, x, y, flip, PAL_WALL);
     if (!map) return;
     /* door caps: close the wall run with a 1px outline beside a gap */
