@@ -40,6 +40,15 @@ window.GAME_DATA = (function () {
       coffee: true,
       hint: "drink the coffee",
     },
+    "hub-map": {
+      path: "~/lobby/map",
+      title: "World Map",
+      body: [
+        "Pushpins mark Vellore, Bengaluru, and Boston — everywhere this résumé has actually lived.",
+        "There's one more pin, unlabeled, hovering right about where you're reading this from. Reghu is already plotting the coordinates of wherever hires him next.",
+      ],
+      hint: "study the map",
+    },
     "hub-trophy": {
       path: "~/achievement",
       title: "FULL-STACK EXPLORER",

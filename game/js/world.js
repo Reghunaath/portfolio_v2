@@ -3,7 +3,8 @@
 
 window.World = (function () {
   const T = 16; // tile px
-  const COLS = 20, ROWS = 13; // 320 x 208
+  const COLS = 20,
+    ROWS = 13; // 320 x 208
 
   /*
    * map legend: '#' wall · '~' window wall · '.' floor
@@ -34,29 +35,85 @@ window.World = (function () {
       doors: {
         n: { to: "arcade", spawn: [160, 180], face: "up", hint: "projects/" },
         s: { to: "comms", spawn: [160, 36], face: "down", hint: "contact/" },
-        w: { to: "library", spawn: [290, 108], face: "left", hint: "education/" },
-        e: { to: "office", spawn: [30, 108], face: "right", hint: "experience/" },
+        w: {
+          to: "library",
+          spawn: [290, 108],
+          face: "left",
+          hint: "education/",
+        },
+        e: {
+          to: "office",
+          spawn: [30, 108],
+          face: "right",
+          hint: "experience/",
+        },
       },
       /* hotel-lobby layout: centered reception with a walkway around each
          side (cols 6 and 13), symmetric waiting corners, warm accents */
       tint: "rgba(240,160,70,0.05)",
       furniture: [
+        /* north corners */
+        { painter: "palmPlant", x: 0.5, y: 0, w: 2, h: 3 },
+        { painter: "palmPlant", x: 17.5, y: 0, w: 2, h: 3 },
+        /* fire extinguisher, bottom-aligned against the right corner palm */
+        { painter: "fireExtinguisher", x: 16.5, y: 0.33, w: 1, h: 2 },
+        /* framed world map, wall face between the corner palm and the door */
+        {
+          painter: "wallMap",
+          x: 5,
+          y: 0,
+          w: 2,
+          h: 2,
+          wallMounted: true,
+          dialog: "hub-map",
+        },
         /* centered reception */
         { painter: "receptionist", x: 9.5, y: 3.5, w: 1, h: 1 },
-        { painter: "receptionDesk", x: 7, y: 4, w: 6, h: 2, dialog: "lobby-reception" },
+        {
+          painter: "receptionDesk",
+          x: 7,
+          y: 4,
+          w: 6,
+          h: 2,
+          dialog: "lobby-reception",
+        },
         /* coffee mug on the counter's left end; overhead so it draws above the
            desk instead of being painted over by it. Hitbox matches the desk's
            full height so the front-facing interact probe (which lands well
            below the visual counter line) can still reach it */
-        { painter: "mug", x: 8, y: 4, w: 1, h: 2, solid: false, overhead: true, dialog: "hub-mug" },
+        {
+          painter: "mug",
+          x: 8,
+          y: 4,
+          w: 1,
+          h: 2,
+          solid: false,
+          overhead: true,
+          dialog: "hub-mug",
+        },
         /* tucked right against the desk; non-solid so the col 6/13 aisles stay walkable */
         { painter: "lobbyLamp", x: 6, y: 4, w: 1, h: 2, solid: false },
         { painter: "lobbyLamp", x: 13, y: 4, w: 1, h: 2, solid: false },
         /* forest-green rug with a brass ring — sits against the burgundy carpet */
-        { painter: "rug", x: 6, y: 7, w: 8, h: 3, solid: false, c1: "#24422e", c2: "#a87e3e" },
-        /* entrance */
-        { painter: "doormat", x: 8, y: 11, w: 4, h: 1, solid: false },
-        { painter: "trophyBig", x: 12, y: 6, w: 1, h: 1, dialog: "hub-trophy", requires: "questDone" },
+        {
+          painter: "rug",
+          x: 6,
+          y: 7,
+          w: 8,
+          h: 3,
+          solid: false,
+          c1: "#24422e",
+          c2: "#a87e3e",
+        },
+        {
+          painter: "trophyBig",
+          x: 12,
+          y: 6,
+          w: 1,
+          h: 1,
+          dialog: "hub-trophy",
+          requires: "questDone",
+        },
       ],
       cat: true,
     },
@@ -83,13 +140,69 @@ window.World = (function () {
         s: { to: "hub", spawn: [160, 36], face: "down", hint: "lobby/" },
       },
       furniture: [
-        { painter: "arcadeCab", x: 2, y: 2, w: 2, h: 1.5, dialog: "proj-rescueline", color: "#a13232", screen: "#ffb3ab", trophy: true },
-        { painter: "arcadeCab", x: 5, y: 2, w: 2, h: 1.5, dialog: "proj-doodlpop", color: "#6e40c9", screen: "#d2a8ff", trophy: true },
-        { painter: "arcadeCab", x: 8, y: 2, w: 2, h: 1.5, dialog: "proj-leadcatch", color: "#1f6feb", screen: "#a5d6ff", trophy: true },
-        { painter: "arcadeCab", x: 11, y: 2, w: 2, h: 1.5, dialog: "proj-snapback", color: "#2da44e", screen: "#aff5b4", trophy: true },
-        { painter: "arcadeCab", x: 14, y: 2, w: 2, h: 1.5, dialog: "proj-deadpool", color: "#57606a", screen: "#ff7b72" },
+        {
+          painter: "arcadeCab",
+          x: 2,
+          y: 2,
+          w: 2,
+          h: 1.5,
+          dialog: "proj-rescueline",
+          color: "#a13232",
+          screen: "#ffb3ab",
+          trophy: true,
+        },
+        {
+          painter: "arcadeCab",
+          x: 5,
+          y: 2,
+          w: 2,
+          h: 1.5,
+          dialog: "proj-doodlpop",
+          color: "#6e40c9",
+          screen: "#d2a8ff",
+          trophy: true,
+        },
+        {
+          painter: "arcadeCab",
+          x: 8,
+          y: 2,
+          w: 2,
+          h: 1.5,
+          dialog: "proj-leadcatch",
+          color: "#1f6feb",
+          screen: "#a5d6ff",
+          trophy: true,
+        },
+        {
+          painter: "arcadeCab",
+          x: 11,
+          y: 2,
+          w: 2,
+          h: 1.5,
+          dialog: "proj-snapback",
+          color: "#2da44e",
+          screen: "#aff5b4",
+          trophy: true,
+        },
+        {
+          painter: "arcadeCab",
+          x: 14,
+          y: 2,
+          w: 2,
+          h: 1.5,
+          dialog: "proj-deadpool",
+          color: "#57606a",
+          screen: "#ff7b72",
+        },
         { painter: "neonRug", x: 7, y: 6, w: 6, h: 3, solid: false },
-        { painter: "clawMachine", x: 17, y: 8, w: 2, h: 2.2, dialog: "proj-claw" },
+        {
+          painter: "clawMachine",
+          x: 17,
+          y: 8,
+          w: 2,
+          h: 2.2,
+          dialog: "proj-claw",
+        },
         { painter: "plant", x: 1, y: 10, w: 1, h: 2 },
       ],
     },
@@ -117,12 +230,59 @@ window.World = (function () {
       },
       furniture: [
         { painter: "whiteboard", x: 8, y: 0.6875, w: 2.5, h: 1, solid: false },
-        { painter: "deskStation", x: 2, y: 2, w: 3, h: 2, dialog: "exp-quantu", color: "#e3b341" },
-        { painter: "deskStation", x: 8, y: 2, w: 3, h: 2, dialog: "exp-neu-ta", color: "#f85149" },
-        { painter: "deskStation", x: 14, y: 2, w: 3, h: 2, dialog: "exp-infosys", color: "#58a6ff" },
-        { painter: "deskStation", x: 5, y: 7, w: 3, h: 2, dialog: "exp-danske-se", color: "#3fb950" },
-        { painter: "deskStation", x: 11, y: 7, w: 3, h: 2, dialog: "exp-danske-app", color: "#a371f7" },
-        { painter: "waterCooler", x: 18, y: 2, w: 1, h: 2, dialog: "exp-cooler" },
+        {
+          painter: "deskStation",
+          x: 2,
+          y: 2,
+          w: 3,
+          h: 2,
+          dialog: "exp-quantu",
+          color: "#e3b341",
+        },
+        {
+          painter: "deskStation",
+          x: 8,
+          y: 2,
+          w: 3,
+          h: 2,
+          dialog: "exp-neu-ta",
+          color: "#f85149",
+        },
+        {
+          painter: "deskStation",
+          x: 14,
+          y: 2,
+          w: 3,
+          h: 2,
+          dialog: "exp-infosys",
+          color: "#58a6ff",
+        },
+        {
+          painter: "deskStation",
+          x: 5,
+          y: 7,
+          w: 3,
+          h: 2,
+          dialog: "exp-danske-se",
+          color: "#3fb950",
+        },
+        {
+          painter: "deskStation",
+          x: 11,
+          y: 7,
+          w: 3,
+          h: 2,
+          dialog: "exp-danske-app",
+          color: "#a371f7",
+        },
+        {
+          painter: "waterCooler",
+          x: 18,
+          y: 2,
+          w: 1,
+          h: 2,
+          dialog: "exp-cooler",
+        },
         { painter: "plant", x: 1, y: 10, w: 1, h: 2 },
       ],
     },
@@ -152,8 +312,26 @@ window.World = (function () {
         { painter: "bookshelf", x: 2, y: 2, w: 4, h: 2, dialog: "edu-shelf" },
         { painter: "bookshelf", x: 14, y: 2, w: 4, h: 2, dialog: "edu-shelf" },
         /* hung centered on the two-tile wall face */
-        { painter: "diploma", x: 8, y: 0.6875, w: 1, h: 1, dialog: "edu-neu", color: "#c93c35", wallMounted: true },
-        { painter: "diploma", x: 11, y: 0.6875, w: 1, h: 1, dialog: "edu-vit", color: "#1f6feb", wallMounted: true },
+        {
+          painter: "diploma",
+          x: 8,
+          y: 0.6875,
+          w: 1,
+          h: 1,
+          dialog: "edu-neu",
+          color: "#c93c35",
+          wallMounted: true,
+        },
+        {
+          painter: "diploma",
+          x: 11,
+          y: 0.6875,
+          w: 1,
+          h: 1,
+          dialog: "edu-vit",
+          color: "#1f6feb",
+          wallMounted: true,
+        },
         { painter: "lectern", x: 9, y: 6, w: 2, h: 1.2, dialog: "edu-paper" },
         { painter: "bookshelf", x: 3, y: 9, w: 4, h: 2, dialog: "edu-shelf" },
         { painter: "globe", x: 16, y: 9, w: 1, h: 1, dialog: "edu-globe" },
@@ -183,12 +361,62 @@ window.World = (function () {
         n: { to: "hub", spawn: [160, 180], face: "up", hint: "lobby/" },
       },
       furniture: [
-        { painter: "kiosk", x: 2, y: 2, w: 2, h: 2, dialog: "contact-email", icon: "mail", color: "#3fb950" },
-        { painter: "kiosk", x: 5, y: 2, w: 2, h: 2, dialog: "contact-phone", icon: "phone", color: "#58a6ff" },
-        { painter: "kiosk", x: 13, y: 2, w: 2, h: 2, dialog: "contact-linkedin", icon: "in", color: "#79c0ff" },
-        { painter: "kiosk", x: 16, y: 2, w: 2, h: 2, dialog: "contact-github", icon: "gh", color: "#a371f7" },
-        { painter: "printer", x: 1, y: 6, w: 2, h: 1.4, dialog: "contact-printer" },
-        { painter: "serverRack", x: 17, y: 7, w: 2, h: 3, dialog: "contact-server" },
+        {
+          painter: "kiosk",
+          x: 2,
+          y: 2,
+          w: 2,
+          h: 2,
+          dialog: "contact-email",
+          icon: "mail",
+          color: "#3fb950",
+        },
+        {
+          painter: "kiosk",
+          x: 5,
+          y: 2,
+          w: 2,
+          h: 2,
+          dialog: "contact-phone",
+          icon: "phone",
+          color: "#58a6ff",
+        },
+        {
+          painter: "kiosk",
+          x: 13,
+          y: 2,
+          w: 2,
+          h: 2,
+          dialog: "contact-linkedin",
+          icon: "in",
+          color: "#79c0ff",
+        },
+        {
+          painter: "kiosk",
+          x: 16,
+          y: 2,
+          w: 2,
+          h: 2,
+          dialog: "contact-github",
+          icon: "gh",
+          color: "#a371f7",
+        },
+        {
+          painter: "printer",
+          x: 1,
+          y: 6,
+          w: 2,
+          h: 1.4,
+          dialog: "contact-printer",
+        },
+        {
+          painter: "serverRack",
+          x: 17,
+          y: 7,
+          w: 2,
+          h: 3,
+          dialog: "contact-server",
+        },
         { painter: "rug", x: 6, y: 5, w: 8, h: 4, solid: false },
       ],
     },
@@ -210,7 +438,15 @@ window.World = (function () {
           room.solids.push({ x: c * T, y: r * T, w: T, h: T });
         } else if ("nsew".indexOf(ch) !== -1) {
           const d = room.doors[ch];
-          if (d) room.doorRects.push({ x: c * T, y: r * T, w: T, h: T, door: d, ch: ch });
+          if (d)
+            room.doorRects.push({
+              x: c * T,
+              y: r * T,
+              w: T,
+              h: T,
+              door: d,
+              ch: ch,
+            });
         }
       }
     }
@@ -225,5 +461,11 @@ window.World = (function () {
     });
   });
 
-  return { rooms: rooms, T: T, COLS: COLS, ROWS: ROWS, STAMP_ROOMS: STAMP_ROOMS };
+  return {
+    rooms: rooms,
+    T: T,
+    COLS: COLS,
+    ROWS: ROWS,
+    STAMP_ROOMS: STAMP_ROOMS,
+  };
 })();

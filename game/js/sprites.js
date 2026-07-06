@@ -1004,6 +1004,182 @@ window.Sprites = (function () {
     ctx.fillRect(px + w / 2 + 2, py + 4, 2, 1);
   }
 
+  /* potted palm hand-ported from 1_Generic_16x16.png's Theme Sorter sheet
+     (32x48 — two tiles wide, three tall); lobby corner accent */
+  const PAL_PALM = {
+    a: "#3a3a50",
+    b: "#4e6e61",
+    c: "#a9764f",
+    d: "#568d61",
+    e: "#6b4c2c",
+    f: "#9bc246",
+    g: "#a79796",
+    h: "#916e41",
+    i: "#455c5b",
+    j: "#f2bd7a",
+  };
+  const PALM_GRID = [
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "...................aaa..........",
+    "......aaaa........affda.........",
+    ".....aabffa..aaa.affbaba........",
+    "....abaabdfaabbbafdbaaaba.......",
+    "....aa..abddaiiiadda...aa.......",
+    ".........aaddaiiiaaaaaaa........",
+    "........aaaaaiaaaiiddffba.......",
+    ".......adfffdbaaaabbbbdfba......",
+    "......afffddbaiiiiaaaaadfba.....",
+    ".....afdbbbbaabbbba....adda.....",
+    "....afdbaaaaaaaddba.....ada.....",
+    "....adba....aeadfdba....ada.....",
+    "....ada.....aeabffba.....aa.....",
+    "....aba.....aheadfba......a.....",
+    "....aa......ahhabdfa............",
+    "............aehhabfa............",
+    "............aheehada............",
+    "............ahcchaaa............",
+    "............aeccea..............",
+    "..........aaaheehaaa............",
+    ".........ajeahcchaeca...........",
+    ".........ajeaecceaeca...........",
+    ".........ajeeeeeeeeca...........",
+    ".........ajeeeeeeeeca...........",
+    ".........ajjjjjjcjcca...........",
+    "........gaaaaaaaaaaaag..........",
+    "........gahhhhhhhhhhag..........",
+    "........gaccccccccchag..........",
+    "........gaccccccccchag..........",
+    "........ggaaaaaaaaaagg..........",
+    "........gggggggggggggg..........",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+  ];
+  function palmPlant(ctx, px, py) {
+    drawGrid(ctx, PALM_GRID, px, py, false, PAL_PALM);
+  }
+
+  /* framed world map hand-ported from 2_LivingRoom_Black_Shadow_16x16.png
+     (32x32 — two tiles wide and tall, navy frame matches PAL_WALL.o); wall art */
+  const PAL_MAP = {
+    a: "#a4dc77",
+    b: "#53aedb",
+    c: "#3a3a50",
+    d: "#e8dbdd",
+    e: "#b9e881",
+    f: "#f8f8f8",
+    g: "#7ebddd",
+    h: "#6fd7ec",
+    i: "#5dc4e8",
+  };
+  const MAP_GRID = [
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "cccccccccccccccccccccccccccccccc",
+    "cffffffffffffffffffffffffffffffc",
+    "cdhhhheeehaahhhheeeeeehhhhhhhhdc",
+    "cdbbbaaabaaabbbaaaaaaaaaaaaaaadc",
+    "cdeeeeeieeeeiieeeeeeeeeeeeeeeedc",
+    "cdaaaaaabaaabaaaaaaaaaaaaaaaabdc",
+    "cdieeeeeiaiiieeeeeeeeeeeeeeeiidc",
+    "cdbaaaaaabbbbaaaaaaaaaaaaaaabbdc",
+    "cdbbbaaaaabbbababbaaaaaaaaaaabdc",
+    "cdbbbaaaabbbbbbbbbbbbbaaaaaaabdc",
+    "cdbbbbaabbbbaabbbbabbaaaaaaaabdc",
+    "cdbbbbbbbbbbaaaaaaabgbbbbaaaabdc",
+    "cdbbbbaaaabbaaaaaabgggbbbbbbbbdc",
+    "cdbgbbaaaabbbbaaaabbgggbaaaabbdc",
+    "cdbgbbbaaabbgbaaabbbggbbaaabbbdc",
+    "cdggbbbaabbbbbaabbbgggbbbbbbbbdc",
+    "cdggbbaabbbbbbbbbbbbbbbbbbbbbbdc",
+    "cddddddddddddddddddddddddddddddc",
+    "cccccccccccccccccccccccccccccccc",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+  ];
+  function wallMap(ctx, px, py) {
+    drawGrid(ctx, MAP_GRID, px, py, false, PAL_MAP);
+  }
+
+  /* fire extinguisher hand-ported from 13_Conference_Hall_Black_Shadow_16x16.png
+     (16x32 — one tile wide, two tall) */
+  const PAL_EXTINGUISHER = {
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#8b8bab",
+    d: "#ebe4f2",
+    e: "#e63f38",
+    f: "#fc5c46",
+    g: "#d93232",
+    h: "#a82b2d",
+    i: "#50a7e8",
+    j: "#f8f8f8",
+    k: "#565972",
+    l: "#9acaef",
+    m: "#6c6e85",
+    n: "#b95e64",
+    o: "#ff8575",
+  };
+  const EXTINGUISHER_GRID = [
+    "................",
+    "................",
+    "................",
+    "................",
+    "........baa.....",
+    "......abcccab...",
+    ".....accjdaccb..",
+    "....acbafnmaaa..",
+    "...acbafeebma...",
+    "...acbagfffba...",
+    "...acbageogha...",
+    "...bcbagefgha...",
+    "...kckagefgha...",
+    "..kck.adefgda...",
+    "..bdb.aijjdia...",
+    "..aeb.adllida...",
+    "...a..aijjdia...",
+    "......adllida...",
+    "......aedddea...",
+    "......ahhhhha...",
+    ".......aaaaa....",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+  ];
+  function fireExtinguisher(ctx, px, py) {
+    drawGrid(ctx, EXTINGUISHER_GRID, px, py, false, PAL_EXTINGUISHER);
+  }
+
   function arcadeCab(ctx, px, py, w, h, t, obj) {
     const body = obj.color || "#6e40c9";
     shadow(ctx, px, py + h, w);
@@ -1333,7 +1509,7 @@ window.Sprites = (function () {
   }
 
   const PAINTERS = {
-    rug, neonRug, doormat, mug, plant,
+    rug, neonRug, doormat, mug, plant, palmPlant, wallMap, fireExtinguisher,
     arcadeCab, clawMachine, deskStation, waterCooler, whiteboard, bookshelf,
     diploma, lectern, globe, kiosk, printer, serverRack, trophyBig,
     receptionDesk, receptionist, lobbyLamp,
