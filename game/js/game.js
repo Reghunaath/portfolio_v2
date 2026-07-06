@@ -558,16 +558,24 @@
         },
       });
     }
+    /* idle on a stool = seated at the desk (back view, facing the monitor) */
+    const seated = !player.moving && room.furniture.some(function (f) {
+      return f.painter === "stool" &&
+        player.x >= f.px && player.x < f.px + f.pw &&
+        player.y >= f.py && player.y < f.py + f.ph;
+    });
     drawables.push({
       y: player.y,
       draw: function () {
         const frames = Sprites.PLAYER_FRAMES[player.dir];
         const idx = player.moving ? 1 + (Math.floor(player.animT) % (frames.length - 1)) : 0;
-        const grid = frames[Math.min(idx, frames.length - 1)];
-        const px = Math.round(player.x - 5), py = Math.round(player.y - 13);
-        ctx.fillStyle = "rgba(0,0,0,0.3)";
-        ctx.fillRect(px + 1, Math.round(player.y) + 1, 8, 2);
-        Sprites.drawGrid(ctx, grid, px, py, player.dir === "left");
+        const grid = seated ? Sprites.PLAYER_SIT_UP : frames[Math.min(idx, frames.length - 1)];
+        const px = Math.round(player.x - 8), py = Math.round(player.y - 25);
+        if (!seated) {
+          ctx.fillStyle = "rgba(0,0,0,0.3)";
+          ctx.fillRect(px + 4, Math.round(player.y) + 1, 8, 2);
+        }
+        Sprites.drawGrid(ctx, grid, px, py, false); // sheet has native left frames
       },
     });
     drawables.sort(function (a, b) { return a.y - b.y; });

@@ -120,5 +120,18 @@ game.
   system (white wall-top strips, two-tile light-gray face on the top wall, navy
   outlines) — `wall()` in sprites.js is position-aware (corners/sides/second
   face row/door caps) and needs the room map passed in.
+- Both characters are Character_Generator composites (16x16 sheets): the player
+  is Body_02 + Outfit_10_05 (hoodie, greens remapped to a yellow ramp) + Eyes_01 +
+  Hairstyle_08_07 (darkened to true black); the
+  receptionist is Body_02 + Outfit_06_01 (navy suit, red tie) + Eyes_01 +
+  Hairstyle_01_01. Both are ported as 16x26 grids
+  (rows 6–31 of each 16x32 sheet cell, feet on the bottom row).
+  `PLAYER_FRAMES[dir]` = `[idle, walk1..walk6]` with native left-facing frames —
+  the player draw call passes `flipX: false`. The receptionist plays her
+  6-frame down idle. The sheets' direction blocks are right/up/left/down,
+  6 frames each; idle row starts at y 32, walk row at y 64. The pack's sit rows
+  (y 128/160) are side-facing only, so the desk-stool sit is derived:
+  `PLAYER_SIT_UP` in sprites.js (standing up-frame lowered 3px, legs cut) is
+  drawn by game.js whenever the player idles inside a `stool` furniture rect.
 - New content goes in data.js (dialog) + world.js (placement) + sprites.js
   (painter, only if a new object type is needed).
