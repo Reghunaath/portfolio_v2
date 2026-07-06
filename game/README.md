@@ -6,7 +6,7 @@ section:
 
 | Room | Section |
 | --- | --- |
-| `~/lobby` | Lobby — reception desk with a receptionist who checks you in by name (skippable), plus a cat and coffee |
+| `~/lobby` | Lobby — reception desk with a receptionist who checks you in by name (skippable), plus a cat, coffee, and a desk phone |
 | `~/projects` (north door) | Arcade — one cabinet per project, trophies on award winners |
 | `~/experience` (east door) | Office — one desk per job |
 | `~/education` (west door) | Library — diplomas + the published paper on a glowing lectern |

@@ -67,33 +67,51 @@ window.World = (function () {
           wallMounted: true,
           dialog: "hub-map",
         },
-        /* centered reception */
-        { painter: "receptionist", x: 9.5, y: 3.5, w: 1, h: 1 },
+        /* centered reception — the hospital-pack U counter, reworked white
+           and 96x37 px (cols 7-12; open behind the receptionist). Bottom
+           edge stays at row 6 (y=96) for the intro walk-up; the counter's
+           bottom edge depth-sorts it over the receptionist's feet. */
+        { painter: "receptionist", x: 9.5, y: 3.875, w: 1, h: 1 },
         {
-          painter: "receptionDesk",
+          painter: "receptionCounter",
           x: 7,
-          y: 4,
+          y: 3.6875,
           w: 6,
-          h: 2,
+          h: 2.3125,
           dialog: "lobby-reception",
         },
-        /* coffee mug on the counter's left end; overhead so it draws above the
-           desk instead of being painted over by it. Hitbox matches the desk's
-           full height so the front-facing interact probe (which lands well
-           below the visual counter line) can still reach it */
+        /* coffee mug resting on the front counter's white top face, just
+           beside the receptionist's right hand; sortY pins it just past the
+           counter's depth line (row 6) so the counter doesn't paint over it,
+           while a player at the desk front (feet ~y 103) still draws on top.
+           Hitbox bottom stays on the counter's floor line so the
+           front-facing interact probe (which lands well below the visual
+           counter line) can still reach it — the mug painter pulls the
+           sprite up so the cup's base sits on the countertop instead of at
+           the box's bottom */
         {
           painter: "mug",
-          x: 8,
-          y: 4,
+          x: 8.625,
+          y: 5.125,
           w: 1,
-          h: 2,
+          h: 0.8125,
           solid: false,
-          overhead: true,
+          sortY: 6.05,
           dialog: "hub-mug",
         },
-        /* tucked right against the desk; non-solid so the col 6/13 aisles stay walkable */
-        { painter: "lobbyLamp", x: 6, y: 4, w: 1, h: 2, solid: false },
-        { painter: "lobbyLamp", x: 13, y: 4, w: 1, h: 2, solid: false },
+        /* desk telephone on the counter's left run — uses the mug's trick:
+           box bottom on the counter floor line for the probe, sprite
+           pulled up onto the white top face by the painter */
+        {
+          painter: "deskPhone",
+          x: 7.375,
+          y: 5.125,
+          w: 1,
+          h: 0.8125,
+          solid: false,
+          sortY: 6.05,
+          dialog: "hub-phone",
+        },
         /* forest-green rug with a brass ring — sits against the burgundy carpet */
         {
           painter: "rug",

@@ -155,10 +155,11 @@
   const INTRO_DOOR_Y = 186; // standing on the doormat
   const INTRO_DESK_Y = 103; // right below the reception desk, facing up
 
-  /* the cat (hub only) */
+  /* the cat (hub only) — the pack's lounging cat has no walk frames, so it
+     stays put on its spot and plays the 12-frame tail-sweep loop */
   const cat = {
-    x: 220, y: 120, tx: 220, ty: 120, frame: 0, animT: 0, waitT: 2,
-    rect: function () { return { x: this.x - 6, y: this.y - 4, w: 12, h: 8 }; },
+    x: 220, y: 120, frame: 0, animT: 0,
+    rect: function () { return { x: this.x - 13, y: this.y - 4, w: 26, h: 8 }; },
   };
 
   function feetRect(px, py) {
@@ -455,23 +456,12 @@
       }
     }
 
-    /* cat wander */
-    if (room.cat) {
+    /* cat tail-sweep loop (holds the resting frame under reduced motion) */
+    if (room.cat && !reduceMotion) {
       cat.animT += dt;
-      if (cat.animT > 0.4) { cat.animT = 0; cat.frame = 1 - cat.frame; }
-      if (!reduceMotion) {
-        cat.waitT -= dt;
-        if (cat.waitT <= 0) {
-          cat.tx = 96 + Math.random() * 128;
-          cat.ty = 88 + Math.random() * 72;
-          cat.waitT = 3 + Math.random() * 5;
-        }
-        const cdx = cat.tx - cat.x, cdy = cat.ty - cat.y;
-        const dist = Math.hypot(cdx, cdy);
-        if (dist > 2) {
-          cat.x += (cdx / dist) * 18 * dt;
-          cat.y += (cdy / dist) * 18 * dt;
-        }
+      if (cat.animT > 0.12) {
+        cat.animT = 0;
+        cat.frame = (cat.frame + 1) % Sprites.CAT_FRAMES.length;
       }
     }
 
@@ -541,9 +531,11 @@
     room.furniture.forEach(function (f) {
       if (!furnitureActive(f)) return;
       /* flat items (rugs, mats) and wall art draw beneath everything that
-         stands; overhead items (hanging signs) draw above everything */
+         stands; overhead items (hanging signs) draw above everything;
+         sortY (tiles) pins an explicit depth line — e.g. countertop items
+         sort just past the counter but still behind a player in front */
       drawables.push({
-        y: f.overhead ? 1e9 : f.wallMounted || f.solid === false ? -1 : f.py + f.ph,
+        y: f.overhead ? 1e9 : f.sortY !== undefined ? f.sortY * World.T : f.wallMounted || f.solid === false ? -1 : f.py + f.ph,
         draw: function () {
           Sprites.PAINTERS[f.painter](ctx, f.px, f.py, f.pw, f.ph, t, f);
         },
@@ -553,8 +545,7 @@
       drawables.push({
         y: cat.y + 4,
         draw: function () {
-          const facingLeft = cat.tx < cat.x;
-          Sprites.drawGrid(ctx, Sprites.CAT_FRAMES[cat.frame], Math.round(cat.x - 6), Math.round(cat.y - 4), facingLeft, Sprites.PAL_CAT);
+          Sprites.drawGrid(ctx, Sprites.CAT_FRAMES[cat.frame], Math.round(cat.x - 14), Math.round(cat.y - 11), false, Sprites.PAL_CAT);
         },
       });
     }
@@ -586,7 +577,7 @@
     if (target && !target.isCat) {
       Sprites.glint(ctx, target.px + target.pw / 2, target.py, reduceMotion ? 0 : t);
     } else if (target && target.isCat) {
-      Sprites.glint(ctx, cat.x, cat.y - 6, reduceMotion ? 0 : t);
+      Sprites.glint(ctx, cat.x, cat.y - 13, reduceMotion ? 0 : t);
     }
 
     /* ambient warmth (lobby) */

@@ -43,15 +43,19 @@ matters; each file exposes one global:
   OK) plus flags: `dialog` (id into `GAME_DATA.dialogs`), `solid: false`
   (walkable, drawn beneath actors), `wallMounted` (drawn beneath, no collision —
   wall row is already solid), `overhead` (drawn above everything, e.g. the
-  hanging WELCOME sign), `requires: "questDone"` (only exists at 100%), plus
+  hanging WELCOME sign), `sortY` (explicit depth line in tiles — countertop
+  items pin just past the counter's bottom edge so the counter doesn't paint
+  over them but a player standing in front still does),
+  `requires: "questDone"` (only exists at 100%), plus
   painter-specific extras (`color`, `c1`/`c2`, `icon`, `trophy`).
 - **Depth sort** (`render()` in game.js): flat/wallMounted → `-1`, standing
   furniture/actors → bottom-edge y, overhead → `1e9`. If a sprite "disappears"
   behind something, this sort is the first place to look.
-- **Lobby walkways**: the reception desk is centered (cols 7–12, rows 4–5) with
-  the receptionist blocking the center behind it. The routes to the north door
-  are the side aisles at **col 6 and col 13** — never place solid furniture
-  there. In the other rooms keep **cols 9–10 clear** where they lead to doors.
+- **Lobby walkways**: the reception counter is centered (a 96x37 px U-shaped
+  unit spanning cols 7–12, rows ~3.7–6, open behind the receptionist who
+  stands inside the U; its bottom edge stays at row 6 and depth-sorts the
+  front counter over her feet). The routes to the north door are the side
+  aisles at **col 6 and col 13** — never place solid furniture there. In the other rooms keep **cols 9–10 clear** where they lead to doors.
 - **Game loop**: fixed-timestep accumulator (60 steps/s, catch-up cap 32). Never
   scale movement by raw frame dt — throttled tabs run rAF at 1–2fps and the
   accumulator is what keeps game time real-time.
@@ -69,8 +73,8 @@ matters; each file exposes one global:
   (`openReception`) embeds the same name input inline. Both are built
   dynamically in game.js via `UI.openNamePrompt` (which typewrites like every
   dialog), not read verbatim from data.js.
-- **Reduced motion**: honored everywhere — boot/typewriter/confetti skipped, cat
-  naps, glints stop bobbing.
+- **Reduced motion**: honored everywhere — boot/typewriter/confetti skipped, the
+  cat's tail-sweep loop freezes on its resting frame, glints stop bobbing.
 
 ## Testing / debugging
 
@@ -119,7 +123,10 @@ game.
   carpet-tile floor (`floorCarpetTiles`); walls are the pack's Generic_Home_1
   system (white wall-top strips, two-tile light-gray face on the top wall, navy
   outlines) — `wall()` in sprites.js is position-aware (corners/sides/second
-  face row/door caps) and needs the room map passed in.
+  face row/door caps) and needs the room map passed in; the lobby reception
+  counter is the U-shaped check-in desk hand-ported from
+  `19_Hospital_16x16.png` (central U only — wings, and the back monitor-desk
+  strip, dropped), stretched to 6 tiles and recolored to the pack's whites.
 - Both characters are Character_Generator composites (16x16 sheets): the player
   is Body_02 + Outfit_10_05 (hoodie, greens remapped to a yellow ramp) + Eyes_01 +
   Hairstyle_08_07 (darkened to true black); the
@@ -133,5 +140,9 @@ game.
   (y 128/160) are side-facing only, so the desk-stool sit is derived:
   `PLAYER_SIT_UP` in sprites.js (standing up-frame lowered 3px, legs cut) is
   drawn by game.js whenever the player idles inside a `stool` furniture rect.
+- The lobby cat is the pack's `animated_cat.png` (12 frames of 48x16, trimmed
+  to 28x15). It's a lounging pose with no walk frames, so it sits at a fixed
+  spot playing its tail-sweep loop instead of wandering; the pack's baked
+  warm-gray floor shadow is remapped to translucent black in `PAL_CAT`.
 - New content goes in data.js (dialog) + world.js (placement) + sprites.js
   (painter, only if a new object type is needed).

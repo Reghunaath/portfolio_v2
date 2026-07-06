@@ -40,6 +40,15 @@ window.GAME_DATA = (function () {
       coffee: true,
       hint: "drink the coffee",
     },
+    "hub-phone": {
+      path: "~/lobby/phone",
+      title: "Front Desk Phone",
+      body: [
+        "You pick up the receiver. A pre-recorded voice answers:",
+        "\"Thank you for calling REGHU.EXE. For projects, walk north. For experience, east. For education, west. To say hello to Reghu himself, head south to ~/contact.\"",
+      ],
+      hint: "answer the phone",
+    },
     "hub-map": {
       path: "~/lobby/map",
       title: "World Map",

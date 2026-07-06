@@ -827,29 +827,225 @@ window.Sprites = (function () {
   const PLAYER_SIT_UP = ["................", "................", "................"]
     .concat(P_UP[0].slice(0, 23));
 
-  /* 12x8 ginger cat, two tail frames */
-  const CAT_A = [
-    "..C..C......",
-    "..CCCC......",
-    "..CcCc......",
-    "..CCCC...C..",
-    ".CCtCCtCCC..",
-    ".CCtCCtCC...",
-    ".CC..CC.....",
-    "............",
+  /* 28x15 lounging gray cat, ported from the pack's animated_cat.png
+     (12-frame tail-sweep loop, 48x16 per frame, trimmed to the union bbox).
+     The pack bakes an opaque warm-gray floor shadow ('e') tuned to its light
+     wood floors — remapped to translucent black so it sits on any carpet. */
+  const CAT_FRAMES = [
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".......dadcccccccdbcbcbcbcbd",
+      "......acccbcbcbcbacbcbbbbfga",
+      ".....dcbbbgfcbcbcaddbcbbfga.",
+      "....dcbfddccbffcbafbcbddade.",
+      "...dcbadfccbgbgbcbaggfbbade.",
+      "...dba.dcccdffdbbcbaaaaafae.",
+      "...dfa.afcaeddagfcadgffbbae.",
+      "...dfa.eaaeeeeeagbcadbbbae..",
+      "....a..eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      "......adadcccccccdbcbcbcbcbd",
+      ".....dccccbcbcbcbacbcbbbbfga",
+      "..dddcbbbbgfcbcbcaddbcbbfga.",
+      ".dffbbafddccbffcbafbcbddade.",
+      "..aaaa.dfccbgbgbcbaggfbbade.",
+      ".......dcccdffdbbcbaaaaafae.",
+      ".......afcaeddagfcadgffbbae.",
+      ".......eaaeeeeeagbcadbbbae..",
+      ".......eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".dddddddadcccccccdbcbcbcbcbd",
+      "dbbcccccccbcbcbcbacbcbbbbfga",
+      ".aaabbbbbbgfcbcbcaddbcbbfga.",
+      "....aaafddccbffcbafbcbddade.",
+      ".......dfccbgbgbcbaggfbbade.",
+      ".......dcccdffdbbcbaaaaafae.",
+      ".......afcaeddagfcadgffbbae.",
+      ".......eaaeeeeeagbcadbbbae..",
+      ".......eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..dddd...ddadadadadbcccdadaa",
+      ".abbccddaccccccccdbcbcbcbcbd",
+      "..aabbccccbcbcbcbacbcbbbbfga",
+      "....aabbbbgfcbcbcaddbcbbfga.",
+      "......afddccbffcbafbcbddade.",
+      ".......dfccbgbgbcbaggfbbade.",
+      ".......dcccdffdbbcbaaaaafae.",
+      ".......afcaeddagfcadgffbbae.",
+      ".......eaaeeeeeagbcadbbbae..",
+      ".......eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      "..a..............aaa........",
+      ".afa.............afba.......",
+      ".abfa............dfcdad.....",
+      "..dba..aaadadadadadbcccdadaa",
+      "..abbaaccccccccccdbcbcbcbcbd",
+      "...abbccccbcbcbcbacbcbbbbfga",
+      "....abbbbbgfcbcbcaddbcbbfga.",
+      ".....aafddccbffcbafbcbddade.",
+      ".......dfccbgbgbcbaggfbbade.",
+      ".......dcccdffdbbcbaaaaafae.",
+      ".......afcaeddagfcadgffbbae.",
+      ".......eaaeeeeeagbcadbbbae..",
+      ".......eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..dddd...ddadadadadbcccdadaa",
+      ".abbccddaccccccccdbcbcbcbcbd",
+      "..aabbccccbcbcbcbacbcbbbbfga",
+      "....aabbbbgfcbcbcaddbcbbfga.",
+      "......afddccbffcbafbcbddade.",
+      ".......dfccbgbgbcbaggfbbade.",
+      ".......dcccdffdbbcbaaaaafae.",
+      ".......afcaeddagfcadgffbbae.",
+      ".......eaaeeeeeagbcadbbbae..",
+      ".......eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".....dadadcccccccdbcbcbcbcbd",
+      "..dddcccccbcbcbcbacbcbbbbfga",
+      ".dffbbbbbbgfcbcbcaddbcbbfga.",
+      "..aaaaafddccbffcbafbcbddade.",
+      ".......dfccbgbgbcbaggfbbade.",
+      ".......dcccdffdbbcbaaaaafae.",
+      ".......afcaeddagfcadgffbbae.",
+      ".......eaaeeeeeagbcadbbbae..",
+      ".......eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".......dadcccccccdbcbcbcbcbd",
+      "......acccbcbcbcbacbcbbbbfga",
+      ".....dcbbbgfcbcbcaddbcbbfga.",
+      "....dcbfddccbffcbafbcbddade.",
+      "...dcbadfccbgbgbcbaggfbbade.",
+      "...dba.dcccdffdbbcbaaaaafae.",
+      "..dffa.afcaeddagfcadgffbbae.",
+      "...aa..eaaeeeeeagbcadbbbae..",
+      ".......eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".......dadcccccccdbcbcbcbcbd",
+      "......acccbcbcbcbacbcbbbbfga",
+      ".....dcbbbgfcbcbcaddbcbbfga.",
+      "....dcbfddccbffcbafbcbddade.",
+      "...dcbadfccbgbgbcbaggfbbade.",
+      "...dba.dcccdffdbbcbaaaaafae.",
+      "...dfa.afcaeddagfcadgffbbae.",
+      "...dfa.eaaeeeeeagbcadbbbae..",
+      "....a..eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".......dadcccccccdbcbcbcbcbd",
+      "......acccbcbcbcbacbcbbbbfga",
+      ".....dcbbbgfcbcbcaddbcbbfga.",
+      "....dcbfddccbffcbafbcbddade.",
+      "...dcbadfccbgbgbcbaggfbbade.",
+      "...dba.dcccdffdbbcbaaaaafae.",
+      "...dfa.afcaeddagfcadgffbbae.",
+      "...dfa.eaaeeeeeagbcadbbbae..",
+      "....a..eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".......dadcccccccdbcbcbcbcbd",
+      "......acccbcbcbcbacbcbbbbfga",
+      ".....dcbbbgfcbcbcaddbcbbfga.",
+      "....dcbfddccbffcbafbcbddade.",
+      "...dcbadfccbgbgbcbaggfbbade.",
+      "...dba.dcccdffdbbcbaaaaafae.",
+      "...dfa.afcaeddagfcadgffbbae.",
+      "...dfa.eaaeeeeeagbcadbbbae..",
+      "....a..eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
+    [
+      ".................aaa........",
+      ".................afba.......",
+      ".................dfcdad.....",
+      "..........dadadadadbcccdadaa",
+      ".......dadcccccccdbcbcbcbcbd",
+      "......acccbcbcbcbacbcbbbbfga",
+      ".....dcbbbgfcbcbcaddbcbbfga.",
+      "....dcbfddccbffcbafbcbddade.",
+      "...dcbadfccbgbgbcbaggfbbade.",
+      "...dba.dcccdffdbbcbaaaaafae.",
+      "...dfa.afcaeddagfcadgffbbae.",
+      "...dfa.eaaeeeeeagbcadbbbae..",
+      "....a..eeeeeeeeeabbadccaee..",
+      "................eaaaedaee...",
+      ".................eeeeeee....",
+    ],
   ];
-  const CAT_B = [
-    "..C..C......",
-    "..CCCC......",
-    "..CcCc......",
-    "..CCCC......",
-    ".CCtCCtCC.C.",
-    ".CCtCCtCCC..",
-    ".CC..CC.....",
-    "............",
-  ];
-  const CAT_FRAMES = [CAT_A, CAT_B];
-  const PAL_CAT = { C: "#d97a3d", c: "#3a2010", t: "#a8531f" };
+  const PAL_CAT = {
+    a: "#3a3a50",
+    b: "#8b8bab",
+    c: "#9da3b7",
+    d: "#46465e",
+    e: "rgba(0,0,0,0.22)",
+    f: "#6c6e85",
+    g: "#565972",
+  };
 
   /* 16x26 lobby receptionist — generator composite (Body_02 + Outfit_06_01
      navy suit + Eyes_01 + Hairstyle_01_01), 6-frame down idle */
@@ -1885,17 +2081,132 @@ window.Sprites = (function () {
     ctx.fillRect(px + 2, py + 2, w - 4, h - 4);
   }
 
-  /* just the mug — no table beneath it, drawn near the top of its box so it
-     sits on a counter even when the box is stretched tall for hit-testing */
+  /* coffee mug hand-ported from 3_Animated_objects/16x16/animated_coffee.png
+     — a 6-frame 16x32 strip (cup in the bottom rows, steam trail rising and
+     dissipating above it). Drawn near the top of its box so the cup sits on
+     a counter even when the box is stretched tall for hit-testing; the
+     steam trail draws above the box, which is fine since the mug is
+     overhead-flagged anyway. */
+  const PAL_MUG = {
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#dad4e0",
+    d: "#cac3d5",
+    e: "#565972",
+    f: "#d9d9d9",
+    g: "#b8b5cb",
+    h: "#a2a6be",
+    i: "#d1cdd6",
+    j: "#9f8f7e",
+    k: "#6b4c2c",
+    l: "#cacacc",
+    m: "#8c8c98",
+    n: "#9496a3",
+  };
+  const MUG_FRAMES = [
+    [
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "......eemb......", ".....ecffibe....", ".....efddfbce...",
+      ".....bijjibdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
+      "....adccccda....", ".....aaaaaa.....", "................", "................",
+      "................", "................", "................", "................",
+    ],
+    [
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", ".........f......", "................",
+      ".........f......", "......enff......", ".....ecfffbe....", ".....ecdddbce...",
+      ".....bdjjdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
+      "....adccccda....", ".....aaaaaa.....", "................", "................",
+      "................", "................", "................", "................",
+    ],
+    [
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", "................", ".........f......",
+      ".........f......", "........ff......", ".......fff......", ".......ff.......",
+      ".......ff.......", "......eell......", ".....ecciibe....", ".....ecddibce...",
+      ".....bdkkdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
+      "....adccccda....", ".....aaaaaa.....", "................", "................",
+      "................", "................", "................", "................",
+    ],
+    [
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", ".........f......", ".......fff......",
+      ".......fff......", "........f.......", "................", "................",
+      "................", "......eebb......", ".....eccddbe....", ".....ecggdbce...",
+      ".....bdkkdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
+      "....adccccda....", ".....aaaaaa.....", "................", "................",
+      "................", "................", "................", "................",
+    ],
+    [
+      "................", "................", "................", "................",
+      "................", "................", "................", "........f.......",
+      "........ff......", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "......eebb......", ".....eccddbe....", ".....ecggdbce...",
+      ".....bdkkdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
+      "....adccccda....", ".....aaaaaa.....", "................", "................",
+      "................", "................", "................", "................",
+    ],
+    [
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "................", "................", "................",
+      "................", "......eebb......", ".....eccddbe....", ".....ecdddbce...",
+      ".....bdjjdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
+      "....adccccda....", ".....aaaaaa.....", "................", "................",
+      "................", "................", "................", "................",
+    ],
+  ];
+
   function mug(ctx, px, py, w, h, t) {
-    ctx.fillStyle = "#f85149";
-    ctx.fillRect(px + w / 2 - 2, py + 6, 4, 4);
-    ctx.fillStyle = "#c93c35";
-    ctx.fillRect(px + w / 2 + 2, py + 7, 1, 2);
-    /* steam */
-    const s = Math.floor(t * 3) % 3;
-    ctx.fillStyle = "rgba(230,237,243,0.5)";
-    ctx.fillRect(px + w / 2 - 1 + s, py + 3 - s, 1, 1);
+    const frame = Math.floor(t * 3) % MUG_FRAMES.length;
+    /* box hangs down to the counter's floor line so the interact probe
+       can reach it (see world.js) — pull the sprite up so the cup's base
+       rests on the counter's white top face instead of at the box's
+       bottom */
+    drawGrid(ctx, MUG_FRAMES[frame], px + (w - 16) / 2, py - 26, false, PAL_MUG);
+  }
+
+  /* desk telephone hand-ported from 1_Interiors/16x16 Generic sheet (the
+     navy/gray set — same palette family as the reception counter). Sits on
+     the counter's left run; like the mug, its box hangs down to the
+     counter's floor line for the interact probe and the painter pulls the
+     sprite up onto the white top face. */
+  const PAL_PHONE = {
+    a: "#3a3a50",
+    b: "#6c6e85",
+    c: "#8b8bab",
+    d: "#9da3b7",
+    e: "#565972",
+    f: "#a79796",
+    g: "#46465e",
+    h: "#b1bac8",
+  };
+  const PHONE_GRID = [
+    ".................",
+    ".....aaaaaaaa....",
+    "...aahhhdddccaa..",
+    "..addddddddcccca.",
+    ".aabddcbbbbcccba.",
+    "a.acccaaaaaabbba.",
+    "a..aaabceebbaaa..",
+    "a...acdeccebba...",
+    "a..gacdeccebbaa..",
+    ".aaggbbbeebbbaa..",
+    "..fgeaaaaaaaagaf.",
+    "..fgebbbbbbeegaf.",
+    "..ffaaaaaaaaaaff.",
+  ];
+  function deskPhone(ctx, px, py, w, h) {
+    drawGrid(ctx, PHONE_GRID, px - 1, py - 11, false, PAL_PHONE);
   }
 
   function plant(ctx, px, py, w, h) {
@@ -2534,36 +2845,71 @@ window.Sprites = (function () {
     }
   }
 
-  function receptionDesk(ctx, px, py, w, h, t) {
-    shadow(ctx, px, py + h, w);
-    /* counter top */
-    ctx.fillStyle = "#a06b3d";
-    ctx.fillRect(px, py + 6, w, 2);
-    ctx.fillStyle = "#8a5a33";
-    ctx.fillRect(px, py + 8, w, 5);
-    /* front face with panel seams */
-    ctx.fillStyle = "#6b4226";
-    ctx.fillRect(px, py + 13, w, h - 13);
-    ctx.fillStyle = "#5a3720";
-    for (let sx = px + 8; sx < px + w - 4; sx += 10) {
-      ctx.fillRect(sx, py + 15, 1, h - 17);
-    }
-    /* flower in a vase (offset so it doesn't overlap the receptionist) */
-    const fx = px + w - 20;
-    ctx.fillStyle = "#58a6ff";
-    ctx.fillRect(fx, py + 5, 3, 3);
-    ctx.fillStyle = "#3fb950";
-    ctx.fillRect(fx + 1, py + 2, 1, 3);
-    ctx.fillStyle = "#f778ba";
-    ctx.fillRect(fx, py, 3, 2);
-    /* service bell, with a periodic glint */
-    ctx.fillStyle = "#e3b341";
-    ctx.fillRect(px + w - 10, py + 8, 4, 3);
-    ctx.fillRect(px + w - 9, py + 7, 2, 1);
-    if (Math.floor(t * 1.5) % 3 === 0) {
-      ctx.fillStyle = "#fff8c5";
-      ctx.fillRect(px + w - 10, py + 8, 1, 1);
-    }
+  /* lobby reception counter hand-ported from 19_Hospital_16x16.png (central
+     U without the outer wings), then reworked: the back monitor-desk strip
+     is removed (open behind the receptionist), the counter is stretched to
+     96x37 px (6 tiles wide), and the tan ramp is remapped to the pack's
+     whites. One piece: the receptionist inside the U never overlaps the
+     arms, and the front counter (bottom of the rect) sorts over her feet. */
+  const PAL_RECEPTION_COUNTER = {
+    a: "#ebe4f2",
+    b: "#3a3a50",
+    c: "#46465e",
+    d: "#cac3d5",
+    e: "#565972",
+    f: "#918dae",
+    g: "#a79796",
+    h: "#d8d0e0",
+    i: "#b8b5cb",
+    j: "#d4dee6",
+    k: "#b9c3d5",
+    l: "#525269",
+    m: "#6c6e85",
+    p: "#8b8bab",
+    q: "#838897",
+  };
+  const RECEPTION_COUNTER_GRID = [
+    ".lcbbbbbbbbbbcl.................................................................lcbbbbbbbbbbcl..",
+    ".caaaaaaaaaaahc.................................................................caaaaaaaaaaadc..",
+    ".baaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".baaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".baaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".baaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".baaaaaaaaaaahb.................................................................laaaaaaaaaaahb..",
+    ".laaaaaaaaaaahb.................................................................laaaaaaaaaaahb..",
+    ".laaaaaaaaaaahb.................................................................laaaaaaaaaaahb..",
+    ".laaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".laaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".laaaaaaaaaaahb.................................................................lhaaaaaaaaaahb..",
+    ".baaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".baaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".laaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
+    ".baaaaaaaaaaahl.................................................................laaaaaaaaaaahb..",
+    "bbaaaaaaaaaaahflbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbblfaaaaaaaaaaahbbl",
+    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahbaa",
+    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahbaa",
+    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
+    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
+    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
+    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
+    ".faaaaaaahaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaahf..",
+    ".bddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddib..",
+    ".lbbbbbbbbbbblfflblbbbbllbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbblbbbbbbbbllblfflbbbbbbbbbbbl..",
+    "..biiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiib...",
+    "..bdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddb...",
+    "..ceeeeeeeeeeeeemeeeemmeeemeeeeeemmpppmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeemeeeeeeeeeeeeec...",
+    "..ejjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjq...",
+    "..ekkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkke...",
+    "..ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc...",
+    "..gbfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffbg...",
+    "..geccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccceg...",
+    "..ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg...",
+  ];
+
+  function receptionCounter(ctx, px, py) {
+    drawGrid(ctx, RECEPTION_COUNTER_GRID, px, py, false, PAL_RECEPTION_COUNTER);
   }
 
   function receptionist(ctx, px, py, w, h, t) {
@@ -2571,24 +2917,12 @@ window.Sprites = (function () {
     drawGrid(ctx, RECEPTIONIST_FRAMES[fr], px + (w - 16) / 2, py + h - 26, false, PAL_RECEPTIONIST);
   }
 
-  function lobbyLamp(ctx, px, py, w, h, t) {
-    /* pole + base */
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px + w / 2 - 1, py + 6, 2, h - 8);
-    ctx.fillRect(px + w / 2 - 3, py + h - 3, 6, 2);
-    /* shade */
-    ctx.fillStyle = "#e3b341";
-    ctx.fillRect(px + w / 2 - 4, py + 2, 8, 4);
-    ctx.fillStyle = "#fff8c5";
-    ctx.fillRect(px + w / 2 - 3, py + 6, 6, 1);
-  }
-
   const PAINTERS = {
-    rug, neonRug, doormat, mug, plant, palmPlant, wallMap, fireExtinguisher,
+    rug, neonRug, doormat, mug, deskPhone, plant, palmPlant, wallMap, fireExtinguisher,
     computerDesk, pottedPlant, pottedBush, stool,
     deskStation, waterCooler, whiteboard, bookshelf,
     diploma, lectern, globe, kiosk, printer, serverRack, trophyBig,
-    receptionDesk, receptionist, lobbyLamp,
+    receptionCounter, receptionist,
   };
 
   /* bobbing "!" glint above an interactable */
