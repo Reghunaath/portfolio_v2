@@ -25,6 +25,9 @@ window.UI = (function () {
     el.toast = document.getElementById("toast");
     el.confetti = document.getElementById("confetti");
     el.dialogClose.addEventListener("click", closeDialog);
+    /* dialogs take focus as a whole on open — focusing the ✕ button would
+       paint a focus ring on it as if it were pre-selected */
+    el.dialog.setAttribute("tabindex", "-1");
   }
 
   /* ── dialog ─────────────────────────────────────────────────────────── */
@@ -130,6 +133,8 @@ window.UI = (function () {
     opts = opts || {};
     onCloseCb = opts.onClose || null;
     finishTyping();
+    /* terminal mode: full-screen black & green window (project computers) */
+    el.dialog.classList.toggle("terminal", !!opts.terminal);
     el.dialogPath.textContent = def.path || "~/";
     el.dialogBody.innerHTML = "";
 
@@ -175,16 +180,24 @@ window.UI = (function () {
     }
     if (def.links) el.dialogBody.appendChild(buildLinks(def.links));
 
+    if (opts.terminal) {
+      const q = document.createElement("p");
+      q.className = "dlg-quit";
+      q.textContent = "press ESC to quit";
+      el.dialogBody.appendChild(q);
+    }
+
     el.dialog.classList.remove("hidden");
     el.dialogBody.scrollTop = 0;
     typewrite(el.dialogBody);
-    el.dialogClose.focus({ preventScroll: true });
+    el.dialog.focus({ preventScroll: true });
   }
 
   /* check-in prompt: text input + submit/skip, reusing the dialog chrome */
   function openNamePrompt(cfg) {
     finishTyping();
     onCloseCb = cfg.onClose || null;
+    el.dialog.classList.remove("terminal");
     el.dialogPath.textContent = cfg.path || "~/lobby/reception";
     el.dialogBody.innerHTML = "";
 

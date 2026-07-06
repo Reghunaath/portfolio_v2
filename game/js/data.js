@@ -126,12 +126,6 @@ window.GAME_DATA = (function () {
       core: true,
       hint: "play DEADPOOL",
     },
-    "proj-claw": {
-      path: "~/projects/claw-machine",
-      title: "Claw Machine",
-      body: ["Inside: a rubber duck, three hackathon wristbands, and an idea for a side project labelled 'next weekend'. The claw, as always, grabs nothing."],
-      hint: "try the claw machine",
-    },
 
     /* ── experience office ── */
     "exp-quantu": {

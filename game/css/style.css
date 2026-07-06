@@ -219,6 +219,7 @@ body {
   position: absolute;
   inset: 0;
   z-index: 20;
+  outline: none; /* focused as a whole on open; no visible ring */
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -390,6 +391,101 @@ body {
 }
 .dlg-links a:hover, .dlg-links button:hover {
   background: #4a6cc0;
+}
+
+/* ── terminal-mode dialog (project computers) ──────────────────────────────
+   full-screen black & green terminal covering the whole game window,
+   mirroring the main site's macOS-terminal chrome + phosphor green */
+#dialog.terminal { padding: 0; background: none; }
+#dialog.terminal .dlg-window {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  background: #0d1117;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+/* CRT scanlines */
+#dialog.terminal .dlg-window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(63, 185, 80, 0.045) 0 1px,
+    transparent 1px 3px
+  );
+}
+#dialog.terminal .dlg-window::after {
+  content: "█";
+  color: #3fb950;
+}
+/* the shell already draws the terminal chrome (traffic dots + path) — no
+   inner titlebar, just a floating ✕ in the terminal's top-right corner */
+#dialog.terminal .dlg-titlebar {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 2;
+  height: auto;
+  padding: 0;
+  border: none;
+  background: none;
+}
+#dialog.terminal #dialog-path { display: none; }
+#dialog.terminal #dialog-close {
+  background: #21262d;
+  color: #3fb950;
+  border: 1px solid #2ea043;
+  border-radius: 3px;
+}
+#dialog.terminal #dialog-close:hover { background: #d84848; color: #fff; }
+#dialog.terminal #dialog-body {
+  scrollbar-color: #2ea043 #0d1117;
+  text-shadow: 0 0 6px rgba(63, 185, 80, 0.3); /* phosphor glow */
+}
+#dialog.terminal #dialog-body h2 {
+  font-family: var(--mono-font);
+  font-size: 15px;
+  background: none;
+  color: #3fb950;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 6px;
+}
+#dialog.terminal #dialog-body h2::before {
+  content: "$ ";
+  color: #8b949e;
+}
+#dialog.terminal #dialog-body .dlg-sub { color: #2ea043; }
+#dialog.terminal #dialog-body .dlg-badge { color: #e3b341; }
+#dialog.terminal #dialog-body p,
+#dialog.terminal #dialog-body li { color: #56d364; }
+#dialog.terminal #dialog-body li::before { color: #3fb950; }
+#dialog.terminal .dlg-tags span {
+  color: #3fb950;
+  border-color: #2ea043;
+  background: rgba(63, 185, 80, 0.08);
+}
+#dialog.terminal .dlg-links a,
+#dialog.terminal .dlg-links button {
+  color: #3fb950;
+  background: #0d1117;
+  border: 2px solid #2ea043;
+  border-radius: 3px;
+}
+#dialog.terminal .dlg-links a:hover,
+#dialog.terminal .dlg-links button:hover {
+  background: #3fb950;
+  color: #0d1117;
+}
+#dialog.terminal #dialog-body .dlg-quit {
+  color: #8b949e;
+  margin-top: 20px;
+  text-shadow: none;
 }
 
 /* ── toast ─────────────────────────────────────────────────────────────── */

@@ -1180,66 +1180,233 @@ window.Sprites = (function () {
     drawGrid(ctx, EXTINGUISHER_GRID, px, py, false, PAL_EXTINGUISHER);
   }
 
-  function arcadeCab(ctx, px, py, w, h, t, obj) {
-    const body = obj.color || "#6e40c9";
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = body;
-    ctx.fillRect(px + 1, py + 1, w - 2, h - 2);
-    /* marquee */
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px + 2, py + 2, w - 4, 4);
-    const mOn = (Math.sin(t * 4 + px) + 1) / 2 > 0.2;
-    ctx.fillStyle = mOn ? obj.marquee || "#e3b341" : "#5a4a12";
-    ctx.fillRect(px + 3, py + 3, w - 6, 2);
-    /* screen */
-    ctx.fillStyle = "#05070a";
-    ctx.fillRect(px + 3, py + 8, w - 6, 10);
-    ctx.fillStyle = obj.screen || "#aff5b4";
-    const fx = Math.floor(t * 4) % 4;
-    ctx.fillRect(px + 4 + fx, py + 10, 2, 2); // bouncing pixel "game"
-    ctx.fillRect(px + w - 7 - fx, py + 14, 2, 2);
-    /* controls */
-    ctx.fillStyle = "#161b22";
-    ctx.fillRect(px + 2, py + 19, w - 4, 4);
-    ctx.fillStyle = "#f85149";
-    ctx.fillRect(px + 4, py + 20, 2, 2);
-    ctx.fillStyle = "#58a6ff";
-    ctx.fillRect(px + 8, py + 20, 2, 2);
-    /* trophy on top for award winners */
-    if (obj.trophy) {
-      ctx.fillStyle = "#e3b341";
-      ctx.fillRect(px + w / 2 - 2, py - 4, 4, 3);
-      ctx.fillRect(px + w / 2 - 1, py - 1, 2, 1);
-      const sp = Math.floor(t * 2) % 2;
-      if (sp === 0) {
-        ctx.fillStyle = "#fff8c5";
-        ctx.fillRect(px + w / 2 + 3, py - 5, 1, 1);
-      }
+  /* projects-room exhibit: retro computer lab desk hand-ported from
+     5_Classroom_and_library_16x16.png — beige CRT terminal on a wooden desk,
+     green phosphor screen with a blinking cursor */
+  const PAL_EXHIBIT_PC = {
+    a: "#3a3a50",
+    b: "#c78c59",
+    c: "#c89264",
+    d: "#42425a",
+    e: "#b6a8a2",
+    f: "#a79796",
+    g: "#d7cdbc",
+    h: "#c5b7ae",
+    i: "#bb7550",
+    j: "#e8c078",
+    k: "#e0b870",
+    l: "#cdbeaf",
+    m: "#59a063",
+  };
+  const EXHIBIT_PC_GRID = [
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "...........aaaaaaaaaa...........",
+    "..........aallllllllaa..........",
+    "..........alggggggggla..........",
+    "..........agggggggggga..........",
+    "..........adddddddddda..........",
+    "..........aeeeeeeeeeea..........",
+    "..........aeddddddddea..........",
+    "........aaaemmdmdmmdeaaa........",
+    "........aededdddddddedea........",
+    "........aedemmdmdmmdedea........",
+    "........ahdeeeeeeeeeedea........",
+    ".....aaaagddddddddddddeaaaa.....",
+    ".....akjaggggggggggggggajba.....",
+    ".....akjaddddddddddddddafba.....",
+    ".....akjaehehehllllllllafba.....",
+    ".....akjaehehehlheeeehlafba.....",
+    ".....akjaehehehlhddddhlafba.....",
+    ".....akjaehehehlheeeehlafba.....",
+    ".....akjaaaaaaaaaaaaaaaafba.....",
+    ".....akjkjkjkjkjkjkkjkjkjba.....",
+    ".....akjaaaaaaaaaaakaaakjba.....",
+    ".....akjahghghghghaaghgajba.....",
+    ".....akjaghghhhghgaagggajba.....",
+    ".....akjaeeeeeeeeeaaeeeajba.....",
+    ".....akjaaaaaaaaaaakaaakjba.....",
+    ".....aaaaaaaaaaaaaaaaaaaaaa.....",
+    ".....aiiiiiiiiiiiiiiiiiiiia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....abcbcbcbcbcbcbcbcbbcia.....",
+    ".....aaaaaaaaaaaaaaaaaaaaaa.....",
+    ".....ffffffffffffffffffffff.....",
+    ".....ffffffffffffffffffffff.....",
+  ];
+
+  function computerDesk(ctx, px, py, w, h, t, obj) {
+    const gx = px + ((w - 32) >> 1), gy = py + h - 48;
+    drawGrid(ctx, EXHIBIT_PC_GRID, gx, gy, false, PAL_EXHIBIT_PC);
+    /* blinking cursor on the CRT */
+    if (Math.floor(t * 2) % 2 === 0) {
+      ctx.fillStyle = PAL_EXHIBIT_PC.m;
+      ctx.fillRect(gx + 14, gy + 18, 1, 1);
     }
   }
 
-  function clawMachine(ctx, px, py, w, h, t) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#c93c8f";
-    ctx.fillRect(px + 1, py + 1, w - 2, h - 2);
-    ctx.fillStyle = "#0b1524";
-    ctx.fillRect(px + 3, py + 4, w - 6, h - 12);
-    /* claw */
-    const cx = px + 4 + ((Math.floor(t * 3) % (w - 10)));
-    ctx.fillStyle = "#8b949e";
-    ctx.fillRect(cx, py + 5, 1, 3);
-    ctx.fillRect(cx - 1, py + 8, 3, 1);
-    /* prizes */
-    ctx.fillStyle = "#e3b341";
-    ctx.fillRect(px + 4, py + h - 11, 3, 3);
-    ctx.fillStyle = "#3fb950";
-    ctx.fillRect(px + 9, py + h - 10, 3, 2);
-    ctx.fillStyle = "#161b22";
-    ctx.fillRect(px + 2, py + h - 6, w - 4, 4);
+  /* potted plants hand-ported from 1_Generic_16x16.png — a single-tile plant
+     and a two-tile bush */
+  const PAL_PLANT_POT = {
+    a: "#3a3a50",
+    b: "#465e62",
+    c: "#4e6e61",
+    d: "#568d61",
+    e: "#6b5052",
+    f: "#538261",
+    g: "#529760",
+    h: "#da9f7b",
+    i: "#74b453",
+    j: "#63a650",
+    k: "#c57f68",
+    l: "#b57462",
+    m: "#9bc246",
+    n: "#916e41",
+    o: "#6b4c2c",
+    p: "#e0b186",
+    q: "#a79796",
+    r: "#46465e",
+    s: "#a9764f",
+  };
+  const PLANT_POT_GRID = [
+    ".........bba....",
+    "...baa.bbiija...",
+    "..cmjgbgdggdda..",
+    ".bijddjmifccbc..",
+    ".baaabciiiaabda.",
+    "..bgcajmigjjib..",
+    "..acajggcdgjjdb.",
+    "...aaidfafdddfa.",
+    "..abcaacnbcaaba.",
+    ".bfijfcgfcacga..",
+    ".acmdbbijgdaca..",
+    "..baaabafddaab..",
+    "..acbaffaaabgga.",
+    "...acbaaoadffda.",
+    "...cffdcnbcaabc.",
+    "..bijfcgfcacga..",
+    "..cmdbbijgdaca..",
+    "..baacbafddaa...",
+    ".....acfaaaca...",
+    "....rlbbocfa....",
+    "...rpeannbahr...",
+    "...apeosnoeha...",
+    "...ehkeeeekhe...",
+    "...alhhphhhla...",
+    "...aeekhkkeea...",
+    "....aleleela....",
+    "....ekhphkle....",
+    "....qehhhkeq....",
+    ".....qaeaaq.....",
+  ];
+  function pottedPlant(ctx, px, py, w, h) {
+    drawGrid(ctx, PLANT_POT_GRID, px + ((w - 16) >> 1), py + h - 29, false, PAL_PLANT_POT);
+  }
+
+  const PAL_PLANT_BUSH = {
+    a: "#3a3a50",
+    b: "#465e62",
+    c: "#4e6e61",
+    d: "#568d61",
+    e: "#63a650",
+    f: "#529760",
+    g: "#74b453",
+    h: "#538261",
+    i: "#6b5052",
+    j: "#da9f7b",
+    k: "#9bc246",
+    l: "#c57f68",
+    m: "#b57462",
+    n: "#6b4c2c",
+    o: "#916e41",
+    p: "#e0b186",
+    q: "#a79796",
+    r: "#46465e",
+    s: "#a9764f",
+  };
+  const PLANT_BUSH_GRID = [
+    ".............bba................",
+    ".......baa..bkgea....bba........",
+    "......ckgeccdffbaacbbkgea.......",
+    ".....bggeefbaackefbfdffdda......",
+    ".....baaabckebkgggekghbbbc......",
+    "......bfcbgednbbabcegeaab.......",
+    "......acbaaabokggaedchfgeb......",
+    ".......ckefbfdggddadahdfffa.....",
+    "......bgeddekghbbbcanadhhda.....",
+    "......baaabcegeaabdcsbcaabc.....",
+    "......cbfcaedchfgebfocacfa......",
+    "......bacbagdahdfffaefdaca......",
+    "........acbaanadhhdahddaa.......",
+    "........chhdcobcaabcabbc........",
+    ".......bgehcfhcacfaachadb.......",
+    ".......ckdbbgefdacbhbdbdc.......",
+    ".......baa.bahddabcbab.ab.......",
+    "..........bgehcfhcacca..........",
+    "..........ckdbbgefdaegb.........",
+    "..........baacbahddadec.........",
+    "............rachaaacaab.........",
+    "...........rpmbbnchar...........",
+    "...........apinsobija...........",
+    "...........ijliiiilji...........",
+    "...........amjjpjjjma...........",
+    "...........aiiljlliia...........",
+    "............amimiima............",
+    "............iljpjlmi............",
+    "............qijjjliq............",
+    ".............qaiaaq.............",
+  ];
+  function pottedBush(ctx, px, py, w, h) {
+    drawGrid(ctx, PLANT_BUSH_GRID, px + ((w - 32) >> 1), py + h - 30, false, PAL_PLANT_BUSH);
+  }
+
+  /* wooden stool hand-ported from 14_Basement_16x16.png; sits in front of
+     the computer desks, non-solid */
+  const PAL_STOOL = {
+    a: "#3a3a50",
+    b: "#ca8854",
+    c: "#a79796",
+    d: "#46465e",
+    e: "#8b8bab",
+    f: "#b35e3f",
+    g: "#d9a16a",
+    h: "#6c6e85",
+  };
+  const STOOL_GRID = [
+    "....dddddddd....",
+    "...dggbbbbbbd...",
+    "..dbgbbbbbbbbd..",
+    "..dbbbbbbbbbbd..",
+    "..dbbbbbbbbbbd..",
+    "..afbbbbbbbbfa..",
+    "...affffffffa...",
+    "...aaaaaaaaaa...",
+    "...aha....aha...",
+    "...aea....aea...",
+    "...aea....aea...",
+    "...aea....aea...",
+    "...aea....aea...",
+    "...aea....aea...",
+    "...aeaccccaea...",
+    "...caccccccac...",
+    "....cccccccc....",
+  ];
+  function stool(ctx, px, py, w, h) {
+    drawGrid(ctx, STOOL_GRID, px + ((w - 16) >> 1), py + h - 17, false, PAL_STOOL);
   }
 
   function deskStation(ctx, px, py, w, h, t, obj) {
@@ -1510,7 +1677,8 @@ window.Sprites = (function () {
 
   const PAINTERS = {
     rug, neonRug, doormat, mug, plant, palmPlant, wallMap, fireExtinguisher,
-    arcadeCab, clawMachine, deskStation, waterCooler, whiteboard, bookshelf,
+    computerDesk, pottedPlant, pottedBush, stool,
+    deskStation, waterCooler, whiteboard, bookshelf,
     diploma, lectern, globe, kiosk, printer, serverRack, trophyBig,
     receptionDesk, receptionist, lobbyLamp,
   };

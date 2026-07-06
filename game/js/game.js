@@ -434,7 +434,11 @@
               if (target.dialog === "hub-trophy" && save.name) {
                 def = Object.assign({}, def, { sub: save.name + " — you explored 100% of the portfolio" });
               }
-              UI.openDialog(def, { onClose: function () { sfx.close(); } });
+              UI.openDialog(def, {
+                /* project computers open a full-screen terminal window */
+                terminal: target.painter === "computerDesk",
+                onClose: function () { sfx.close(); },
+              });
               markSeen(target.dialog);
             }
           }
