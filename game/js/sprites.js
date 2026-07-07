@@ -2683,27 +2683,85 @@ window.Sprites = (function () {
     ctx.fillRect(px + 22, py + 5, 6, 5); // green sticky
   }
 
+  /* pack library bookshelf (Classroom_and_library, warm red-brown variant) —
+     47x39 px drawn bottom-anchored on a 3x2-tile footprint; the extra 7 px of
+     height overlap the wall face when placed against the top wall, like the
+     pack's reference rooms */
+  const PAL_BOOKSHELF = {
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#ca8854",
+    d: "#b35e3f",
+    e: "#ab4a36",
+    f: "#e86419",
+    g: "#b95d72",
+    h: "#ed931e",
+    i: "#a13a30",
+    j: "#f2b22b",
+    k: "#a17f6c",
+    l: "#6b4b30",
+    m: "#3d56d2",
+    n: "#e0d0b2",
+    o: "#e07070",
+    p: "#b99e86",
+    q: "#d9a16a",
+    r: "#ab9078",
+    s: "#568d61",
+    t: "#b8d040",
+    u: "#deb2bc",
+    v: "#8e595c",
+    w: "#b2977e",
+    x: "#e7c378",
+    y: "#9bc246",
+    z: "#4280dd",
+    A: "#d0be9c",
+    B: "#565972",
+    C: "#887044",
+    D: "#8b8bab",
+  };
+  const BOOKSHELF_GRID = [
+    "bbb.........................................bbb",
+    "bqbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbqb",
+    "bqbdcqqqqqcqcccccccccccccccccccccccccccccccdbqb",
+    "bcadcccccccccccccccccccccccccccccccccccccccdbca",
+    "bqadcccccccccccccccccccccccccccccccccccccccdbqa",
+    "bcadcccccccccccccccccccccccccccccccccccccccdbca",
+    "bdadcccccccccccccccccccccccccccccccccccccccdada",
+    "bdaedddddddddddddddddddddddddddddddddddddddeada",
+    "bdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaada",
+    "bdahbAbhhbhbeayyarraiibeaooaooaiibeahbhboobhada",
+    "bdajbAbffbjbcassakkaiibcaggaggaiibdajbjbggbjada",
+    "adafbpbffbfbdassbkkbeebcaggbggbeebdafbfbnubfada",
+    "adafbpbytbfbdajhbvvbeebdanubnubeebdafbfbnubfada",
+    "bdatbtbffbtbdajhbvvbeebcanubnubeebdatbtbggbtada",
+    "adafbpbaabfbdassbkkbdcbdaggbggbdcbdafbfbaabfada",
+    "adabbbbdcbbbdaaaaaaadcbdaaaaaaadcbdabbbbdcbbada",
+    "adadcccccccbdadcccccccbdadcccccccbdadcccccccada",
+    "adaabbbbbbbbdaabbbbbbbbdaabbbbbbbbdaabbbbbbbaca",
+    "adazzazzaiibdaobzbiaCCbdahbhbhhbhbdappppazaiaca",
+    "adammammaiibdaobzbibllbdajbjbffbjbdaDDDDamaiaca",
+    "adammbmmbeebdaggbmbBllbdafbfbffbfbcappppbmbeaca",
+    "adajhbjhbeebdabhbhbbjhbdafbfbytbfbcaAAAAbjbeaca",
+    "adajhbjhbeebcablhlhBjhbdatbtbffbtbcannnpbjbeada",
+    "adammbmmbdcbcadbgbmbllbdafbfbaabfbdannnpbmbdaca",
+    "adaaaaaaadcbcadbbbbBaabdabbbbdcbbbdaaaaaaaadada",
+    "adaccccccccbcadcccccccbdadcccccccbdadcccccccada",
+    "adaabbbbbbbbdaabbbbbbbbcaabbbbbbbbcaabbbbbbbada",
+    "adaooaooaiibdarrrbrrrabdaybybiaCCbcaobiibrrrada",
+    "adaggaggaiibdawwwbwwwabcaybybibllbdaobiibwwwada",
+    "adaggbggbeebdakvkakvkabcassbsbBllbdaggbebkvkada",
+    "adanubnubeebdajjjajjjabdabhbhbbjhbdabhbebjjjada",
+    "adanubnubeebdaxxxaxxxabdablhlhBjhbdablhlaxxxada",
+    "adaggbggbdcbdakvkakvkabdadbsbsbllbdadbgbakvkada",
+    "adaaaaaaadcbdaaaaaaaaabdadbbbbBaabdadbbbaaaaada",
+    "adadcccccccbdadcccccccbdadcccccccbdadcccccccada",
+    "adaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaada",
+    "adaieeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeada",
+    "aiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaia",
+    "aaa.........................................aaa",
+  ];
   function bookshelf(ctx, px, py, w, h) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#20180f";
-    const spineCols = ["#a371f7", "#58a6ff", "#3fb950", "#e3b341", "#f85149", "#6e7681"];
-    for (let shelf = 0; shelf < 2; shelf++) {
-      const sy = py + 3 + shelf * ((h - 6) / 2 + 1);
-      ctx.fillStyle = "#20180f";
-      ctx.fillRect(px + 2, sy, w - 4, (h - 8) / 2);
-      let bx = px + 3;
-      let i = 0;
-      while (bx < px + w - 5) {
-        const bw = 2 + (hash2(bx, sy) % 2);
-        ctx.fillStyle = spineCols[hash2(bx * 3, shelf + Math.floor(py)) % spineCols.length];
-        const bh = (h - 10) / 2 - (hash2(bx, shelf) % 2);
-        ctx.fillRect(bx, sy + ((h - 8) / 2 - bh), bw, bh);
-        bx += bw + 1;
-        i++;
-      }
-    }
+    drawGrid(ctx, BOOKSHELF_GRID, px + Math.round((w - 47) / 2), py + h - 39, false, PAL_BOOKSHELF);
   }
 
   function diploma(ctx, px, py, w, h, t, obj) {
@@ -2718,36 +2776,60 @@ window.Sprites = (function () {
     ctx.fillRect(px + w / 2 - 1, py + h - 4, 3, 2); // seal
   }
 
-  function lectern(ctx, px, py, w, h, t) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px + w / 2 - 2, py + 6, 4, h - 6);
-    ctx.fillRect(px + 1, py + 3, w - 2, 5);
-    /* glowing paper */
-    const pulse = (Math.sin(t * 3) + 1) / 2;
-    ctx.fillStyle = pulse > 0.5 ? "#fff8c5" : "#f5edb8";
-    ctx.fillRect(px + 3, py, w - 6, 5);
-    ctx.fillStyle = "#8b6f1d";
-    ctx.fillRect(px + 4, py + 1, w - 9, 1);
-    ctx.fillRect(px + 4, py + 3, w - 11, 1);
-    if (pulse > 0.7) {
-      ctx.fillStyle = "rgba(227,179,65,0.65)";
-      ctx.fillRect(px + 2, py - 1, 1, 1);
-      ctx.fillRect(px + w - 3, py + 2, 1, 1);
-    }
-  }
-
-  function globe(ctx, px, py, w, h) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px + w / 2 - 2, py + h - 4, 4, 4);
-    ctx.fillStyle = "#1f6feb";
-    ctx.fillRect(px + 2, py + 1, w - 4, h - 6);
-    ctx.fillRect(px + 1, py + 2, w - 2, h - 8);
-    ctx.fillStyle = "#3fb950";
-    ctx.fillRect(px + 3, py + 3, 3, 2);
-    ctx.fillRect(px + 7, py + 5, 4, 2);
-    ctx.fillRect(px + 4, py + 8, 2, 1);
+  /* pack open-book display stand (Classroom_and_library) — 17x29 px,
+     bottom-anchored; replaces the procedural glowing lectern for the paper */
+  const PAL_BOOKSTAND = {
+    a: "#3a3a50",
+    b: "#ebe4f2",
+    c: "#b99e86",
+    d: "#9c786b",
+    e: "#d0be9c",
+    f: "#46465e",
+    g: "#916662",
+    h: "#565972",
+    i: "#c6bdd5",
+    j: "#b2aecb",
+    k: "#d8d0e0",
+    l: "#e63f38",
+    m: "#e0d0b2",
+    n: "#d93232",
+    o: "#ca8854",
+    p: "#a82b52",
+    q: "#fc5c46",
+  };
+  const BOOKSTAND_GRID = [
+    "...ffaaa.aaaff...",
+    ".haibbbbqbbbbiaa.",
+    "hmaijbjblkbjbiada",
+    "hmaibbbbljbkjiada",
+    "fmaikbjblbbbbiada",
+    "feaikbjbnkjkbiada",
+    "heaibbbbnbbbbiada",
+    "feaohhfgnohhfoaga",
+    "ahffeeelafeeeffha",
+    "accccccpcccccccda",
+    "aaaaaaapaaaaaaaaa",
+    ".......aga.......",
+    ".......aga.......",
+    "......fedea......",
+    "......accca......",
+    ".......aga.......",
+    ".......aca.......",
+    "......hedea......",
+    "......fccca......",
+    "......adcda......",
+    ".....aadddaa.....",
+    "....acagdgaca....",
+    "....acagggaca....",
+    "...afcgaaagcaa...",
+    "..adheeeeeeeada..",
+    "..aaadddddddaaa..",
+    "....aafcdgaaa....",
+    ".......fda.......",
+    "........a........",
+  ];
+  function lectern(ctx, px, py, w, h) {
+    drawGrid(ctx, BOOKSTAND_GRID, px + Math.round((w - 17) / 2), py + h - 29, false, PAL_BOOKSTAND);
   }
 
   function kiosk(ctx, px, py, w, h, t, obj) {
@@ -2921,7 +3003,7 @@ window.Sprites = (function () {
     rug, neonRug, doormat, mug, deskPhone, plant, palmPlant, wallMap, fireExtinguisher,
     computerDesk, pottedPlant, pottedBush, stool,
     deskStation, waterCooler, whiteboard, bookshelf,
-    diploma, lectern, globe, kiosk, printer, serverRack, trophyBig,
+    diploma, lectern, kiosk, printer, serverRack, trophyBig,
     receptionCounter, receptionist,
   };
 

@@ -438,6 +438,10 @@
               UI.openDialog(def, {
                 /* project computers open a full-screen terminal window */
                 terminal: target.painter === "computerDesk",
+                /* wall diplomas open as a parchment certificate */
+                diploma: target.painter === "diploma",
+                /* the research paper on the book stand opens as a scroll */
+                scroll: target.painter === "lectern",
                 onClose: function () { sfx.close(); },
               });
               markSeen(target.dialog);

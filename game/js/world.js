@@ -314,8 +314,10 @@ window.World = (function () {
         e: { to: "hub", spawn: [30, 108], face: "right", hint: "lobby/" },
       },
       furniture: [
-        { painter: "bookshelf", x: 2, y: 2, w: 4, h: 2, dialog: "edu-shelf" },
-        { painter: "bookshelf", x: 14, y: 2, w: 4, h: 2, dialog: "edu-shelf" },
+        /* pack library shelves (47px = 3 tiles wide) lined down the west
+           wall; the top one overlaps the wall face like the pack rooms */
+        { painter: "bookshelf", x: 1, y: 2, w: 3, h: 2, dialog: "edu-shelf" },
+        { painter: "bookshelf", x: 1, y: 5, w: 3, h: 2, dialog: "edu-shelf" },
         /* hung centered on the two-tile wall face */
         {
           painter: "diploma",
@@ -337,10 +339,22 @@ window.World = (function () {
           color: "#1f6feb",
           wallMounted: true,
         },
-        { painter: "lectern", x: 9, y: 6, w: 2, h: 1.2, dialog: "edu-paper" },
-        { painter: "bookshelf", x: 3, y: 9, w: 4, h: 2, dialog: "edu-shelf" },
-        { painter: "globe", x: 16, y: 9, w: 1, h: 1, dialog: "edu-globe" },
-        { painter: "plant", x: 1, y: 9, w: 1, h: 2 },
+        /* open-book display stand, centered on the room (sprite is 17x29 —
+           the tall pedestal top rises well above its 1.25-tile footprint) */
+        {
+          painter: "lectern",
+          x: 9.375,
+          y: 6,
+          w: 1.25,
+          h: 1.25,
+          dialog: "edu-paper",
+        },
+        { painter: "bookshelf", x: 1, y: 8, w: 3, h: 2, dialog: "edu-shelf" },
+        /* greenery on the right side — clear of the east door row (6). The
+           bush grid has ~5px transparent margins, so it's nudged right to
+           sit flush against the bottom-right corner walls */
+        { painter: "palmPlant", x: 17.5, y: 0, w: 2, h: 3 },
+        { painter: "pottedBush", x: 17.5, y: 10, w: 2, h: 2 },
       ],
     },
 

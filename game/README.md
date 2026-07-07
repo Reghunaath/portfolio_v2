@@ -9,7 +9,7 @@ section:
 | `~/lobby` | Lobby — reception desk with a receptionist who checks you in by name (skippable), plus a cat, coffee, and a desk phone |
 | `~/projects` (north door) | Arcade — one cabinet per project, trophies on award winners |
 | `~/experience` (east door) | Office — one desk per job |
-| `~/education` (west door) | Library — diplomas + the published paper on a glowing lectern |
+| `~/education` (west door) | Library — diplomas + the published paper on an open-book display stand |
 | `~/contact` (south door) | Comms room — email / phone / LinkedIn / GitHub kiosks |
 
 Inspecting every core item fills the **EXPLORED %** tracker. At 100% a trophy spawns

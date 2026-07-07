@@ -135,8 +135,22 @@ window.UI = (function () {
     finishTyping();
     /* terminal mode: full-screen black & green window (project computers) */
     el.dialog.classList.toggle("terminal", !!opts.terminal);
+    /* diploma mode: centered parchment certificate (university diplomas) */
+    el.dialog.classList.toggle("diploma", !!opts.diploma);
+    /* scroll mode: rolled parchment manuscript (the research paper) */
+    el.dialog.classList.toggle("scroll", !!opts.scroll);
     el.dialogPath.textContent = def.path || "~/";
     el.dialogBody.innerHTML = "";
+
+    /* university crest above the title (diploma mode) — a monogram seal,
+       since the game ships no image assets */
+    if (opts.diploma && def.crest) {
+      const c = document.createElement("div");
+      c.className = "dlg-crest";
+      c.textContent = def.crest;
+      if (def.crestColor) c.style.background = def.crestColor;
+      el.dialogBody.appendChild(c);
+    }
 
     const h = document.createElement("h2");
     h.textContent = def.title;
@@ -189,7 +203,8 @@ window.UI = (function () {
 
     el.dialog.classList.remove("hidden");
     el.dialogBody.scrollTop = 0;
-    typewrite(el.dialogBody);
+    /* parchment renders whole — no typewriter on diplomas */
+    if (!opts.diploma) typewrite(el.dialogBody);
     el.dialog.focus({ preventScroll: true });
   }
 
@@ -197,7 +212,7 @@ window.UI = (function () {
   function openNamePrompt(cfg) {
     finishTyping();
     onCloseCb = cfg.onClose || null;
-    el.dialog.classList.remove("terminal");
+    el.dialog.classList.remove("terminal", "diploma", "scroll");
     el.dialogPath.textContent = cfg.path || "~/lobby/reception";
     el.dialogBody.innerHTML = "";
 

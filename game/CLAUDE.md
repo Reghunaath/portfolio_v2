@@ -116,7 +116,16 @@ game.
   in css/style.css), JetBrains Mono for dialog text, Press Start 2P for HUD.
   Dialogs are cream RPG message boxes (dark `#454552` frame, gold inner ring,
   red nameplate title, blinking ▼) with a `~/section/...` path caption — the
-  terminal chrome lives in the HUD/shell, not the dialogs.
+  terminal chrome lives in the HUD/shell, not the dialogs. Three dialog modes
+  restyle that window via a class on `#dialog` (passed as `opts` to
+  `UI.openDialog`, chosen by painter in game.js): `terminal` (project
+  computers — full-screen black/green CRT), `diploma` (wall diplomas — a
+  full-height parchment certificate with a double gold frame, a monogram
+  crest seal (`crest`/`crestColor` in data.js — the game ships no image
+  assets), and the GPA badge as a gold seal, over the dimmed game screen;
+  no typewriter — the parchment renders whole), and `scroll` (the research
+  paper on the book stand — a rolled parchment manuscript with rod ends
+  sticking out top and bottom).
 - Interactable accent is phosphor green `#3fb950`; awards gold `#e3b341`; the
   lobby is deliberately warmer (burgundy pin-dot carpet floor, forest-green
   rug with a brass ring, amber `tint`); the four section rooms share a wine
@@ -144,5 +153,10 @@ game.
   to 28x15). It's a lounging pose with no walk frames, so it sits at a fixed
   spot playing its tail-sweep loop instead of wandering; the pack's baked
   warm-gray floor shadow is remapped to translucent black in `PAL_CAT`.
+- The library's bookshelf (47x39, warm red-brown variant) and open-book
+  display stand (17x29, still registered as the `lectern` painter) are ported
+  from the pack's `5_Classroom_and_library` shadowless sheet, drawn
+  bottom-anchored on their furniture rects. The diplomas stay procedural —
+  the pack has no certificate/diploma sprite.
 - New content goes in data.js (dialog) + world.js (placement) + sprites.js
   (painter, only if a new object type is needed).
