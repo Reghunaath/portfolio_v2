@@ -410,7 +410,7 @@ window.World = (function () {
           w: 1,
           h: 1,
           dialog: "edu-neu",
-          color: "#c93c35",
+          school: "neu",
           wallMounted: true,
         },
         {
@@ -420,7 +420,7 @@ window.World = (function () {
           w: 1,
           h: 1,
           dialog: "edu-vit",
-          color: "#1f6feb",
+          school: "vit",
           wallMounted: true,
         },
         /* open-book display stand, centered on the room (sprite is 17x29 —

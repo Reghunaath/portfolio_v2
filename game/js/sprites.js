@@ -2889,16 +2889,61 @@ window.Sprites = (function () {
     drawGrid(ctx, BOOKSHELF_GRID, px + Math.round((w - 47) / 2), py + h - 39, false, PAL_BOOKSHELF);
   }
 
+  /* framed award/certificate icons hand-ported from
+     Modern_Office_Shadowless_16x16.png — one per school, ribbon-colored to
+     match each dialog's crestColor (blue @ 112,128 for VIT, red @ 128,160
+     for NEU); 16x32 crop with the icon sitting in the bottom 16 rows */
+  const PAL_DIPLOMA_VIT = {
+    a: "#d8d0e0", b: "#3a3a50", c: "#c6bdd5", d: "#8b8bab", e: "#46465e",
+    f: "#9da3b7", g: "#b1bac8", h: "#565972", i: "#d0c7db", j: "#db8641",
+    k: "#4280dd", l: "#4995e3", m: "#f2b22b", n: "#ed931e", o: "#f8d239",
+    p: "#fff59a",
+  };
+  const DIPLOMA_VIT_GRID = [
+    ".heehhheeheeeeh.",
+    ".egggggggggggge.",
+    ".bfaaaaaaaaaafb.",
+    ".bficcccccciafb.",
+    ".efaaaaaaaaaafb.",
+    ".hfaklaaccccafb.",
+    ".hfalkaaaaaaadb.",
+    ".hfaklaaccccadb.",
+    ".efamnaaaaaaadb.",
+    ".bfmpojaccccadb.",
+    ".bfnomjaaaaaadb.",
+    ".bfajjaaaaaaadb.",
+    ".bfaaaacicicadb.",
+    ".bfaaaaccaciadb.",
+    ".edddddddddddde.",
+    ".hebbbbbbbbbbeh.",
+  ];
+  const PAL_DIPLOMA_NEU = {
+    a: "#d8d0e0", b: "#3a3a50", c: "#c6bdd5", d: "#8b8bab", e: "#46465e",
+    f: "#9da3b7", g: "#b1bac8", h: "#565972", i: "#d0c7db", j: "#db8641",
+    k: "#e63f38", l: "#fc5c46", m: "#f2b22b", n: "#ed931e", o: "#f8d239",
+    p: "#fff59a",
+  };
+  const DIPLOMA_NEU_GRID = [
+    ".heehhheeheeeeh.",
+    ".egggggggggggge.",
+    ".bfaaaaaaaaaafb.",
+    ".bficcccccccifb.",
+    ".efaaaaaaaaaafb.",
+    ".hfaklaacccicfb.",
+    ".hfalkaaaaaaadb.",
+    ".hfaklaacccicdb.",
+    ".efamnaaaaaaadb.",
+    ".bfmpojacccicdb.",
+    ".bfnomjaaaaaadb.",
+    ".bfajjaaaaaaadb.",
+    ".bfaaaacicicidb.",
+    ".bfaaaaccacicdb.",
+    ".edddddddddddde.",
+    ".hebbbbbbbbbbeh.",
+  ];
   function diploma(ctx, px, py, w, h, t, obj) {
-    ctx.fillStyle = "#e3b341";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#fdf6e3";
-    ctx.fillRect(px + 1, py + 1, w - 2, h - 2);
-    ctx.fillStyle = "#8b949e";
-    ctx.fillRect(px + 3, py + 3, w - 6, 1);
-    ctx.fillRect(px + 3, py + 5, w - 8, 1);
-    ctx.fillStyle = obj.color || "#c93c35";
-    ctx.fillRect(px + w / 2 - 1, py + h - 4, 3, 2); // seal
+    const vit = obj && obj.school === "vit";
+    drawGrid(ctx, vit ? DIPLOMA_VIT_GRID : DIPLOMA_NEU_GRID, px + Math.round((w - 16) / 2), py + h - 16, false, vit ? PAL_DIPLOMA_VIT : PAL_DIPLOMA_NEU);
   }
 
   /* pack open-book display stand (Classroom_and_library) — 17x29 px,
@@ -3092,7 +3137,7 @@ window.Sprites = (function () {
     ".baaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
     ".laaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
     ".baaaaaaaaaaahl.................................................................laaaaaaaaaaahb..",
-    "bbaaaaaaaaaaahflbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbblfaaaaaaaaaaahbbl",
+    ".baaaaaaaaaaahflbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbblfaaaaaaaaaaahb..",
     "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahbaa",
     "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahbaa",
     "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
