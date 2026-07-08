@@ -818,14 +818,22 @@ window.Sprites = (function () {
   ];
 
   /* frames[0] = standing, frames[1..6] = walk cycle (native left frames — no flip) */
-  const PLAYER_FRAMES = { down: P_DOWN, up: P_UP, right: P_RIGHT, left: P_LEFT };
+  const PLAYER_FRAMES = {
+    down: P_DOWN,
+    up: P_UP,
+    right: P_RIGHT,
+    left: P_LEFT,
+  };
 
   /* seated back view for the desk stools — the pack's sit animations are
      side-facing only (see the pack's Spritesheet_animations_GUIDE), so for
      up-facing desks we derive one: the standing up-frame lowered 3px onto the
      seat, legs tucked behind the stool */
-  const PLAYER_SIT_UP = ["................", "................", "................"]
-    .concat(P_UP[0].slice(0, 23));
+  const PLAYER_SIT_UP = [
+    "................",
+    "................",
+    "................",
+  ].concat(P_UP[0].slice(0, 23));
 
   /* 28x15 lounging gray cat, ported from the pack's animated_cat.png
      (12-frame tail-sweep loop, 48x16 per frame, trimmed to the union bbox).
@@ -1286,9 +1294,19 @@ window.Sprites = (function () {
   ];
 
   const PAL_FLOOR_ROOM = {
-    a: "#e8d8cb", b: "#e1d1c5", c: "#bfb2a7", d: "#e9d8cc", e: "#ebdace",
-    f: "#dfd0c3", g: "#d5c7bb", h: "#d9cabe", i: "#d7c9bc", j: "#dbccc0",
-    k: "#e7d7ca", l: "#e0d1c4", m: "#ccbbb3",
+    a: "#e8d8cb",
+    b: "#e1d1c5",
+    c: "#bfb2a7",
+    d: "#e9d8cc",
+    e: "#ebdace",
+    f: "#dfd0c3",
+    g: "#d5c7bb",
+    h: "#d9cabe",
+    i: "#d7c9bc",
+    j: "#dbccc0",
+    k: "#e7d7ca",
+    l: "#e0d1c4",
+    m: "#ccbbb3",
   };
   const FLOOR_ROOM_GRID = [
     "aaaaaaaaaaaaaaam",
@@ -1446,7 +1464,8 @@ window.Sprites = (function () {
   ];
 
   function wall(ctx, tx, ty, map) {
-    const x = tx * T, y = ty * T;
+    const x = tx * T,
+      y = ty * T;
     const rows = map ? map.length : 13;
     const cols = map ? map[0].length : 20;
     const edge = tx === 0 || tx === cols - 1;
@@ -1467,7 +1486,8 @@ window.Sprites = (function () {
     if (ty <= 1 || ty === rows - 1) {
       const capH = ty === rows - 1 ? 6 : T; // south strip is only 6px tall
       if (tx > 0 && open(ty, tx - 1)) ctx.fillRect(x, y, 1, capH);
-      if (tx < cols - 1 && open(ty, tx + 1)) ctx.fillRect(x + T - 1, y, 1, capH);
+      if (tx < cols - 1 && open(ty, tx + 1))
+        ctx.fillRect(x + T - 1, y, 1, capH);
     } else {
       if (ty > 0 && open(ty - 1, tx)) ctx.fillRect(x, y, T, 1);
       if (ty < rows - 1 && open(ty + 1, tx)) ctx.fillRect(x, y + T - 1, T, 1);
@@ -1477,7 +1497,8 @@ window.Sprites = (function () {
   /* window on the lower face row (map '~' goes in row 1, under the strip) */
   function windowNight(ctx, tx, ty, t, map) {
     wall(ctx, tx, ty, map);
-    const x = tx * T, y = ty * T;
+    const x = tx * T,
+      y = ty * T;
     ctx.fillStyle = PAL_WALL.o;
     ctx.fillRect(x + 1, y + 1, 14, 12);
     ctx.fillStyle = "#0b1524";
@@ -1732,7 +1753,8 @@ window.Sprites = (function () {
   ];
   /* k: swing step 0 (closed) .. 4 (fully open) */
   function doorNorth(ctx, tx, ty, k) {
-    const x = tx * T, y = ty * T;
+    const x = tx * T,
+      y = ty * T;
     drawGrid(ctx, DOOR_FRAME_GRID, x, y, false, PAL_DOOR);
     drawGrid(ctx, DOOR_FRAME_GRID, x + T, y, true, PAL_DOOR);
     /* leaves sit 1px in from each tile's outer edge, flush with the jambs */
@@ -2042,7 +2064,15 @@ window.Sprites = (function () {
     drawGrid(ctx, frame, x, (gapRow - 2) * T, flip, PAL_DOOR);
   }
 
-  const TILES = { floorLobbyCarpet, floorCarpetTiles, wall, windowNight, doorNorth, doorSide, doorSouth };
+  const TILES = {
+    floorLobbyCarpet,
+    floorCarpetTiles,
+    wall,
+    windowNight,
+    doorNorth,
+    doorSide,
+    doorSouth,
+  };
 
   /* ── furniture painters ────────────────────────────────────────────── */
   /* each painter: (ctx, px, py, w, h, t, obj) — px/py/w/h in pixels     */
@@ -2105,64 +2135,208 @@ window.Sprites = (function () {
   };
   const MUG_FRAMES = [
     [
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "......eemb......", ".....ecffibe....", ".....efddfbce...",
-      ".....bijjibdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
-      "....adccccda....", ".....aaaaaa.....", "................", "................",
-      "................", "................", "................", "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "......eemb......",
+      ".....ecffibe....",
+      ".....efddfbce...",
+      ".....bijjibdb...",
+      "....baggggab....",
+      "....bahhhhae....",
+      "....bcaaaacb....",
+      "....adccccda....",
+      ".....aaaaaa.....",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
     ],
     [
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", ".........f......", "................",
-      ".........f......", "......enff......", ".....ecfffbe....", ".....ecdddbce...",
-      ".....bdjjdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
-      "....adccccda....", ".....aaaaaa.....", "................", "................",
-      "................", "................", "................", "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      ".........f......",
+      "................",
+      ".........f......",
+      "......enff......",
+      ".....ecfffbe....",
+      ".....ecdddbce...",
+      ".....bdjjdbdb...",
+      "....baggggab....",
+      "....bahhhhae....",
+      "....bcaaaacb....",
+      "....adccccda....",
+      ".....aaaaaa.....",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
     ],
     [
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", "................", ".........f......",
-      ".........f......", "........ff......", ".......fff......", ".......ff.......",
-      ".......ff.......", "......eell......", ".....ecciibe....", ".....ecddibce...",
-      ".....bdkkdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
-      "....adccccda....", ".....aaaaaa.....", "................", "................",
-      "................", "................", "................", "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      ".........f......",
+      ".........f......",
+      "........ff......",
+      ".......fff......",
+      ".......ff.......",
+      ".......ff.......",
+      "......eell......",
+      ".....ecciibe....",
+      ".....ecddibce...",
+      ".....bdkkdbdb...",
+      "....baggggab....",
+      "....bahhhhae....",
+      "....bcaaaacb....",
+      "....adccccda....",
+      ".....aaaaaa.....",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
     ],
     [
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", ".........f......", ".......fff......",
-      ".......fff......", "........f.......", "................", "................",
-      "................", "......eebb......", ".....eccddbe....", ".....ecggdbce...",
-      ".....bdkkdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
-      "....adccccda....", ".....aaaaaa.....", "................", "................",
-      "................", "................", "................", "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      ".........f......",
+      ".......fff......",
+      ".......fff......",
+      "........f.......",
+      "................",
+      "................",
+      "................",
+      "......eebb......",
+      ".....eccddbe....",
+      ".....ecggdbce...",
+      ".....bdkkdbdb...",
+      "....baggggab....",
+      "....bahhhhae....",
+      "....bcaaaacb....",
+      "....adccccda....",
+      ".....aaaaaa.....",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
     ],
     [
-      "................", "................", "................", "................",
-      "................", "................", "................", "........f.......",
-      "........ff......", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "......eebb......", ".....eccddbe....", ".....ecggdbce...",
-      ".....bdkkdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
-      "....adccccda....", ".....aaaaaa.....", "................", "................",
-      "................", "................", "................", "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "........f.......",
+      "........ff......",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "......eebb......",
+      ".....eccddbe....",
+      ".....ecggdbce...",
+      ".....bdkkdbdb...",
+      "....baggggab....",
+      "....bahhhhae....",
+      "....bcaaaacb....",
+      "....adccccda....",
+      ".....aaaaaa.....",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
     ],
     [
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "................", "................", "................",
-      "................", "......eebb......", ".....eccddbe....", ".....ecdddbce...",
-      ".....bdjjdbdb...", "....baggggab....", "....bahhhhae....", "....bcaaaacb....",
-      "....adccccda....", ".....aaaaaa.....", "................", "................",
-      "................", "................", "................", "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "......eebb......",
+      ".....eccddbe....",
+      ".....ecdddbce...",
+      ".....bdjjdbdb...",
+      "....baggggab....",
+      "....bahhhhae....",
+      "....bcaaaacb....",
+      "....adccccda....",
+      ".....aaaaaa.....",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
     ],
   ];
 
@@ -2172,7 +2346,14 @@ window.Sprites = (function () {
        can reach it (see world.js) — pull the sprite up so the cup's base
        rests on the counter's white top face instead of at the box's
        bottom */
-    drawGrid(ctx, MUG_FRAMES[frame], px + (w - 16) / 2, py - 26, false, PAL_MUG);
+    drawGrid(
+      ctx,
+      MUG_FRAMES[frame],
+      px + (w - 16) / 2,
+      py - 26,
+      false,
+      PAL_MUG,
+    );
   }
 
   /* desk telephone hand-ported from 1_Interiors/16x16 Generic sheet (the
@@ -2455,7 +2636,8 @@ window.Sprites = (function () {
   ];
 
   function computerDesk(ctx, px, py, w, h, t, obj) {
-    const gx = px + ((w - 32) >> 1), gy = py + h - 48;
+    const gx = px + ((w - 32) >> 1),
+      gy = py + h - 48;
     drawGrid(ctx, EXHIBIT_PC_GRID, gx, gy, false, PAL_EXHIBIT_PC);
     /* blinking cursor on the CRT */
     if (Math.floor(t * 2) % 2 === 0) {
@@ -2519,7 +2701,14 @@ window.Sprites = (function () {
     ".....qaeaaq.....",
   ];
   function pottedPlant(ctx, px, py, w, h) {
-    drawGrid(ctx, PLANT_POT_GRID, px + ((w - 16) >> 1), py + h - 29, false, PAL_PLANT_POT);
+    drawGrid(
+      ctx,
+      PLANT_POT_GRID,
+      px + ((w - 16) >> 1),
+      py + h - 29,
+      false,
+      PAL_PLANT_POT,
+    );
   }
 
   const PAL_PLANT_BUSH = {
@@ -2576,7 +2765,14 @@ window.Sprites = (function () {
     ".............qaiaaq.............",
   ];
   function pottedBush(ctx, px, py, w, h) {
-    drawGrid(ctx, PLANT_BUSH_GRID, px + ((w - 32) >> 1), py + h - 30, false, PAL_PLANT_BUSH);
+    drawGrid(
+      ctx,
+      PLANT_BUSH_GRID,
+      px + ((w - 32) >> 1),
+      py + h - 30,
+      false,
+      PAL_PLANT_BUSH,
+    );
   }
 
   /* wooden stool hand-ported from 14_Basement_16x16.png; sits in front of
@@ -2611,7 +2807,14 @@ window.Sprites = (function () {
     "....cccccccc....",
   ];
   function stool(ctx, px, py, w, h) {
-    drawGrid(ctx, STOOL_GRID, px + ((w - 16) >> 1), py + h - 17, false, PAL_STOOL);
+    drawGrid(
+      ctx,
+      STOOL_GRID,
+      px + ((w - 16) >> 1),
+      py + h - 17,
+      false,
+      PAL_STOOL,
+    );
   }
 
   /* office workstation (dark monitor on a white desk) hand-ported from
@@ -2745,7 +2948,7 @@ window.Sprites = (function () {
       px + Math.round((w - 13) / 2),
       py + h - 30,
       false,
-      PAL_WATER_COOLER
+      PAL_WATER_COOLER,
     );
   }
 
@@ -2804,7 +3007,7 @@ window.Sprites = (function () {
       px + Math.round((w - 30) / 2),
       py,
       false,
-      PAL_WHITEBOARD_CHART
+      PAL_WHITEBOARD_CHART,
     );
   }
 
@@ -2886,7 +3089,14 @@ window.Sprites = (function () {
     "aaa.........................................aaa",
   ];
   function bookshelf(ctx, px, py, w, h) {
-    drawGrid(ctx, BOOKSHELF_GRID, px + Math.round((w - 47) / 2), py + h - 39, false, PAL_BOOKSHELF);
+    drawGrid(
+      ctx,
+      BOOKSHELF_GRID,
+      px + Math.round((w - 47) / 2),
+      py + h - 39,
+      false,
+      PAL_BOOKSHELF,
+    );
   }
 
   /* framed award/certificate icons hand-ported from
@@ -2894,9 +3104,21 @@ window.Sprites = (function () {
      match each dialog's crestColor (blue @ 112,128 for VIT, red @ 128,160
      for NEU); 16x32 crop with the icon sitting in the bottom 16 rows */
   const PAL_DIPLOMA_VIT = {
-    a: "#d8d0e0", b: "#3a3a50", c: "#c6bdd5", d: "#8b8bab", e: "#46465e",
-    f: "#9da3b7", g: "#b1bac8", h: "#565972", i: "#d0c7db", j: "#db8641",
-    k: "#4280dd", l: "#4995e3", m: "#f2b22b", n: "#ed931e", o: "#f8d239",
+    a: "#d8d0e0",
+    b: "#3a3a50",
+    c: "#c6bdd5",
+    d: "#8b8bab",
+    e: "#46465e",
+    f: "#9da3b7",
+    g: "#b1bac8",
+    h: "#565972",
+    i: "#d0c7db",
+    j: "#db8641",
+    k: "#4280dd",
+    l: "#4995e3",
+    m: "#f2b22b",
+    n: "#ed931e",
+    o: "#f8d239",
     p: "#fff59a",
   };
   const DIPLOMA_VIT_GRID = [
@@ -2918,9 +3140,21 @@ window.Sprites = (function () {
     ".hebbbbbbbbbbeh.",
   ];
   const PAL_DIPLOMA_NEU = {
-    a: "#d8d0e0", b: "#3a3a50", c: "#c6bdd5", d: "#8b8bab", e: "#46465e",
-    f: "#9da3b7", g: "#b1bac8", h: "#565972", i: "#d0c7db", j: "#db8641",
-    k: "#e63f38", l: "#fc5c46", m: "#f2b22b", n: "#ed931e", o: "#f8d239",
+    a: "#d8d0e0",
+    b: "#3a3a50",
+    c: "#c6bdd5",
+    d: "#8b8bab",
+    e: "#46465e",
+    f: "#9da3b7",
+    g: "#b1bac8",
+    h: "#565972",
+    i: "#d0c7db",
+    j: "#db8641",
+    k: "#e63f38",
+    l: "#fc5c46",
+    m: "#f2b22b",
+    n: "#ed931e",
+    o: "#f8d239",
     p: "#fff59a",
   };
   const DIPLOMA_NEU_GRID = [
@@ -2943,7 +3177,14 @@ window.Sprites = (function () {
   ];
   function diploma(ctx, px, py, w, h, t, obj) {
     const vit = obj && obj.school === "vit";
-    drawGrid(ctx, vit ? DIPLOMA_VIT_GRID : DIPLOMA_NEU_GRID, px + Math.round((w - 16) / 2), py + h - 16, false, vit ? PAL_DIPLOMA_VIT : PAL_DIPLOMA_NEU);
+    drawGrid(
+      ctx,
+      vit ? DIPLOMA_VIT_GRID : DIPLOMA_NEU_GRID,
+      px + Math.round((w - 16) / 2),
+      py + h - 16,
+      false,
+      vit ? PAL_DIPLOMA_VIT : PAL_DIPLOMA_NEU,
+    );
   }
 
   /* pack open-book display stand (Classroom_and_library) — 17x29 px,
@@ -2999,7 +3240,14 @@ window.Sprites = (function () {
     "........a........",
   ];
   function lectern(ctx, px, py, w, h) {
-    drawGrid(ctx, BOOKSTAND_GRID, px + Math.round((w - 17) / 2), py + h - 29, false, PAL_BOOKSTAND);
+    drawGrid(
+      ctx,
+      BOOKSTAND_GRID,
+      px + Math.round((w - 17) / 2),
+      py + h - 29,
+      false,
+      PAL_BOOKSTAND,
+    );
   }
 
   function kiosk(ctx, px, py, w, h, t, obj) {
@@ -3014,7 +3262,8 @@ window.Sprites = (function () {
     const accent = obj.color || "#3fb950";
     ctx.fillStyle = accent;
     const icon = obj.icon;
-    const cx = px + w / 2, cy = py + 9;
+    const cx = px + w / 2,
+      cy = py + 9;
     if (icon === "mail") {
       ctx.fillRect(cx - 5, cy - 3, 10, 7);
       ctx.fillStyle = "#05070a";
@@ -3075,7 +3324,13 @@ window.Sprites = (function () {
       ctx.fillRect(px + 2, uy, w - 4, 4);
       for (let l = 0; l < 3; l++) {
         const on = hash2(u * 3 + l, Math.floor(t * 3)) < 55;
-        ctx.fillStyle = on ? (l === 0 ? "#3fb950" : l === 1 ? "#e3b341" : "#f85149") : "#21262d";
+        ctx.fillStyle = on
+          ? l === 0
+            ? "#3fb950"
+            : l === 1
+              ? "#e3b341"
+              : "#f85149"
+          : "#21262d";
         ctx.fillRect(px + 3 + l * 3, uy + 1, 2, 2);
       }
     }
@@ -3138,12 +3393,12 @@ window.Sprites = (function () {
     ".laaaaaaaaaaahb.................................................................baaaaaaaaaaahb..",
     ".baaaaaaaaaaahl.................................................................laaaaaaaaaaahb..",
     ".baaaaaaaaaaahflbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbblfaaaaaaaaaaahb..",
-    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahbaa",
-    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahbaa",
-    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
-    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
-    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
-    "abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahbaa",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahb..",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaahb..",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
+    ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
     ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
     ".baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahb..",
     ".faaaaaaahaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahaaaaaahf..",
@@ -3353,22 +3608,35 @@ window.Sprites = (function () {
     n: "#f2b22b",
     o: "#ed931e",
   };
-  const PAPERS_GRID = [
-    "ahbbjbbbbnbbfa",
-    "edddkddddoddda",
-    "feaaaaaaaaaaef",
-  ];
+  const PAPERS_GRID = ["ahbbjbbbbnbbfa", "edddkddddoddda", "feaaaaaaaaaaef"];
 
   /* per-cubicle desktop clutter (PC tower/filing unit + monitor + a coworker
      peeking over the top), hand-ported from the pack's "IT support desk
      assemblage" row — one distinct crop per experience entry, replacing the
      generic monitor rig + paper pile on that desk */
   const PAL_DESKSET_QUANTU = {
-    a: "#3a3a50", b: "#46465e", c: "#b9c3d5", d: "#acafbf", e: "#838897",
-    f: "#565972", g: "#4280dd", h: "#d8d0e0", i: "#6c6e85", j: "#d4dee6",
-    k: "#afacc8", l: "#dde4eb", m: "#1652b9", n: "#a79796", o: "#fdfcfd",
-    p: "#8b8bab", q: "#60637d", r: "#50a7e8", s: "#cb2a2a", t: "#f8f8f8",
-    u: "#64b63b", v: "#f8d239",
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#b9c3d5",
+    d: "#acafbf",
+    e: "#838897",
+    f: "#565972",
+    g: "#4280dd",
+    h: "#d8d0e0",
+    i: "#6c6e85",
+    j: "#d4dee6",
+    k: "#afacc8",
+    l: "#dde4eb",
+    m: "#1652b9",
+    n: "#a79796",
+    o: "#fdfcfd",
+    p: "#8b8bab",
+    q: "#60637d",
+    r: "#50a7e8",
+    s: "#cb2a2a",
+    t: "#f8f8f8",
+    u: "#64b63b",
+    v: "#f8d239",
   };
   const DESKSET_QUANTU_GRID = [
     ".........................bbf........",
@@ -3400,11 +3668,31 @@ window.Sprites = (function () {
   ];
 
   const PAL_DESKSET_NEUTA = {
-    a: "#3a3a50", b: "#46465e", c: "#4280dd", d: "#565972", e: "#6c6e85",
-    f: "#60637d", g: "#b9c3d5", h: "#1652b9", i: "#acafbf", j: "#d8d0e0",
-    k: "#8b8bab", l: "#50a7e8", m: "#d4dee6", n: "#f2b22b", o: "#f69784",
-    p: "#dde4eb", q: "#ffb893", r: "#717491", s: "#cb2a2a", t: "#f8d239",
-    u: "#e63f38", v: "#838897", w: "#4c4c66", x: "#ed931e", y: "#64b63b",
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#4280dd",
+    d: "#565972",
+    e: "#6c6e85",
+    f: "#60637d",
+    g: "#b9c3d5",
+    h: "#1652b9",
+    i: "#acafbf",
+    j: "#d8d0e0",
+    k: "#8b8bab",
+    l: "#50a7e8",
+    m: "#d4dee6",
+    n: "#f2b22b",
+    o: "#f69784",
+    p: "#dde4eb",
+    q: "#ffb893",
+    r: "#717491",
+    s: "#cb2a2a",
+    t: "#f8d239",
+    u: "#e63f38",
+    v: "#838897",
+    w: "#4c4c66",
+    x: "#ed931e",
+    y: "#64b63b",
     z: "#e07070",
   };
   const DESKSET_NEUTA_GRID = [
@@ -3434,13 +3722,39 @@ window.Sprites = (function () {
   ];
 
   const PAL_DESKSET_INFOSYS = {
-    a: "#3a3a50", b: "#46465e", c: "#6c6e85", d: "#8b8bab", e: "#565972",
-    f: "#ebe4f2", g: "#d8d0e0", h: "#4280dd", i: "#ab4a36", j: "#b9c3d5",
-    k: "#afacc8", l: "#acafbf", m: "#838897", n: "#d4dee6", o: "#b1bac8",
-    p: "#4e6e61", q: "#ffb893", r: "#1652b9", s: "#dde4eb", t: "#b35e3f",
-    u: "#e07070", v: "#50a7e8", w: "#60637d", x: "#568d61", y: "#f69784",
-    z: "#cb2a2a", A: "#e63f38", B: "#d93232", C: "#4995e3", D: "#f8d239",
-    E: "#f2b22b", F: "#ed931e", G: "#64b63b",
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#6c6e85",
+    d: "#8b8bab",
+    e: "#565972",
+    f: "#ebe4f2",
+    g: "#d8d0e0",
+    h: "#4280dd",
+    i: "#ab4a36",
+    j: "#b9c3d5",
+    k: "#afacc8",
+    l: "#acafbf",
+    m: "#838897",
+    n: "#d4dee6",
+    o: "#b1bac8",
+    p: "#4e6e61",
+    q: "#ffb893",
+    r: "#1652b9",
+    s: "#dde4eb",
+    t: "#b35e3f",
+    u: "#e07070",
+    v: "#50a7e8",
+    w: "#60637d",
+    x: "#568d61",
+    y: "#f69784",
+    z: "#cb2a2a",
+    A: "#e63f38",
+    B: "#d93232",
+    C: "#4995e3",
+    D: "#f8d239",
+    E: "#f2b22b",
+    F: "#ed931e",
+    G: "#64b63b",
   };
   const DESKSET_INFOSYS_GRID = [
     "....ebaaaaabe.......................",
@@ -3469,12 +3783,34 @@ window.Sprites = (function () {
   ];
 
   const PAL_DESKSET_DANSKESE = {
-    a: "#3a3a50", b: "#46465e", c: "#4280dd", d: "#565972", e: "#acafbf",
-    f: "#6c6e85", g: "#d8d0e0", h: "#b9c3d5", i: "#8b8bab", j: "#dde4eb",
-    k: "#1652b9", l: "#afacc8", m: "#60637d", n: "#d4dee6", o: "#50a7e8",
-    p: "#f69784", q: "#ab4a36", r: "#838897", s: "#ffb893", t: "#b35e3f",
-    u: "#717491", v: "#cb2a2a", w: "#f8f8f8", x: "#4e6e61", y: "#4c4c66",
-    z: "#f8d239", A: "#64b63b", B: "#e07070",
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#4280dd",
+    d: "#565972",
+    e: "#acafbf",
+    f: "#6c6e85",
+    g: "#d8d0e0",
+    h: "#b9c3d5",
+    i: "#8b8bab",
+    j: "#dde4eb",
+    k: "#1652b9",
+    l: "#afacc8",
+    m: "#60637d",
+    n: "#d4dee6",
+    o: "#50a7e8",
+    p: "#f69784",
+    q: "#ab4a36",
+    r: "#838897",
+    s: "#ffb893",
+    t: "#b35e3f",
+    u: "#717491",
+    v: "#cb2a2a",
+    w: "#f8f8f8",
+    x: "#4e6e61",
+    y: "#4c4c66",
+    z: "#f8d239",
+    A: "#64b63b",
+    B: "#e07070",
   };
   const DESKSET_DANSKESE_GRID = [
     "...........dbbd...............................",
@@ -3504,12 +3840,36 @@ window.Sprites = (function () {
   ];
 
   const PAL_DESKSET_DANSKEAPP = {
-    a: "#3a3a50", b: "#46465e", c: "#b9c3d5", d: "#565972", e: "#ebe4f2",
-    f: "#6c6e85", g: "#acafbf", h: "#d8d0e0", i: "#8b8bab", j: "#4280dd",
-    k: "#838897", l: "#d4dee6", m: "#afacc8", n: "#e63f38", o: "#f8d239",
-    p: "#f2b22b", q: "#ffb893", r: "#ed931e", s: "#1652b9", t: "#dde4eb",
-    u: "#e07070", v: "#50a7e8", w: "#60637d", x: "#568d61", y: "#f69784",
-    z: "#cb2a2a", A: "#4e6e61", B: "#d93232", C: "#4995e3", D: "#64b63b",
+    a: "#3a3a50",
+    b: "#46465e",
+    c: "#b9c3d5",
+    d: "#565972",
+    e: "#ebe4f2",
+    f: "#6c6e85",
+    g: "#acafbf",
+    h: "#d8d0e0",
+    i: "#8b8bab",
+    j: "#4280dd",
+    k: "#838897",
+    l: "#d4dee6",
+    m: "#afacc8",
+    n: "#e63f38",
+    o: "#f8d239",
+    p: "#f2b22b",
+    q: "#ffb893",
+    r: "#ed931e",
+    s: "#1652b9",
+    t: "#dde4eb",
+    u: "#e07070",
+    v: "#50a7e8",
+    w: "#60637d",
+    x: "#568d61",
+    y: "#f69784",
+    z: "#cb2a2a",
+    A: "#4e6e61",
+    B: "#d93232",
+    C: "#4995e3",
+    D: "#64b63b",
   };
   const DESKSET_DANSKEAPP_GRID = [
     "....dbaaaaabd.......................",
@@ -3669,7 +4029,7 @@ window.Sprites = (function () {
       dx,
       dy,
       false,
-      deskGray ? PAL_DESK_GRAY : PAL_DESK_TAN
+      deskGray ? PAL_DESK_GRAY : PAL_DESK_TAN,
     );
     const item = obj && obj.deskItem && DESK_ITEMS[obj.deskItem];
     if (item) {
@@ -3680,7 +4040,7 @@ window.Sprites = (function () {
         px + Math.round((w - item.grid[0].length) / 2),
         dy + 15 - item.grid.length,
         false,
-        item.pal
+        item.pal,
       );
       return;
     }
@@ -3696,7 +4056,7 @@ window.Sprites = (function () {
         px + Math.round((w - 17) / 2),
         dy - 5,
         false,
-        rigPal(PAL_DUALRIG, "e", "i", "g", color)
+        rigPal(PAL_DUALRIG, "e", "i", "g", color),
       );
     } else {
       drawGrid(
@@ -3705,7 +4065,7 @@ window.Sprites = (function () {
         px + Math.round((w - 16) / 2),
         dy - 6,
         false,
-        rigPal(PAL_MONSET, "a", "k", "h", color)
+        rigPal(PAL_MONSET, "a", "k", "h", color),
       );
     }
   }
@@ -3722,7 +4082,7 @@ window.Sprites = (function () {
       px + Math.round((w - 17) / 2),
       py + h - 21,
       false,
-      PAL_OFFICE_CHAIR
+      PAL_OFFICE_CHAIR,
     );
   }
 
@@ -3732,16 +4092,44 @@ window.Sprites = (function () {
 
   function receptionist(ctx, px, py, w, h, t) {
     const fr = Math.floor(t * 5) % RECEPTIONIST_FRAMES.length;
-    drawGrid(ctx, RECEPTIONIST_FRAMES[fr], px + (w - 16) / 2, py + h - 26, false, PAL_RECEPTIONIST);
+    drawGrid(
+      ctx,
+      RECEPTIONIST_FRAMES[fr],
+      px + (w - 16) / 2,
+      py + h - 26,
+      false,
+      PAL_RECEPTIONIST,
+    );
   }
 
   const PAINTERS = {
-    rug, neonRug, doormat, mug, deskPhone, palmPlant, wallMap, fireExtinguisher,
-    computerDesk, pottedPlant, pottedBush, stool,
-    deskStation, waterCooler, whiteboard, bookshelf,
-    cubicle, cubicleSide, officeChair,
-    diploma, lectern, kiosk, printer, serverRack, trophyBig,
-    receptionCounter, receptionist,
+    rug,
+    neonRug,
+    doormat,
+    mug,
+    deskPhone,
+    palmPlant,
+    wallMap,
+    fireExtinguisher,
+    computerDesk,
+    pottedPlant,
+    pottedBush,
+    stool,
+    deskStation,
+    waterCooler,
+    whiteboard,
+    bookshelf,
+    cubicle,
+    cubicleSide,
+    officeChair,
+    diploma,
+    lectern,
+    kiosk,
+    printer,
+    serverRack,
+    trophyBig,
+    receptionCounter,
+    receptionist,
   };
 
   /* bobbing "!" glint above an interactable */
@@ -3755,5 +4143,17 @@ window.Sprites = (function () {
     ctx.fillRect(cx - 1, y + 6, 3, 2);
   }
 
-  return { PAL, PLAYER_FRAMES, PLAYER_SIT_UP, CAT_FRAMES, PAL_CAT, drawGrid, TILES, PAINTERS, glint, hash2, T };
+  return {
+    PAL,
+    PLAYER_FRAMES,
+    PLAYER_SIT_UP,
+    CAT_FRAMES,
+    PAL_CAT,
+    drawGrid,
+    TILES,
+    PAINTERS,
+    glint,
+    hash2,
+    T,
+  };
 })();
