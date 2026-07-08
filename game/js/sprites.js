@@ -3430,7 +3430,6 @@ window.Sprites = (function () {
     joint: "#565972",
     rail: "#b9c3d5",
     panel: "#b1bac8",
-    stripe: "#dad4e0",
     shadow: "#9da3b7",
   };
 
@@ -3962,6 +3961,91 @@ window.Sprites = (function () {
     return rigPalCache[key];
   }
 
+  /* tiny 5px-tall pixel font for the cubicle nameplates — canvas fillText()
+     anti-aliases at these sizes and reads as a blurry smudge once the
+     game's native 320x208 canvas gets scaled up with pixelated rendering,
+     so labels are hand-drawn pixel-by-pixel like every other sprite here.
+     Variable-width: a glyph's width is its row-string length — diagonal
+     letters (M/N/W) get the 4-5 columns a real diagonal needs, I slims to
+     a 1px stem — so labels read as drawn type instead of a monospace
+     smudge, and the widest label (QUANTUNIVERSITY) still fits between the
+     partition posts. Full A-Z + 0-9 so future company names can't
+     silently drop letters. */
+  const FONT_5 = {
+    " ": ["00", "00", "00", "00", "00"],
+    "-": ["00", "00", "11", "00", "00"],
+    ".": ["0", "0", "0", "0", "1"],
+    "(": ["01", "10", "10", "10", "01"],
+    ")": ["10", "01", "01", "01", "10"],
+    A: ["010", "101", "111", "101", "101"],
+    B: ["110", "101", "110", "101", "110"],
+    C: ["011", "100", "100", "100", "011"],
+    D: ["110", "101", "101", "101", "110"],
+    E: ["111", "100", "110", "100", "111"],
+    F: ["111", "100", "110", "100", "100"],
+    G: ["0110", "1000", "1011", "1001", "0110"],
+    H: ["101", "101", "111", "101", "101"],
+    I: ["1", "1", "1", "1", "1"],
+    J: ["001", "001", "001", "101", "010"],
+    K: ["101", "110", "100", "110", "101"],
+    L: ["100", "100", "100", "100", "111"],
+    M: ["10001", "11011", "10101", "10001", "10001"],
+    N: ["1001", "1101", "1011", "1001", "1001"],
+    O: ["010", "101", "101", "101", "010"],
+    P: ["110", "101", "110", "100", "100"],
+    /* 4-row ring with the tail on the baseline row, continuing the ring's
+       bottom-right diagonal — a 5-row ring leaves no room for a tail and
+       reads as an O */
+    Q: ["0110", "1001", "1001", "0110", "0001"],
+    R: ["110", "101", "110", "101", "101"],
+    S: ["011", "100", "010", "001", "110"],
+    T: ["111", "010", "010", "010", "010"],
+    U: ["101", "101", "101", "101", "111"],
+    V: ["101", "101", "101", "101", "010"],
+    W: ["10001", "10001", "10101", "10101", "01010"],
+    X: ["101", "101", "010", "101", "101"],
+    Y: ["101", "101", "010", "010", "010"],
+    Z: ["111", "001", "010", "100", "111"],
+    0: ["111", "101", "101", "101", "111"],
+    1: ["010", "110", "010", "010", "111"],
+    2: ["110", "001", "010", "100", "111"],
+    3: ["110", "001", "010", "001", "110"],
+    4: ["101", "101", "111", "001", "001"],
+    5: ["111", "100", "110", "001", "110"],
+    6: ["011", "100", "110", "101", "010"],
+    7: ["111", "001", "010", "010", "010"],
+    8: ["010", "101", "010", "101", "010"],
+    9: ["010", "101", "011", "001", "110"],
+  };
+  /* per-glyph width + 1px spacing; unsupported chars are skipped (both
+     here and in drawPixelText, so measuring and drawing always agree) */
+  function pixelTextWidth(text) {
+    let w = 0;
+    for (let i = 0; i < text.length; i++) {
+      const glyph = FONT_5[text[i]];
+      if (glyph) w += glyph[0].length + 1;
+    }
+    return w > 0 ? w - 1 : 0;
+  }
+  /* picked from a 10-color test cycle against the partition/carpet
+     background — cool white read clearest of the set */
+  const NAMEPLATE_COLOR = "#f0f6fc";
+  function drawPixelText(ctx, text, x, y) {
+    let cx = x;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const glyph = FONT_5[ch];
+      if (!glyph) continue;
+      const gw = glyph[0].length;
+      for (let row = 0; row < 5; row++) {
+        for (let col = 0; col < gw; col++) {
+          if (glyph[row][col] === "1") ctx.fillRect(cx + col, y + row, 1, 1);
+        }
+      }
+      cx += gw + 1;
+    }
+  }
+
   /* 3px partition post column: light face above the panel line, shadowed
      below, dark caps at both ends */
   function partitionPost(ctx, x, yTop, yPanelBot, yBot) {
@@ -3996,8 +4080,18 @@ window.Sprites = (function () {
     const color = (obj && obj.color) || "#58a6ff";
     const noLeftPost = obj && obj.noLeftPost;
     const noRightPost = obj && obj.noRightPost;
-    /* back panel between the posts — 21px tall band stack from the pack —
-       extends flush to the rect edge on any side with no post to butt against */
+    /* desk position — computed up front so the panel fill below can stretch
+       to fill whatever extra height the cubicle rect has (world.js adds
+       0.5 tile over the pack's original proportions to give the nameplate
+       room), instead of leaving a gap between the panel and the desk */
+    const deskGray = obj && obj.desk === "gray";
+    const dx = px + Math.round((w - 42) / 2),
+      dy = py + h - 23;
+    /* back panel between the posts — extends flush to the rect edge on any
+       side with no post to butt against; the flat mid-section (fixed 13px
+       tall in the pack's original proportions) now stretches to whatever
+       height sits between the header band and the desk, so taller cubicles
+       gain panel, not blank floor */
     const bx = px + (noLeftPost ? 0 : 3),
       bw = px + w - (noRightPost ? 0 : 3) - bx;
     ctx.fillStyle = P.outline;
@@ -4007,22 +4101,56 @@ window.Sprites = (function () {
     ctx.fillStyle = P.outline2;
     ctx.fillRect(bx, py + 2, bw, 1);
     ctx.fillStyle = P.panel;
-    ctx.fillRect(bx, py + 3, bw, 1);
-    ctx.fillStyle = P.stripe;
-    ctx.fillRect(bx, py + 4, bw, 2);
-    ctx.fillStyle = P.panel;
-    ctx.fillRect(bx, py + 6, bw, 13);
+    ctx.fillRect(bx, py + 3, bw, Math.max(1, dy - py - 3));
     ctx.fillStyle = P.shadow;
-    ctx.fillRect(bx, py + 19, bw, 1);
+    ctx.fillRect(bx, dy, bw, 1);
     ctx.fillStyle = P.outline;
-    ctx.fillRect(bx, py + 20, bw, 1);
-    /* corner posts, tips rising above the rail like the pack's segment */
-    if (!noLeftPost) partitionPost(ctx, px, py - 11, py + 21, py + h);
-    if (!noRightPost) partitionPost(ctx, px + w - 3, py - 11, py + 21, py + h);
-    /* desk tucked 2px under the panel, front edge on the rect's bottom */
-    const deskGray = obj && obj.desk === "gray";
-    const dx = px + Math.round((w - 42) / 2),
-      dy = py + h - 23;
+    ctx.fillRect(bx, dy + 1, bw, 1);
+    /* corner posts, tips rising above the rail like the pack's segment —
+       the light/dark split tracks the panel's (now dynamic) bottom edge */
+    if (!noLeftPost) partitionPost(ctx, px, py - 11, dy + 2, py + h);
+    if (!noRightPost) partitionPost(ctx, px + w - 3, py - 11, dy + 2, py + h);
+    /* company nameplate, on the panel itself just under the header rail —
+       fully inside the cubicle's own rect (not floating above it in the
+       posts' overhang) now that the taller rect gives it room; the
+       variable-width font keeps most names (QuantUniversity included)
+       on one line within the posts' inner edges, but a suffix like
+       "(Intern)" can push a name past that, so it wraps onto a second
+       centered line instead of overflowing past the partition. One color
+       for every cubicle so the row reads as a uniform sign set. */
+    if (obj && obj.company) {
+      const label = obj.company.toUpperCase();
+      const maxW = w - 6;
+      ctx.fillStyle = NAMEPLATE_COLOR;
+      if (pixelTextWidth(label) <= maxW) {
+        const lx = px + Math.round((w - pixelTextWidth(label)) / 2);
+        drawPixelText(ctx, label, lx, py + 5);
+      } else {
+        const words = label.split(" ");
+        let line1 = words[0],
+          i = 1;
+        while (
+          i < words.length &&
+          pixelTextWidth(line1 + " " + words[i]) <= maxW
+        ) {
+          line1 += " " + words[i];
+          i++;
+        }
+        const line2 = words.slice(i).join(" ");
+        drawPixelText(
+          ctx,
+          line1,
+          px + Math.round((w - pixelTextWidth(line1)) / 2),
+          py + 5,
+        );
+        drawPixelText(
+          ctx,
+          line2,
+          px + Math.round((w - pixelTextWidth(line2)) / 2),
+          py + 11,
+        );
+      }
+    }
     drawGrid(
       ctx,
       deskGray ? DESK_GRAY_GRID : DESK_TAN_GRID,

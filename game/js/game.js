@@ -5,7 +5,9 @@
 (function () {
   "use strict";
 
-  const T = World.T, VW = World.COLS * T, VH = World.ROWS * T;
+  const T = World.T,
+    VW = World.COLS * T,
+    VH = World.ROWS * T;
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   canvas.width = VW;
@@ -16,13 +18,27 @@
 
   /* ── persistent state ─────────────────────────────────────────────── */
   const SAVE_KEY = "reghu-quest-v1";
-  let save = { seen: [], rooms: [], coffee: 0, sound: true, done: false, name: "", nameSkipped: false };
+  let save = {
+    seen: [],
+    rooms: [],
+    coffee: 0,
+    sound: true,
+    done: false,
+    name: "",
+    nameSkipped: false,
+  };
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     if (raw) save = Object.assign(save, JSON.parse(raw));
-  } catch (e) { /* private mode etc. */ }
+  } catch (e) {
+    /* private mode etc. */
+  }
   function persist() {
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* no-op */ }
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(save));
+    } catch (e) {
+      /* no-op */
+    }
   }
 
   /* ── audio: tiny square-wave chiptune blips ───────────────────────── */
@@ -30,7 +46,8 @@
   function beep(freq, dur, vol, type, when) {
     if (!save.sound) return;
     try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!audioCtx)
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const t0 = audioCtx.currentTime + (when || 0);
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -41,31 +58,58 @@
       osc.connect(gain).connect(audioCtx.destination);
       osc.start(t0);
       osc.stop(t0 + dur + 0.02);
-    } catch (e) { /* audio unavailable */ }
+    } catch (e) {
+      /* audio unavailable */
+    }
   }
   const sfx = {
-    open: function () { beep(660, 0.08, 0.04); beep(880, 0.1, 0.04, "square", 0.06); },
-    close: function () { beep(440, 0.08, 0.03); },
-    door: function () { beep(220, 0.12, 0.05, "triangle"); beep(330, 0.12, 0.05, "triangle", 0.08); },
-    stamp: function () { beep(880, 0.07, 0.05); beep(1174, 0.12, 0.05, "square", 0.07); },
+    open: function () {
+      beep(660, 0.08, 0.04);
+      beep(880, 0.1, 0.04, "square", 0.06);
+    },
+    close: function () {
+      beep(440, 0.08, 0.03);
+    },
+    door: function () {
+      beep(220, 0.12, 0.05, "triangle");
+      beep(330, 0.12, 0.05, "triangle", 0.08);
+    },
+    stamp: function () {
+      beep(880, 0.07, 0.05);
+      beep(1174, 0.12, 0.05, "square", 0.07);
+    },
     fanfare: function () {
       [523, 659, 784, 1046, 784, 1046].forEach(function (f, i) {
         beep(f, 0.14, 0.05, "square", i * 0.12);
       });
     },
-    coffee: function () { beep(392, 0.06, 0.04); beep(523, 0.09, 0.04, "square", 0.05); },
+    coffee: function () {
+      beep(392, 0.06, 0.04);
+      beep(523, 0.09, 0.04, "square", 0.05);
+    },
   };
 
   /* ── input ────────────────────────────────────────────────────────── */
-  const keys = { up: false, down: false, left: false, right: false, run: false };
+  const keys = {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    run: false,
+  };
   let actionQueued = false;
 
   const KEYMAP = {
-    ArrowUp: "up", KeyW: "up",
-    ArrowDown: "down", KeyS: "down",
-    ArrowLeft: "left", KeyA: "left",
-    ArrowRight: "right", KeyD: "right",
-    ShiftLeft: "run", ShiftRight: "run",
+    ArrowUp: "up",
+    KeyW: "up",
+    ArrowDown: "down",
+    KeyS: "down",
+    ArrowLeft: "left",
+    KeyA: "left",
+    ArrowRight: "right",
+    KeyD: "right",
+    ShiftLeft: "run",
+    ShiftRight: "run",
   };
 
   document.addEventListener("keydown", function (ev) {
@@ -80,7 +124,10 @@
       return;
     }
     if (ev.code === "Escape") {
-      if (UI.isOpen()) { UI.closeDialog(); sfx.close(); }
+      if (UI.isOpen()) {
+        UI.closeDialog();
+        sfx.close();
+      }
       return;
     }
     if (ev.code === "KeyE" || ev.code === "Enter" || ev.code === "Space") {
@@ -105,8 +152,14 @@
   function bindTouch(id, key) {
     const b = document.getElementById(id);
     if (!b) return;
-    const on = function (ev) { ev.preventDefault(); keys[key] = true; };
-    const off = function (ev) { ev.preventDefault(); keys[key] = false; };
+    const on = function (ev) {
+      ev.preventDefault();
+      keys[key] = true;
+    };
+    const off = function (ev) {
+      ev.preventDefault();
+      keys[key] = false;
+    };
     b.addEventListener("pointerdown", on);
     b.addEventListener("pointerup", off);
     b.addEventListener("pointerleave", off);
@@ -127,7 +180,10 @@
   const soundBtn = document.getElementById("hud-sound");
   function updateSoundBtn() {
     soundBtn.textContent = save.sound ? "♪" : "∅";
-    soundBtn.setAttribute("aria-label", save.sound ? "mute sound (M)" : "unmute sound (M)");
+    soundBtn.setAttribute(
+      "aria-label",
+      save.sound ? "mute sound (M)" : "unmute sound (M)",
+    );
   }
   soundBtn.addEventListener("click", function () {
     save.sound = !save.sound;
@@ -137,11 +193,13 @@
 
   /* ── player ───────────────────────────────────────────────────────── */
   const player = {
-    x: 160, y: 172, // feet center, px
+    x: 160,
+    y: 172, // feet center, px
     dir: "up",
     moving: false,
     animT: 0,
-    w: 9, h: 6, // feet collision box
+    w: 9,
+    h: 6, // feet collision box
   };
   let room = World.rooms.hub;
   let fade = { a: 0, dir: 0, cb: null }; // screen fade for transitions
@@ -158,15 +216,27 @@
   /* the cat (hub only) — the pack's lounging cat has no walk frames, so it
      stays put on its spot and plays the 12-frame tail-sweep loop */
   const cat = {
-    x: 220, y: 120, frame: 0, animT: 0,
-    rect: function () { return { x: this.x - 13, y: this.y - 4, w: 26, h: 8 }; },
+    x: 220,
+    y: 120,
+    frame: 0,
+    animT: 0,
+    rect: function () {
+      return { x: this.x - 13, y: this.y - 4, w: 26, h: 8 };
+    },
   };
 
   function feetRect(px, py) {
-    return { x: px - player.w / 2, y: py - player.h / 2, w: player.w, h: player.h };
+    return {
+      x: px - player.w / 2,
+      y: py - player.h / 2,
+      w: player.w,
+      h: player.h,
+    };
   }
   function hit(a, b) {
-    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    return (
+      a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
+    );
   }
   function furnitureActive(f) {
     if (f.requires === "questDone") return save.done;
@@ -183,13 +253,17 @@
   /* ── quest ────────────────────────────────────────────────────────── */
   const CORE = GAME_DATA.coreIds;
   function questPct() {
-    const seen = save.seen.filter(function (id) { return CORE.indexOf(id) !== -1; });
+    const seen = save.seen.filter(function (id) {
+      return CORE.indexOf(id) !== -1;
+    });
     return Math.min(100, Math.round((seen.length / CORE.length) * 100));
   }
   function refreshHud() {
     UI.setQuest(questPct());
     const visited = {};
-    World.STAMP_ROOMS.forEach(function (r) { visited[r] = save.rooms.indexOf(r) !== -1; });
+    World.STAMP_ROOMS.forEach(function (r) {
+      visited[r] = save.rooms.indexOf(r) !== -1;
+    });
     UI.setStamps(visited);
     UI.setCoffee(save.coffee);
   }
@@ -227,25 +301,53 @@
   /* ── interaction targeting ────────────────────────────────────────── */
   function interactTarget() {
     /* probe: a point ahead of the player's feet, plus proximity fallback */
-    const px = player.x + (player.dir === "left" ? -12 : player.dir === "right" ? 12 : 0);
-    const py = player.y + (player.dir === "up" ? -14 : player.dir === "down" ? 12 : 0);
-    let best = null, bestD = 1e9;
+    const px =
+      player.x +
+      (player.dir === "left" ? -12 : player.dir === "right" ? 12 : 0);
+    const py =
+      player.y + (player.dir === "up" ? -14 : player.dir === "down" ? 12 : 0);
+    let best = null,
+      bestD = 1e9;
     room.furniture.forEach(function (f) {
       if (!f.dialog || !furnitureActive(f)) return;
-      const grown = { x: f.px - 6, y: f.py - 6, w: f.pw + 12, h: f.ph + 12 };
+      /* some furniture (e.g. cubicles) only has an open, walk-up side —
+         requireFacing restricts the probe to players approaching from
+         that side instead of reaching through the back/sides */
+      if (f.requireFacing && player.dir !== f.requireFacing) return;
+      /* interactPad shrinks/grows the probe's hit margin around the
+         furniture rect — cubicles use a smaller one so the desk isn't
+         triggerable from well out in the corridor */
+      const pad = f.interactPad !== undefined ? f.interactPad : 6;
+      const grown = {
+        x: f.px - pad,
+        y: f.py - pad,
+        w: f.pw + pad * 2,
+        h: f.ph + pad * 2,
+      };
       const inside =
-        px >= grown.x && px <= grown.x + grown.w &&
-        py >= grown.y && py <= grown.y + grown.h;
+        px >= grown.x &&
+        px <= grown.x + grown.w &&
+        py >= grown.y &&
+        py <= grown.y + grown.h;
       if (!inside) return;
-      const cx = f.px + f.pw / 2, cy = f.py + f.ph / 2;
+      const cx = f.px + f.pw / 2,
+        cy = f.py + f.ph / 2;
       const d = Math.abs(cx - player.x) + Math.abs(cy - player.y);
-      if (d < bestD) { bestD = d; best = f; }
+      if (d < bestD) {
+        bestD = d;
+        best = f;
+      }
     });
     /* the cat */
     if (room.cat && !best) {
       const r = cat.rect();
       const grown = { x: r.x - 8, y: r.y - 8, w: r.w + 16, h: r.h + 16 };
-      if (px >= grown.x && px <= grown.x + grown.w && py >= grown.y && py <= grown.y + grown.h) {
+      if (
+        px >= grown.x &&
+        px <= grown.x + grown.w &&
+        py >= grown.y &&
+        py <= grown.y + grown.h
+      ) {
         best = { dialog: "hub-cat", isCat: true };
       }
     }
@@ -294,7 +396,9 @@
       submitLabel: save.name ? "update name" : "check in",
       skipLabel: save.name ? "close" : "skip",
       onSubmit: checkInAs,
-      onClose: function () { sfx.close(); },
+      onClose: function () {
+        sfx.close();
+      },
     });
   }
 
@@ -332,7 +436,9 @@
       UI.setPath(room.label);
       markRoom(room.id);
       fade.dir = -1; // fade back in
-      fade.cb = function () { transitionLock = false; };
+      fade.cb = function () {
+        transitionLock = false;
+      };
     };
     if (reduceMotion) {
       fade.a = 0;
@@ -349,8 +455,24 @@
     /* fade */
     if (fade.dir !== 0) {
       fade.a += fade.dir * dt * 4.5;
-      if (fade.dir > 0 && fade.a >= 1) { fade.a = 1; fade.dir = 0; if (fade.cb) { const cb = fade.cb; fade.cb = null; cb(); } }
-      if (fade.dir < 0 && fade.a <= 0) { fade.a = 0; fade.dir = 0; if (fade.cb) { const cb = fade.cb; fade.cb = null; cb(); } }
+      if (fade.dir > 0 && fade.a >= 1) {
+        fade.a = 1;
+        fade.dir = 0;
+        if (fade.cb) {
+          const cb = fade.cb;
+          fade.cb = null;
+          cb();
+        }
+      }
+      if (fade.dir < 0 && fade.a <= 0) {
+        fade.a = 0;
+        fade.dir = 0;
+        if (fade.cb) {
+          const cb = fade.cb;
+          fade.cb = null;
+          cb();
+        }
+      }
     }
 
     /* dialog consumes the action key */
@@ -389,7 +511,10 @@
       let dy = (keys.down ? 1 : 0) - (keys.up ? 1 : 0);
       player.moving = dx !== 0 || dy !== 0;
       if (player.moving) {
-        if (dx !== 0 && dy !== 0) { dx *= 0.7071; dy *= 0.7071; }
+        if (dx !== 0 && dy !== 0) {
+          dx *= 0.7071;
+          dy *= 0.7071;
+        }
         if (Math.abs(dx) > Math.abs(dy)) player.dir = dx > 0 ? "right" : "left";
         else if (dy !== 0) player.dir = dy > 0 ? "down" : "up";
         const speed = (keys.run ? 132 : 84) * dt;
@@ -397,10 +522,20 @@
         /* slide: x then y */
         let nx = player.x + dx * speed;
         let rect = feetRect(nx, player.y);
-        if (!solids.some(function (s) { return hit(rect, s); })) player.x = nx;
+        if (
+          !solids.some(function (s) {
+            return hit(rect, s);
+          })
+        )
+          player.x = nx;
         let ny = player.y + dy * speed;
         rect = feetRect(player.x, ny);
-        if (!solids.some(function (s) { return hit(rect, s); })) player.y = ny;
+        if (
+          !solids.some(function (s) {
+            return hit(rect, s);
+          })
+        )
+          player.y = ny;
         /* clamp inside room */
         player.x = Math.max(6, Math.min(VW - 6, player.x));
         player.y = Math.max(10, Math.min(VH - 4, player.y));
@@ -433,7 +568,9 @@
                 refreshHud();
               }
               if (target.dialog === "hub-trophy" && save.name) {
-                def = Object.assign({}, def, { sub: save.name + " — you explored 100% of the portfolio" });
+                def = Object.assign({}, def, {
+                  sub: save.name + " — you explored 100% of the portfolio",
+                });
               }
               UI.openDialog(def, {
                 /* project computers open a full-screen terminal window */
@@ -442,7 +579,9 @@
                 diploma: target.painter === "diploma",
                 /* the research paper on the book stand opens as a scroll */
                 scroll: target.painter === "lectern",
-                onClose: function () { sfx.close(); },
+                onClose: function () {
+                  sfx.close();
+                },
               });
               markSeen(target.dialog);
             }
@@ -480,7 +619,9 @@
     }
     return null;
   }
-  const defaultHint = isTouch() ? "d-pad to move · A to interact" : "WASD / arrows to move · E to interact · shift to run";
+  const defaultHint = isTouch()
+    ? "d-pad to move · A to interact"
+    : "WASD / arrows to move · E to interact · shift to run";
   function isTouch() {
     return window.matchMedia("(pointer: coarse)").matches;
   }
@@ -520,12 +661,23 @@
       return Math.floor((21 - dist) / 3); // starts opening at 18px, open at 9px
     }
     for (let r = 1; r < World.ROWS; r++) {
-      if (room.map[r][0] === "w") Sprites.TILES.doorSide(ctx, 0, r, true, sideSwing(0, r));
-      if (room.map[r][World.COLS - 1] === "e") Sprites.TILES.doorSide(ctx, World.COLS - 1, r, false, sideSwing(World.COLS - 1, r));
+      if (room.map[r][0] === "w")
+        Sprites.TILES.doorSide(ctx, 0, r, true, sideSwing(0, r));
+      if (room.map[r][World.COLS - 1] === "e")
+        Sprites.TILES.doorSide(
+          ctx,
+          World.COLS - 1,
+          r,
+          false,
+          sideSwing(World.COLS - 1, r),
+        );
     }
     /* south doors: the back of the closed pair peeking below the strip */
     for (let c = 0; c < World.COLS; c++) {
-      if (room.map[World.ROWS - 1][c] === "s" && room.map[World.ROWS - 1][c - 1] !== "s") {
+      if (
+        room.map[World.ROWS - 1][c] === "s" &&
+        room.map[World.ROWS - 1][c - 1] !== "s"
+      ) {
         Sprites.TILES.doorSouth(ctx, c, World.ROWS - 1);
       }
     }
@@ -539,7 +691,13 @@
          sortY (tiles) pins an explicit depth line — e.g. countertop items
          sort just past the counter but still behind a player in front */
       drawables.push({
-        y: f.overhead ? 1e9 : f.sortY !== undefined ? f.sortY * World.T : f.wallMounted || f.solid === false ? -1 : f.py + f.ph,
+        y: f.overhead
+          ? 1e9
+          : f.sortY !== undefined
+            ? f.sortY * World.T
+            : f.wallMounted || f.solid === false
+              ? -1
+              : f.py + f.ph,
         draw: function () {
           Sprites.PAINTERS[f.painter](ctx, f.px, f.py, f.pw, f.ph, t, f);
         },
@@ -549,23 +707,41 @@
       drawables.push({
         y: cat.y + 4,
         draw: function () {
-          Sprites.drawGrid(ctx, Sprites.CAT_FRAMES[cat.frame], Math.round(cat.x - 14), Math.round(cat.y - 11), false, Sprites.PAL_CAT);
+          Sprites.drawGrid(
+            ctx,
+            Sprites.CAT_FRAMES[cat.frame],
+            Math.round(cat.x - 14),
+            Math.round(cat.y - 11),
+            false,
+            Sprites.PAL_CAT,
+          );
         },
       });
     }
     /* idle on a stool or office chair = seated at the desk (back view) */
-    const seated = !player.moving && room.furniture.some(function (f) {
-      return (f.painter === "stool" || f.painter === "officeChair") &&
-        player.x >= f.px && player.x < f.px + f.pw &&
-        player.y >= f.py && player.y < f.py + f.ph;
-    });
+    const seated =
+      !player.moving &&
+      room.furniture.some(function (f) {
+        return (
+          (f.painter === "stool" || f.painter === "officeChair") &&
+          player.x >= f.px &&
+          player.x < f.px + f.pw &&
+          player.y >= f.py &&
+          player.y < f.py + f.ph
+        );
+      });
     drawables.push({
       y: player.y,
       draw: function () {
         const frames = Sprites.PLAYER_FRAMES[player.dir];
-        const idx = player.moving ? 1 + (Math.floor(player.animT) % (frames.length - 1)) : 0;
-        const grid = seated ? Sprites.PLAYER_SIT_UP : frames[Math.min(idx, frames.length - 1)];
-        const px = Math.round(player.x - 8), py = Math.round(player.y - 25);
+        const idx = player.moving
+          ? 1 + (Math.floor(player.animT) % (frames.length - 1))
+          : 0;
+        const grid = seated
+          ? Sprites.PLAYER_SIT_UP
+          : frames[Math.min(idx, frames.length - 1)];
+        const px = Math.round(player.x - 8),
+          py = Math.round(player.y - 25);
         if (!seated) {
           ctx.fillStyle = "rgba(0,0,0,0.3)";
           ctx.fillRect(px + 4, Math.round(player.y) + 1, 8, 2);
@@ -573,13 +749,27 @@
         Sprites.drawGrid(ctx, grid, px, py, false); // sheet has native left frames
       },
     });
-    drawables.sort(function (a, b) { return a.y - b.y; });
-    drawables.forEach(function (d) { d.draw(); });
+    drawables.sort(function (a, b) {
+      return a.y - b.y;
+    });
+    drawables.forEach(function (d) {
+      d.draw();
+    });
 
-    /* interaction glint on top */
+    /* interaction glint on top — items mounted high on the wall (whiteboard,
+       wall map, diplomas) have no headroom above them for the glint's bob,
+       so anchor those off the sprite's bottom edge instead of its top */
     const target = UI.isOpen() ? null : interactTarget();
     if (target && !target.isCat) {
-      Sprites.glint(ctx, target.px + target.pw / 2, target.py, reduceMotion ? 0 : t);
+      const glintY = target.wallMounted
+        ? target.py + target.ph - 12
+        : target.py;
+      Sprites.glint(
+        ctx,
+        target.px + target.pw / 2,
+        glintY,
+        reduceMotion ? 0 : t,
+      );
     } else if (target && target.isCat) {
       Sprites.glint(ctx, cat.x, cat.y - 13, reduceMotion ? 0 : t);
     }
@@ -630,7 +820,10 @@
     }
     let li = 0;
     const iv = setInterval(function () {
-      if (li >= bootLines.length) { clearInterval(iv); return; }
+      if (li >= bootLines.length) {
+        clearInterval(iv);
+        return;
+      }
       bootText.textContent += bootLines[li] + "\n";
       li++;
     }, 220);
@@ -646,14 +839,22 @@
     refreshHud();
     updateSoundBtn();
     if (save.name) {
-      UI.toast("welcome back, " + save.name + (save.seen.length > 0 ? " — progress restored" : "!"), 2600);
+      UI.toast(
+        "welcome back, " +
+          save.name +
+          (save.seen.length > 0 ? " — progress restored" : "!"),
+        2600,
+      );
     } else if (!save.nameSkipped) {
       /* first visit: enter through the front door and walk to reception */
       player.x = INTRO_X;
       player.dir = "up";
       if (reduceMotion) {
         player.y = INTRO_DESK_Y;
-        setTimeout(function () { sfx.open(); openCheckIn(); }, 400);
+        setTimeout(function () {
+          sfx.open();
+          openCheckIn();
+        }, 400);
       } else {
         player.y = INTRO_DOOR_Y;
         intro = { ty: INTRO_DESK_Y, wait: 0.35 };
@@ -666,7 +867,10 @@
   }
   boot.addEventListener("click", startGame);
   document.addEventListener("keydown", function (ev) {
-    if (!bootDone && (ev.code === "Enter" || ev.code === "Space" || ev.code === "KeyE")) {
+    if (
+      !bootDone &&
+      (ev.code === "Enter" || ev.code === "Space" || ev.code === "KeyE")
+    ) {
       startGame();
     }
   });
@@ -699,7 +903,16 @@
 
   /* dev/debug introspection (used by automated playtests) */
   window.__DBG = function () {
-    return { x: player.x, y: player.y, room: room.id, dir: player.dir, boot: bootDone, fade: fade.a, lock: transitionLock, intro: !!intro };
+    return {
+      x: player.x,
+      y: player.y,
+      room: room.id,
+      dir: player.dir,
+      boot: bootDone,
+      fade: fade.a,
+      lock: transitionLock,
+      intro: !!intro,
+    };
   };
 
   UI.init();

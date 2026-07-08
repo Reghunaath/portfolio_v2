@@ -204,8 +204,14 @@ window.GAME_DATA = (function () {
     "exp-cooler": {
       path: "~/experience/water-cooler",
       title: "Water Cooler",
-      body: ["The cooler gurgles. Somewhere in its bubbles live every sprint retro, every 'quick sync', and at least one legendary production incident story."],
+      body: ["Unfortunately, there's no one else here at the moment to gossip with."],
       hint: "visit the water cooler",
+    },
+    "exp-whiteboard": {
+      path: "~/experience/dashboard",
+      title: "Team Dashboard",
+      body: ["Someone drew an architecture diagram on here once. It got erased for a pie chart about snack preferences. Reghu still isn't sure which one shipped to production."],
+      hint: "check the dashboard",
     },
 
     /* ── education library ── */
