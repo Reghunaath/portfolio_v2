@@ -2209,20 +2209,6 @@ window.Sprites = (function () {
     drawGrid(ctx, PHONE_GRID, px - 1, py - 11, false, PAL_PHONE);
   }
 
-  function plant(ctx, px, py, w, h) {
-    ctx.fillStyle = "#8a4b32";
-    ctx.fillRect(px + w / 2 - 3, py + h - 5, 6, 5);
-    ctx.fillStyle = "#2ea043";
-    ctx.fillRect(px + w / 2 - 1, py + 2, 2, h - 6);
-    ctx.fillRect(px + w / 2 - 5, py + 4, 4, 2);
-    ctx.fillRect(px + w / 2 + 1, py + 3, 4, 2);
-    ctx.fillRect(px + w / 2 - 4, py + 8, 3, 2);
-    ctx.fillRect(px + w / 2 + 2, py + 7, 3, 2);
-    ctx.fillStyle = "#1f7a33";
-    ctx.fillRect(px + w / 2 - 3, py + 5, 2, 1);
-    ctx.fillRect(px + w / 2 + 2, py + 4, 2, 1);
-  }
-
   /* potted palm hand-ported from 1_Generic_16x16.png's Theme Sorter sheet
      (32x48 — two tiles wide, three tall); lobby corner accent */
   const PAL_PALM = {
@@ -2628,59 +2614,198 @@ window.Sprites = (function () {
     drawGrid(ctx, STOOL_GRID, px + ((w - 16) >> 1), py + h - 17, false, PAL_STOOL);
   }
 
+  /* office workstation (dark monitor on a white desk) hand-ported from
+     1_Generic_16x16.png — 17x38, bottom-anchored; the screen gets
+     company-colored UI lines + a nameplate on the desk front */
+  const PAL_DESK_STATION = {
+    a: "#3a3a50",
+    b: "#faf6ee",
+    c: "#787878",
+    d: "#ccc2bc",
+    e: "#b0b0a0",
+    f: "#505068",
+    g: "#615f5f",
+    h: "#d8d0e0",
+    i: "#f8f8f8",
+  };
+  const DESK_STATION_GRID = [
+    ".aaaaaaaaaaaaa...",
+    ".ahhhheeeeeeca...",
+    ".agcccccccccga...",
+    ".agcccccccccga...",
+    ".agcccccccccga...",
+    ".agcccchccccgaaaa",
+    ".agcccihecccgahca",
+    ".agccehiheccgacha",
+    ".agcccccccccgagga",
+    ".agcccccccccgaaaa",
+    ".aaaaaaaaaaaaaddd",
+    ".dddagggggadddbbb",
+    ".bbbaaaaaaadddbbb",
+    ".bbbdddddddbbbbbb",
+    ".dddddddddddddddd",
+    ".dddddddddddddddd",
+    ".ffffffffffffffff",
+    ".cccccccccccccccc",
+    ".cccccccccccccccc",
+    ".eeeeeeeeeeeeeeee",
+    ".eeeeeeeeeeeeeeee",
+    ".ffffffffffffffff",
+    "aaaaaaaaaaaaaaaaa",
+    "aabbbbbbbbbbbbbba",
+    "ddbbbbbbbbbbbbbbd",
+    "ddbbbbbbbbbbbbbbd",
+    "ddbbbbbbbbbbbbbbd",
+    "ddbbbbbbbbbbbbbbd",
+    "ddbbbbbbbbbbbbbbd",
+    "ddbbbbbbbbbbbbbbd",
+    "aadddddddddddddda",
+    "aaaaaaaaaaaaaaaaa",
+    "aa..............a",
+    "aa..............a",
+    "aa..............a",
+    "aa..............a",
+    "aa..............a",
+    "aa..............a",
+  ];
   function deskStation(ctx, px, py, w, h, t, obj) {
-    shadow(ctx, px, py + h, w);
-    /* chair below desk */
-    ctx.fillStyle = "#161b22";
-    ctx.fillRect(px + w / 2 - 4, py + h - 4, 8, 4);
-    /* desk */
-    ctx.fillStyle = "#2b2117";
-    ctx.fillRect(px, py + 6, w, h - 8);
-    ctx.fillStyle = "#3a2d1f";
-    ctx.fillRect(px, py + 6, w, 2);
-    /* monitor with company accent */
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px + w / 2 - 6, py, 12, 9);
-    ctx.fillStyle = "#05070a";
-    ctx.fillRect(px + w / 2 - 5, py + 1, 10, 7);
-    ctx.fillStyle = obj.color || "#58a6ff";
+    const gx = px + Math.round((w - 17) / 2),
+      gy = py + h - 38;
+    drawGrid(ctx, DESK_STATION_GRID, gx, gy, false, PAL_DESK_STATION);
+    /* company-colored UI lines on the dark screen (avoid the cursor arrow) */
+    ctx.fillStyle = (obj && obj.color) || "#58a6ff";
     const blink = (Math.sin(t * 2.5 + px * 0.3) + 1) / 2;
-    ctx.fillRect(px + w / 2 - 4, py + 2, blink > 0.4 ? 6 : 3, 1);
-    ctx.fillRect(px + w / 2 - 4, py + 4, 4, 1);
-    ctx.fillRect(px + w / 2 - 4, py + 6, blink > 0.6 ? 7 : 5, 1);
-    /* papers */
-    ctx.fillStyle = "#c9d1d9";
-    ctx.fillRect(px + 2, py + 9, 4, 3);
-    /* nameplate */
-    ctx.fillStyle = obj.color || "#58a6ff";
-    ctx.fillRect(px + w - 7, py + 10, 5, 2);
+    ctx.fillRect(gx + 3, gy + 3, blink > 0.4 ? 6 : 3, 1);
+    ctx.fillRect(gx + 3, gy + 5, 3, 1);
+    ctx.fillRect(gx + 3, gy + 8, blink > 0.6 ? 7 : 5, 1);
+    /* nameplate on the desk front */
+    ctx.fillRect(gx + 10, gy + 25, 5, 2);
   }
 
-  function waterCooler(ctx, px, py, w, h, t) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#c9d1d9";
-    ctx.fillRect(px + 2, py + 6, w - 4, h - 6);
-    ctx.fillStyle = "#58a6ff";
-    ctx.fillRect(px + 3, py, w - 6, 7);
-    ctx.fillStyle = "#79c0ff";
-    const bub = Math.floor(t * 2) % 4;
-    ctx.fillRect(px + 4 + bub, py + 5 - bub, 1, 1);
-    ctx.fillStyle = "#464f5d";
-    ctx.fillRect(px + 3, py + 9, 2, 2);
+  /* water dispenser hand-ported from the Modern Office sheet — round bottle
+     on a dark dispenser stand, 13x30, bottom-anchored */
+  const PAL_WATER_COOLER = {
+    a: "#6c6e85",
+    b: "#565972",
+    c: "#46465e",
+    d: "#3a3a50",
+    e: "#91a5cf",
+    f: "#8b8bab",
+    g: "#3e3e50",
+    h: "#bad2e0",
+    i: "#e5f2f3",
+    j: "#d2e7ec",
+    k: "#4b4b5e",
+    l: "#c2d5e0",
+    m: "#5c5e72",
+    n: "#717385",
+    o: "#b9c3d5",
+    p: "#acafbf",
+    q: "#aec0d5",
+    r: "#738ca8",
+    s: "#9da3b7",
+    t: "#7e92a8",
+  };
+  const WATER_COOLER_GRID = [
+    "....bbkkk....",
+    "...biijijk...",
+    "..bieeeeejk..",
+    ".bieiieeeejk.",
+    ".kieihhhhejk.",
+    ".kjhhhhhhhjk.",
+    ".gbjhhhhhjbg.",
+    ".gtmjjjjjmqg.",
+    "ckqlnernneqgc",
+    "cbqlliileeqbg",
+    "camnliilemmag",
+    "cfclnernnegag",
+    "cfacliilegaag",
+    "csfammmccaaag",
+    "csffffffffffg",
+    "bccbbbccbcggb",
+    "caaaaaaaaaabd",
+    "cabcccccccbbd",
+    "bfcooooooocbd",
+    "bfdpppppppdbd",
+    "bfdbgbbbgbdbd",
+    "cfdbbbbbbbdbd",
+    "cacaaaaaaacbd",
+    "dabcdddddcbbd",
+    "daaaaaaaaaabd",
+    "cddcbbcddcccc",
+    "dfaaaaaaaccbd",
+    "dfaaaaaaacaad",
+    "daabababadcbd",
+    "cbbbbbbbbdaad",
+  ];
+  function waterCooler(ctx, px, py, w, h) {
+    drawGrid(
+      ctx,
+      WATER_COOLER_GRID,
+      px + Math.round((w - 13) / 2),
+      py + h - 30,
+      false,
+      PAL_WATER_COOLER
+    );
   }
 
+  /* mounted whiteboard/dashboard (pie chart + line graph), hand-ported from
+     the pack's Modern Office sheet — 30x23, hung on the top wall face
+     (wallMounted, top-anchored) */
+  const PAL_WHITEBOARD_CHART = {
+    a: "#ebe4f2",
+    b: "#3a3a50",
+    c: "#c6bdd5",
+    d: "#46465e",
+    e: "#565972",
+    f: "#8b8bab",
+    g: "#fc5c46",
+    h: "#50a7e8",
+    i: "#b2aecb",
+    j: "#689183",
+    k: "#d8d0e0",
+    l: "#588278",
+    m: "#92cdf9",
+    n: "#fca69b",
+    o: "#6c6e85",
+    p: "#568d61",
+    q: "#4995e3",
+    r: "#cb2a2a",
+  };
+  const WHITEBOARD_CHART_GRID = [
+    "...bb....................bb...",
+    "eddeebbddddddddddddddddddeebbe",
+    "daaaaaaaaaaaaaaaaaaaaaaaaaaakd",
+    "bccccccccccccccccccccccccccccb",
+    "bcoedddbbbddeeedddbbbbbbbbdecb",
+    "dceaaaaaaaaaaaaaaaaaaaaaaaadcb",
+    "dceaaaaaaaaaiiaiaaaaaaaaaaabcb",
+    "eceaaaaaaaaaaaacjlljlljljlabcb",
+    "eceaaagggghaaaaiaahaamaaaaabcb",
+    "eceaagggghhhaaacahaaaamhhmabcb",
+    "dcdagggghhhhhaaiamagnaaaaaabcb",
+    "bcdacccgjhhhhaacmagaanaaaaabcb",
+    "bcbaccccjjjjjaaihnaaaagaagabcb",
+    "bcbaacccjjjjaaacgaaaaaagnaabcb",
+    "bcbaaacccjjaaiigciciciciciabcb",
+    "bcbaaaaaaaaaaaaiaaaaaaaaaaadcb",
+    "bcdaaaaaaaaaaaaiaeaaaeaaieadcb",
+    "bcebbebbbbebbbbbepbbeqbberbecb",
+    "dccccbffffbkkkkkdabkdabkdabkcd",
+    "edbbbbeeeebbbbdddkbddkbbdkbbde",
+    "daaaaebbbbeaaaaadebabebabebaad",
+    "bffffffffffffffffffffffffffffb",
+    "ddbbbbbbbbbbbbbbbbbbbbbbbbbbde",
+  ];
   function whiteboard(ctx, px, py, w, h) {
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#e6edf3";
-    ctx.fillRect(px + 1, py + 1, w - 2, h - 2);
-    ctx.fillStyle = "#f85149";
-    ctx.fillRect(px + 3, py + 3, 10, 1);
-    ctx.fillStyle = "#1f6feb";
-    ctx.fillRect(px + 3, py + 6, 16, 1);
-    ctx.fillRect(px + 3, py + 9, 7, 1);
-    ctx.fillStyle = "#3fb950";
-    ctx.fillRect(px + 22, py + 5, 6, 5); // green sticky
+    drawGrid(
+      ctx,
+      WHITEBOARD_CHART_GRID,
+      px + Math.round((w - 30) / 2),
+      py,
+      false,
+      PAL_WHITEBOARD_CHART
+    );
   }
 
   /* pack library bookshelf (Classroom_and_library, warm red-brown variant) —
@@ -2990,6 +3115,572 @@ window.Sprites = (function () {
     "..ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg...",
   ];
 
+  /* ── office cubicles — hand-ported from Modern_Office_Shadowless_16x16.png
+     (the pack's partition rail @ (13,420), plain desks @ (114,457)/(162,457),
+     monitor+keyboard set @ (224,450), dual-monitor arm rig @ (160,560),
+     office chair back view @ (0,137), paper tray scraps @ (0,238)) ───────── */
+
+  /* partition colors: dark outline, light post top, shadowed post, rail
+     highlight, panel body + light stripe */
+  const PAL_PARTITION = {
+    outline: "#3a3a50",
+    outline2: "#46465e",
+    postLite: "#dad4e0",
+    postDark: "#9da3b7",
+    joint: "#565972",
+    rail: "#b9c3d5",
+    panel: "#b1bac8",
+    stripe: "#dad4e0",
+    shadow: "#9da3b7",
+  };
+
+  const PAL_DESK_TAN = {
+    a: "#d0be9c",
+    b: "#3a3a50",
+    c: "#9c786b",
+    d: "#46465e",
+    e: "#caab8b",
+    f: "#565972",
+    g: "#e0d0b2",
+    h: "#838897",
+    i: "#acafbf",
+  };
+  const DESK_TAN_GRID = [
+    "ffdbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbd.",
+    "daaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baggaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baggaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baggaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeb.",
+    "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaed.",
+    "ddbbbbbbdddbbbbbbbbbbbbbbbbbbbbbbbbbbbbbd.",
+    "bcccccccccccccccccccccccccccccccccccccccb.",
+    "ddffdbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbdffdd.",
+    ".bhhb...............................bhhb..",
+    ".biib...............................biib..",
+    ".dffd...............................dffd..",
+  ];
+
+  const PAL_DESK_GRAY = {
+    a: "#787878",
+    b: "#808079",
+    c: "#3a3a50",
+    d: "#615f5f",
+    e: "#46465e",
+    f: "#6d6b6b",
+    g: "#565972",
+    h: "#838897",
+    i: "#acafbf",
+    j: "#8c8d83",
+    k: "#888882",
+  };
+  const DESK_GRAY_GRID = [
+    "ggeccccccccccccccccccccccccccccccccccccce.",
+    "eabababababababababababababababababababfc.",
+    "gbababababababababababababababababababafc.",
+    "cajkbabababababababababababababababababfc.",
+    "cbkjabababababababababababababababababafc.",
+    "cabababababababababababababababababababfc.",
+    "cbkjabababababababababababababababababafc.",
+    "cabababababababababababababababababababfc.",
+    "cbababababababababababababababababababafc.",
+    "cabababababababababababababababababababfc.",
+    "cbababababababababababababababababababafc.",
+    "cabababababababababababababababababababfc.",
+    "cbababababababababababababababababababafc.",
+    "cabababababababababababababababababababfc.",
+    "cbababababababababababababababababababafc.",
+    "cabababababababababababababababababababfc.",
+    "cbababababababababababababababababababafe.",
+    "eecccccceeeccccccccccccccccccccccccccccce.",
+    "cdddddddddddddddddddddddddddddddddddddddc.",
+    "eeggeccccccccccccccccccccccccccccccceggee.",
+    ".chhc...............................chhc..",
+    ".ciic...............................ciic..",
+    ".egge...............................egge..",
+  ];
+
+  /* single monitor (blue browser screen) + keyboard + mouse */
+  const PAL_MONSET = {
+    a: "#4280dd",
+    b: "#3a3a50",
+    c: "#acafbf",
+    d: "#46465e",
+    e: "#dde4eb",
+    f: "#6c6e85",
+    g: "#565972",
+    h: "#1652b9",
+    i: "#8b8bab",
+    j: "#d8d0e0",
+    k: "#50a7e8",
+    l: "#717491",
+    m: "#d4dee6",
+    n: "#838897",
+    o: "#b9c3d5",
+    p: "#cb2a2a",
+    q: "#f8d239",
+  };
+  const MONSET_GRID = [
+    "gddggddddddddddg",
+    "deeeeeeeeeeeeeed",
+    "bccccccccccccccb",
+    "bckapaaaaajajacb",
+    "bcaaaaaaaaaaaacb",
+    "bckaqaaaaajajacb",
+    "bcaaaaaaaaaaaacb",
+    "bckakaaaaajajacb",
+    "bcahahhhhhhhhhcb",
+    "dccccccccccccccd",
+    "gdbbbbddbbbbbbdg",
+    "....bmbnnbmb..di",
+    "....doccccod...d",
+    ".....dbbbbd.....",
+    "................",
+    "................",
+    "................",
+    ".............dg.",
+    ".dggddgddd..dlid",
+    "dfififififd.dffd",
+    "bifilllifib.bffb",
+    ".bbbbbbbbb...bb.",
+  ];
+
+  /* dual angled monitors on an arm stand */
+  const PAL_DUALRIG = {
+    a: "#3a3a50",
+    b: "#565972",
+    c: "#46465e",
+    d: "#6c6e85",
+    e: "#4280dd",
+    f: "#60637d",
+    g: "#1652b9",
+    h: "#d8d0e0",
+    i: "#50a7e8",
+    j: "#8b8bab",
+    k: "#4c4c66",
+    l: "#cb2a2a",
+  };
+  const DUALRIG_GRID = [
+    ".bccb............",
+    ".cfddccb.........",
+    ".abbfdddbccb.....",
+    ".abhebbfddddccb..",
+    ".abeeheebbbfdddc.",
+    ".abheeebcbeebbfc.",
+    ".afeehecdceieefc.",
+    ".abggeeajaeeeifa.",
+    ".afbbggadaeleedc.",
+    "..accfbajaeeeidb.",
+    ".....aaajabgggfc.",
+    "....akaadaacbbfa.",
+    "....abdadabcaaac.",
+    ".....abadaka.....",
+    "......cadaa......",
+    ".......ada.......",
+    ".......ccc.......",
+    ".......aba.......",
+    ".......aba.......",
+    "......cabac......",
+    "......aabaa......",
+    "......aaa........",
+  ];
+
+  /* flat paper pile with colored tabs (bottom rows of the pack's doc tray) */
+  const PAL_PAPERS = {
+    a: "#3a3a50",
+    b: "#ebe4f2",
+    d: "#8b8bab",
+    e: "#46465e",
+    f: "#565972",
+    h: "#afacc8",
+    j: "#e63f38",
+    k: "#d93232",
+    n: "#f2b22b",
+    o: "#ed931e",
+  };
+  const PAPERS_GRID = [
+    "ahbbjbbbbnbbfa",
+    "edddkddddoddda",
+    "feaaaaaaaaaaef",
+  ];
+
+  /* per-cubicle desktop clutter (PC tower/filing unit + monitor + a coworker
+     peeking over the top), hand-ported from the pack's "IT support desk
+     assemblage" row — one distinct crop per experience entry, replacing the
+     generic monitor rig + paper pile on that desk */
+  const PAL_DESKSET_QUANTU = {
+    a: "#3a3a50", b: "#46465e", c: "#b9c3d5", d: "#acafbf", e: "#838897",
+    f: "#565972", g: "#4280dd", h: "#d8d0e0", i: "#6c6e85", j: "#d4dee6",
+    k: "#afacc8", l: "#dde4eb", m: "#1652b9", n: "#a79796", o: "#fdfcfd",
+    p: "#8b8bab", q: "#60637d", r: "#50a7e8", s: "#cb2a2a", t: "#f8f8f8",
+    u: "#64b63b", v: "#f8d239",
+  };
+  const DESKSET_QUANTU_GRID = [
+    ".........................bbf........",
+    "........................adjcba......",
+    "......................afjojdfea.....",
+    ".....................bjjoodeaada....",
+    ".....................aeocdea..aja...",
+    ".....................btfeea.a..aja..",
+    "......................bjbeb..a..aja.",
+    ".......................faf....a..afa",
+    "............fbbbbbbbbbbf.......aaiea",
+    "............bccccccccccb........afa.",
+    "............adggggggggda.......ada..",
+    ".bbb........adrgsggghgda...abbfdb...",
+    "bcccabfb....adggggggggda..accfdfa...",
+    "blccbciua...adrgvggghgda.addbebdda..",
+    "alccbqlia...adgmgmmmmmda.aijdddjia..",
+    "acccbcisa...bddddddddddb.naiiebaa...",
+    "blccbqiia...fbfbbbbbbfbf..naabhha...",
+    "fcccbclla...bcdccccccdcbn...bhhhha..",
+    "beeeaqiia...acejejejejcan..bhkpkhha.",
+    "abbbbbbba...acjejejejecan.fhhhkpkhka",
+    "faaaaaaaf...accciificccanfhkphhkhkia",
+    "............acjjffffcccaaihhkphhkia.",
+    "............beeeeeeeeeeb.aihhkhkia..",
+    "............fbaaaaaaaabf..aihhkia...",
+    "...........................aikia....",
+    "............................aaa.....",
+  ];
+
+  const PAL_DESKSET_NEUTA = {
+    a: "#3a3a50", b: "#46465e", c: "#4280dd", d: "#565972", e: "#6c6e85",
+    f: "#60637d", g: "#b9c3d5", h: "#1652b9", i: "#acafbf", j: "#d8d0e0",
+    k: "#8b8bab", l: "#50a7e8", m: "#d4dee6", n: "#f2b22b", o: "#f69784",
+    p: "#dde4eb", q: "#ffb893", r: "#717491", s: "#cb2a2a", t: "#f8d239",
+    u: "#e63f38", v: "#838897", w: "#4c4c66", x: "#ed931e", y: "#64b63b",
+    z: "#e07070",
+  };
+  const DESKSET_NEUTA_GRID = [
+    "...........dbbd...........................",
+    "........dbbeefb.dbbddbbbbbbbbbbd..........",
+    "....dbbdeeefdda.beeeeeeeeeeeeeeb..........",
+    ".dbbeeeefddcjda.affffffffffffffa..........",
+    "beeefdddccjccda.aflcscccccjcjcda..........",
+    "bfddccccjcccjda.afccccccccccccda..........",
+    "bfcclcccccjccfa.aflctcccccjcjcda..........",
+    "aflcccccjcchhda.afccccccccccccda..........",
+    "beccscccchhddfa.aflclcccccjcjcdadb........",
+    "delccchhhdfbba..afchchhhhhhhhhdabmd.......",
+    "bfhhhdddbaa.....bddddddddddddddbaimd......",
+    "afddbaabdawa....dbaaaabbaaaaaabdaitmd.....",
+    "baaabdbeeeda........aeaddaea....aitnmd....",
+    "....awbbbda.........bddddddb....ainnnmd...",
+    ".....bgggabdb........baaaab.....aionnxmd..",
+    ".....bpggbgeya..................aiaqqxgb..",
+    ".....apggbfpea..................aiqqaogb..",
+    ".....agggbgesa..................aioqqogb..",
+    ".....bpggbfeea...............bd..aioozgbb.",
+    ".....dgggbgppa...bddbbdbbb..brkb..aiuugbib",
+    ".....bvvvafeea..bekekekekeb.beeb...aiugbad",
+    ".....abbbbbbba..akekrrrkeka.aeea....aigb..",
+    ".....daaaaaaad...aaaaaaaaa...aa......abd..",
+  ];
+
+  const PAL_DESKSET_INFOSYS = {
+    a: "#3a3a50", b: "#46465e", c: "#6c6e85", d: "#8b8bab", e: "#565972",
+    f: "#ebe4f2", g: "#d8d0e0", h: "#4280dd", i: "#ab4a36", j: "#b9c3d5",
+    k: "#afacc8", l: "#acafbf", m: "#838897", n: "#d4dee6", o: "#b1bac8",
+    p: "#4e6e61", q: "#ffb893", r: "#1652b9", s: "#dde4eb", t: "#b35e3f",
+    u: "#e07070", v: "#50a7e8", w: "#60637d", x: "#568d61", y: "#f69784",
+    z: "#cb2a2a", A: "#e63f38", B: "#d93232", C: "#4995e3", D: "#f8d239",
+    E: "#f2b22b", F: "#ed931e", G: "#64b63b",
+  };
+  const DESKSET_INFOSYS_GRID = [
+    "....ebaaaaabe.......................",
+    ".ebabfffffffb.......................",
+    ".bfgbfgggggfa.......................",
+    ".afkbfgkkkgfa.......................",
+    ".bfkbfffffffa.......................",
+    "aefgbfgggggfbe......................",
+    "aefgbkkkkkxkbb......................",
+    "aefgecccccxceaebbbbbbbbbbe..........",
+    "abkkdddddddecabddddddddddb..........",
+    "abaaaaaaaaabcaachhhhhhhhca..........",
+    "abggvgggggkecaacvhzhhhghca..........",
+    "aeggCgggAgkecaachhhhhhhhca..........",
+    "aeccccccBccecbacvhDhhhghca..........",
+    "ebdddddddddddbachrhrrrrrca..........",
+    ".akffAffffEffebcdccccccdcb..........",
+    ".bdddBddddFdddebebbbbbbebe..........",
+    ".ebaaaaaaaaaabbdcddddddcdb..........",
+    "..............admomomomoda.ajjjbjcza",
+    ".........eb...adomomomomda.bsjjbwcca",
+    "........eccb..adddccecddda.ejjjbjssa",
+    "........bccb..adooeeeeddda.bmmmawcca",
+    "........acda..bccccccccccb.abbbbbbba",
+    ".........aa...ebaaaaaaaabe.eaaaaaaae",
+  ];
+
+  const PAL_DESKSET_DANSKESE = {
+    a: "#3a3a50", b: "#46465e", c: "#4280dd", d: "#565972", e: "#acafbf",
+    f: "#6c6e85", g: "#d8d0e0", h: "#b9c3d5", i: "#8b8bab", j: "#dde4eb",
+    k: "#1652b9", l: "#afacc8", m: "#60637d", n: "#d4dee6", o: "#50a7e8",
+    p: "#f69784", q: "#ab4a36", r: "#838897", s: "#ffb893", t: "#b35e3f",
+    u: "#717491", v: "#cb2a2a", w: "#f8f8f8", x: "#4e6e61", y: "#4c4c66",
+    z: "#f8d239", A: "#64b63b", B: "#e07070",
+  };
+  const DESKSET_DANSKESE_GRID = [
+    "...........dbbd...............................",
+    "........dbbffmb.dbbddbbbbbbbbbbd..............",
+    "....dbbdfffmdda.bjjjjjjjjjjjjjjb..............",
+    ".dbbffffmddcgda.aeeeeeeeeeeeeeea..............",
+    "bfffmdddccgccda.aeocvcccccgcgcea.......ba.....",
+    "bmddccccgcccgda.aeccccccccccccea....bdbgga....",
+    "bmccocccccgccma.aeoczcccccgcgcea...bwbgggga...",
+    "amocccccgcckkda.aeccccccccccccea..bwbglilgga..",
+    "bfccvcccckkddma.aeococccccgcgcea.bwdggglilglb.",
+    "dfoccckkkdmbba..aeckckkkkkkkkkeadbdgligglglfb.",
+    "bmkkkdddbaa.....beeeeeeeeeeeeeebbndggligglfb..",
+    "amddbaabdaya....dbaaaabbaaaaaabdaendgglglfbia.",
+    "baaabdbfffda........anarrana..biaetndgglfbiila",
+    "....aybbbda.........bheeeehb...baeqqndlfbiilfa",
+    ".....bhhhabdb........baaaab.....aeqttndbiilfa.",
+    ".....bjhhbhfAa..................aeptqqndilfa..",
+    ".....ajhhbmjfa..................aeaspqhblfa...",
+    ".....ahhhbhfva..................aessaphbfa....",
+    ".....bjhhbmffa...............bd.aepssphba.....",
+    ".....dhhhbhjja...bddbbdbbb..buib.aeppBhbb.....",
+    ".....brrramffa..bfififififb.bffb..aexxhbeb....",
+    ".....abbbbbbba..aifiuuuifia.affa...aexhbad....",
+    ".....daaaaaaad...aaaaaaaaa...aa.....aehb......",
+    ".....................................abd......",
+  ];
+
+  const PAL_DESKSET_DANSKEAPP = {
+    a: "#3a3a50", b: "#46465e", c: "#b9c3d5", d: "#565972", e: "#ebe4f2",
+    f: "#6c6e85", g: "#acafbf", h: "#d8d0e0", i: "#8b8bab", j: "#4280dd",
+    k: "#838897", l: "#d4dee6", m: "#afacc8", n: "#e63f38", o: "#f8d239",
+    p: "#f2b22b", q: "#ffb893", r: "#ed931e", s: "#1652b9", t: "#dde4eb",
+    u: "#e07070", v: "#50a7e8", w: "#60637d", x: "#568d61", y: "#f69784",
+    z: "#cb2a2a", A: "#4e6e61", B: "#d93232", C: "#4995e3", D: "#64b63b",
+  };
+  const DESKSET_DANSKEAPP_GRID = [
+    "....dbaaaaabd.......................",
+    ".dbabeeeeeeeb.......................",
+    ".behbehhhhhea.......................",
+    ".aembehmmmhea.......................",
+    ".bembeeeeeeea.......................",
+    "adehbehhhhhebd......................",
+    "adehbmmmmmxmbb......................",
+    "adehdfffffxfdadbbbbbbbbbbd..........",
+    "abmmiiiiiiidfabccccccccccb..........",
+    "abaaaaaaaaabfaagjjjjjjjjga..........",
+    "abhhvhhhhhmdfaagvjzjjjhjga..........",
+    "adhhChhhnhmdfaagjjjjjjjjga..........",
+    "adffffffBffdfbagvjojjjhjga..........",
+    "dbiiiiiiiiiiibagjsjsssssga..........",
+    ".ameeneeeepeedbggggggggggb..........",
+    ".biiiBiiiiriiidbdbbbbbbdbd..........",
+    ".dbaaaaaaaaaabbcgccccccgcb..........",
+    "..............acklklklklca.acccbcfza",
+    ".........db...aclklklklkca.btccbwffa",
+    "........dffb..acccffdfccca.dcccbctta",
+    "........bffb..acllddddccca.bkkkawffa",
+    "........afia..bkkkkkkkkkkb.abbbbbbba",
+    ".........aa...dbaaaaaaaabd.daaaaaaaa",
+  ];
+
+  const DESK_ITEMS = {
+    quantu: { grid: DESKSET_QUANTU_GRID, pal: PAL_DESKSET_QUANTU },
+    neuta: { grid: DESKSET_NEUTA_GRID, pal: PAL_DESKSET_NEUTA },
+    infosys: { grid: DESKSET_INFOSYS_GRID, pal: PAL_DESKSET_INFOSYS },
+    danskeSe: { grid: DESKSET_DANSKESE_GRID, pal: PAL_DESKSET_DANSKESE },
+    danskeApp: { grid: DESKSET_DANSKEAPP_GRID, pal: PAL_DESKSET_DANSKEAPP },
+  };
+
+  /* office swivel chair, back view (mesh back, armrests, star base) */
+  const PAL_OFFICE_CHAIR = {
+    a: "#3a3a50",
+    b: "#565972",
+    c: "#46465e",
+    d: "#666982",
+    e: "#6c6e85",
+  };
+  const OFFICE_CHAIR_GRID = [
+    "...ccaaaaaaaa....",
+    "..cdededededba...",
+    ".cbededededebca..",
+    ".abacbcbccccaca..",
+    ".aabbbbbbbbbbaa..",
+    ".acbeccccccdbca..",
+    ".abecb.b.b.cdba..",
+    ".abda.b.b.baeba..",
+    ".abeab.b.b.adba..",
+    ".cadadbdbdbaeac..",
+    "aeabbaaaaaabbadaa",
+    "aeacbbbbbbbbcadaa",
+    "aeabbdededebbadaa",
+    "aecbdedededebcbaa",
+    "abbbededededbbcaa",
+    "ababbedededbbacaa",
+    ".acbbbbbbbbbbca..",
+    "..acccccccccca...",
+    "...aaaaaaaaaa....",
+    "...abca..acba....",
+    "...caa....aac....",
+  ];
+
+  /* company-colored screen: clone a rig palette with the pack's blue screen
+     ramp (#4280dd / #50a7e8 / #1652b9) swapped for shades of the color */
+  function shadeHex(hex, f) {
+    const n = parseInt(hex.slice(1), 16);
+    const ch = function (v) {
+      return Math.max(0, Math.min(255, Math.round(v * f)))
+        .toString(16)
+        .padStart(2, "0");
+    };
+    return "#" + ch((n >> 16) & 255) + ch((n >> 8) & 255) + ch(n & 255);
+  }
+  const rigPalCache = {};
+  function rigPal(base, bodyKey, liteKey, darkKey, color) {
+    const key = bodyKey + color;
+    if (!rigPalCache[key]) {
+      const pal = {};
+      for (const k in base) pal[k] = base[k];
+      pal[bodyKey] = shadeHex(color, 0.8);
+      pal[liteKey] = color;
+      pal[darkKey] = shadeHex(color, 0.5);
+      rigPalCache[key] = pal;
+    }
+    return rigPalCache[key];
+  }
+
+  /* 3px partition post column: light face above the panel line, shadowed
+     below, dark caps at both ends */
+  function partitionPost(ctx, x, yTop, yPanelBot, yBot) {
+    const P = PAL_PARTITION;
+    ctx.fillStyle = P.outline;
+    ctx.fillRect(x, yTop, 1, yBot - yTop);
+    ctx.fillRect(x + 2, yTop, 1, yBot - yTop);
+    ctx.fillStyle = P.postLite;
+    ctx.fillRect(x + 1, yTop, 1, yPanelBot - yTop);
+    ctx.fillStyle = P.postDark;
+    ctx.fillRect(x + 1, yPanelBot, 1, yBot - yPanelBot);
+    /* caps */
+    ctx.fillStyle = P.joint;
+    ctx.fillRect(x, yTop, 3, 1);
+    ctx.fillRect(x, yBot - 1, 3, 1);
+    ctx.fillStyle = P.outline2;
+    ctx.fillRect(x + 1, yTop, 1, 1);
+    ctx.fillRect(x + 1, yBot - 1, 1, 1);
+  }
+
+  /* full cubicle: back partition (rail on the rect's top edge, posts poking
+     11px above it), desk tucked under the panel, monitor rig + clutter.
+     obj extras: color (screen), rig ("dual"), desk ("gray"), papers,
+     deskItem (key into DESK_ITEMS — hand-ported desktop clutter that
+     replaces the papers/rig entirely when set), noLeftPost/noRightPost (skip
+     that corner post — set on the right-hand cubicle of an adjoining pair so
+     two cubicles sharing a wall don't each draw their own stub post 3px
+     apart; the neighbor's full post + cubicleSide strip is the only divider
+     drawn at that boundary) */
+  function cubicle(ctx, px, py, w, h, t, obj) {
+    const P = PAL_PARTITION;
+    const color = (obj && obj.color) || "#58a6ff";
+    const noLeftPost = obj && obj.noLeftPost;
+    const noRightPost = obj && obj.noRightPost;
+    /* back panel between the posts — 21px tall band stack from the pack —
+       extends flush to the rect edge on any side with no post to butt against */
+    const bx = px + (noLeftPost ? 0 : 3),
+      bw = px + w - (noRightPost ? 0 : 3) - bx;
+    ctx.fillStyle = P.outline;
+    ctx.fillRect(bx, py, bw, 1);
+    ctx.fillStyle = P.rail;
+    ctx.fillRect(bx, py + 1, bw, 1);
+    ctx.fillStyle = P.outline2;
+    ctx.fillRect(bx, py + 2, bw, 1);
+    ctx.fillStyle = P.panel;
+    ctx.fillRect(bx, py + 3, bw, 1);
+    ctx.fillStyle = P.stripe;
+    ctx.fillRect(bx, py + 4, bw, 2);
+    ctx.fillStyle = P.panel;
+    ctx.fillRect(bx, py + 6, bw, 13);
+    ctx.fillStyle = P.shadow;
+    ctx.fillRect(bx, py + 19, bw, 1);
+    ctx.fillStyle = P.outline;
+    ctx.fillRect(bx, py + 20, bw, 1);
+    /* corner posts, tips rising above the rail like the pack's segment */
+    if (!noLeftPost) partitionPost(ctx, px, py - 11, py + 21, py + h);
+    if (!noRightPost) partitionPost(ctx, px + w - 3, py - 11, py + 21, py + h);
+    /* desk tucked 2px under the panel, front edge on the rect's bottom */
+    const deskGray = obj && obj.desk === "gray";
+    const dx = px + Math.round((w - 42) / 2),
+      dy = py + h - 23;
+    drawGrid(
+      ctx,
+      deskGray ? DESK_GRAY_GRID : DESK_TAN_GRID,
+      dx,
+      dy,
+      false,
+      deskGray ? PAL_DESK_GRAY : PAL_DESK_TAN
+    );
+    const item = obj && obj.deskItem && DESK_ITEMS[obj.deskItem];
+    if (item) {
+      /* hand-ported desktop clutter, base aligned with the monitor rig's */
+      drawGrid(
+        ctx,
+        item.grid,
+        px + Math.round((w - item.grid[0].length) / 2),
+        dy + 15 - item.grid.length,
+        false,
+        item.pal
+      );
+      return;
+    }
+    /* paper pile on the desk's left half */
+    if (obj && obj.papers) {
+      drawGrid(ctx, PAPERS_GRID, dx + 4, dy + 11, false, PAL_PAPERS);
+    }
+    /* monitor rig, base resting on the desk surface */
+    if (obj && obj.rig === "dual") {
+      drawGrid(
+        ctx,
+        DUALRIG_GRID,
+        px + Math.round((w - 17) / 2),
+        dy - 5,
+        false,
+        rigPal(PAL_DUALRIG, "e", "i", "g", color)
+      );
+    } else {
+      drawGrid(
+        ctx,
+        MONSET_GRID,
+        px + Math.round((w - 16) / 2),
+        dy - 6,
+        false,
+        rigPal(PAL_MONSET, "a", "k", "h", color)
+      );
+    }
+  }
+
+  /* short side-wall strip continuing a cubicle post toward the open front */
+  function cubicleSide(ctx, px, py, w, h) {
+    partitionPost(ctx, px, py, py, py + h);
+  }
+
+  function officeChair(ctx, px, py, w, h) {
+    drawGrid(
+      ctx,
+      OFFICE_CHAIR_GRID,
+      px + Math.round((w - 17) / 2),
+      py + h - 21,
+      false,
+      PAL_OFFICE_CHAIR
+    );
+  }
+
   function receptionCounter(ctx, px, py) {
     drawGrid(ctx, RECEPTION_COUNTER_GRID, px, py, false, PAL_RECEPTION_COUNTER);
   }
@@ -3000,9 +3691,10 @@ window.Sprites = (function () {
   }
 
   const PAINTERS = {
-    rug, neonRug, doormat, mug, deskPhone, plant, palmPlant, wallMap, fireExtinguisher,
+    rug, neonRug, doormat, mug, deskPhone, palmPlant, wallMap, fireExtinguisher,
     computerDesk, pottedPlant, pottedBush, stool,
     deskStation, waterCooler, whiteboard, bookshelf,
+    cubicle, cubicleSide, officeChair,
     diploma, lectern, kiosk, printer, serverRack, trophyBig,
     receptionCounter, receptionist,
   };

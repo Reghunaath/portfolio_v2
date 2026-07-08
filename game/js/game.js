@@ -553,9 +553,9 @@
         },
       });
     }
-    /* idle on a stool = seated at the desk (back view, facing the monitor) */
+    /* idle on a stool or office chair = seated at the desk (back view) */
     const seated = !player.moving && room.furniture.some(function (f) {
-      return f.painter === "stool" &&
+      return (f.painter === "stool" || f.painter === "officeChair") &&
         player.x >= f.px && player.x < f.px + f.pw &&
         player.y >= f.py && player.y < f.py + f.ph;
     });

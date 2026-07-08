@@ -47,7 +47,8 @@ matters; each file exposes one global:
   items pin just past the counter's bottom edge so the counter doesn't paint
   over them but a player standing in front still does),
   `requires: "questDone"` (only exists at 100%), plus
-  painter-specific extras (`color`, `c1`/`c2`, `icon`, `trophy`).
+  painter-specific extras (`color`, `c1`/`c2`, `icon`, `trophy`,
+  cubicle `rig`/`desk`/`papers`/`deskItem`).
 - **Depth sort** (`render()` in game.js): flat/wallMounted → `-1`, standing
   furniture/actors → bottom-edge y, overhead → `1e9`. If a sprite "disappears"
   behind something, this sort is the first place to look.
@@ -101,6 +102,7 @@ game.
 | `tools/png-to-grid.js` | Node script (built-in `zlib` only, no npm install) — slices a PNG region into the string-grid + palette format `sprites.js` uses (see `drawGrid()`), including multi-frame strips (`--frames`). Run with no args for usage. |
 | `tools/gen-manifest.js` | Scans a folder of PNGs and writes `tools/asset-manifest.js` (file paths + dimensions only) for the viewer's file list. Defaults to scanning `game/assets` — pass a different root as the first arg if the pack lives elsewhere. Re-run after adding/replacing pack files. |
 | `tools/asset-viewer.html` | Standalone browser tool — open directly (or serve `game/` so the transparency-skip in "extract tiles → gallery" works; file:// taints canvas readback). Browse a pack's sheets at adjustable zoom with a grid overlay, click or drag to select a region, and it generates the exact `png-to-grid.js` command for that selection. |
+| `tools/asset-catalog.md` | **Check this first when porting.** Text index of every sprite on the shadowless 16x16 theme sheets — per-item description + bounding box in original sheet pixels (±2px; trim at port time), plus a "Ported so far" section mapping ported sprites to their source sheets and `sprites.js` grid constants. Searching it replaces browsing sheets visually. Keep "Ported so far" updated after each port. |
 
 - `game/assets/` (the pack itself: `1_Interiors`, `2_Characters`,
   `3_Animated_objects`, `4_User_Interface_Elements`, `6_Home_Designs`,
@@ -148,7 +150,8 @@ game.
   6 frames each; idle row starts at y 32, walk row at y 64. The pack's sit rows
   (y 128/160) are side-facing only, so the desk-stool sit is derived:
   `PLAYER_SIT_UP` in sprites.js (standing up-frame lowered 3px, legs cut) is
-  drawn by game.js whenever the player idles inside a `stool` furniture rect.
+  drawn by game.js whenever the player idles inside a `stool` or
+  `officeChair` furniture rect.
 - The lobby cat is the pack's `animated_cat.png` (12 frames of 48x16, trimmed
   to 28x15). It's a lounging pose with no walk frames, so it sits at a fixed
   spot playing its tail-sweep loop instead of wandering; the pack's baked
@@ -158,5 +161,25 @@ game.
   from the pack's `5_Classroom_and_library` shadowless sheet, drawn
   bottom-anchored on their furniture rects. The diplomas stay procedural —
   the pack has no certificate/diploma sprite.
+- The experience office is a Modern-Office-pack cubicle farm (mirroring the
+  pack's reference room): each experience entry is one cubicle — a solid
+  back rect (`cubicle` painter: partition rail/panel with posts poking 11px
+  above the rect top, desk tucked 2px under the panel, desk front on the
+  rect bottom), two thin solid `cubicleSide` strips flanking the
+  open front, and a walkable `officeChair` (sortY pins it over the desk
+  front; idling on it sits the player, same as stools). Each desk shows a
+  hand-ported, per-company desktop clutter cluster (`deskItem` key into the
+  `DESK_ITEMS` map, cropped from the pack's "IT support desk assemblage" row
+  — PC tower/filing unit + monitor + a coworker peeking over the top),
+  replacing the earlier generic monitor rig + paper pile entirely when set.
+  Older cubicle extras (`rig: "dual"` for the dual-monitor arm,
+  `color` for its screen tint, `papers`) still exist in `cubicle()` as a
+  fallback for any desk without a `deskItem`; `desk: "gray"` (checkered gray
+  desk, bottom row) still applies regardless. The old `deskStation` painter
+  (Generic's white workstation) is still registered but unused.
+  `waterCooler` (13x30, bottom-anchored) and `whiteboard` (30x23, wallMounted
+  top-anchored on the wall face — a mounted dashboard with a pie chart +
+  line graph) are both hand-ported from the Modern Office sheet; the corner
+  plants reuse `pottedPlant`.
 - New content goes in data.js (dialog) + world.js (placement) + sprites.js
   (painter, only if a new object type is needed).
