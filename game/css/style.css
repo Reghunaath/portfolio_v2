@@ -699,6 +699,136 @@ body {
   color: #fff8e6;
 }
 
+/* ── resume-mode dialog (lobby copier) ─────────────────────────────────────
+   the resume as a sheet of printed paper centered over the blurred game:
+   white page, dark ink, regular document type (not the game fonts), with
+   the download links pinned to a footer strip below the page */
+#dialog.resume {
+  align-items: center;
+  background: rgba(2, 4, 8, 0.62);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+#dialog.resume .dlg-window {
+  width: min(720px, 100%);
+  height: min(92%, 960px);
+  max-height: 92%;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfaf5 65%, #f3efe4 100%);
+  border: 1px solid #b9b4a3;
+  border-radius: 2px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 22px 48px rgba(0, 0, 0, 0.6);
+}
+/* not a message box — drop the blinking ▼ prompt */
+#dialog.resume .dlg-window::after { content: none; }
+/* plain page — no RPG titlebar, just a floating ✕ on the paper corner */
+#dialog.resume .dlg-titlebar {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 2;
+  height: auto;
+  padding: 0;
+  border: none;
+  background: none;
+}
+#dialog.resume #dialog-path { display: none; }
+#dialog.resume #dialog-close {
+  background: none;
+  border: 1px solid #c6c0ae;
+  border-radius: 3px;
+  color: #8a8572;
+}
+#dialog.resume #dialog-close:hover { background: #d84848; color: #fff; }
+#dialog.resume #dialog-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+}
+/* the printed page — regular document type, dark ink on white */
+#dialog.resume .dlg-paper {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 30px 38px 26px;
+  font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #22242a;
+  scrollbar-width: thin;
+  scrollbar-color: #b9b4a3 #f3efe4;
+}
+#dialog.resume .rp-name {
+  font-size: 21px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+#dialog.resume .rp-contact {
+  font-size: 11.5px;
+  color: #55575e;
+  text-align: center;
+  margin: 3px 0 4px;
+}
+#dialog.resume .rp-heading {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid #9a9481;
+  padding-bottom: 2px;
+  margin: 14px 0 7px;
+}
+#dialog.resume .rp-entry { margin-bottom: 9px; }
+#dialog.resume .rp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+#dialog.resume .rp-title { font-size: 12.5px; font-weight: 700; }
+#dialog.resume .rp-title.rp-role { font-weight: 400; font-style: italic; }
+#dialog.resume .rp-note { font-weight: 400; color: #45474e; }
+#dialog.resume .rp-date {
+  font-size: 11.5px;
+  color: #55575e;
+  white-space: nowrap;
+}
+#dialog.resume .rp-subline {
+  font-size: 12px;
+  font-style: italic;
+  color: #45474e;
+  margin: 1px 0 2px;
+}
+#dialog.resume .rp-para { font-size: 12px; line-height: 1.5; margin-top: 2px; }
+#dialog.resume .rp-bullets {
+  margin: 2px 0 0;
+  padding-left: 16px;
+  list-style: disc;
+}
+#dialog.resume .rp-bullets li {
+  font-size: 12px;
+  line-height: 1.45;
+  margin-bottom: 2px;
+  padding-left: 2px;
+  color: #22242a;
+}
+#dialog.resume .rp-bullets li::before { content: none; }
+#dialog.resume .rp-pair { font-size: 12px; line-height: 1.55; }
+#dialog.resume .rp-pair strong { font-weight: 600; }
+#dialog.resume .dlg-links {
+  flex: none;
+  justify-content: center;
+  margin: 0;
+  padding: 10px 16px;
+  border-top: 1px solid #ded8c6;
+  background: #f0ecdf;
+}
+@media (max-width: 700px) {
+  #dialog.resume .dlg-paper { padding: 20px 16px 18px; }
+}
+
 /* ── toast ─────────────────────────────────────────────────────────────── */
 #toast {
   position: absolute;

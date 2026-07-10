@@ -16,6 +16,7 @@ window.GAME_DATA = (function () {
     linkedin: "https://www.linkedin.com/in/reghunaath",
     github: "https://github.com/Reghunaath/",
     mainSite: "/", // when this folder is served from public/game, "/" is the terminal portfolio
+    resume: "resume.pdf", // game-local copy (relative) so it resolves on file:// and when served at /game/
   };
 
   /* Dialog definitions. `core: true` items count toward quest completion. */
@@ -48,6 +49,130 @@ window.GAME_DATA = (function () {
         "\"Thank you for calling REGHU.EXE. For projects, walk north. For experience, east. For education, west. To say hello to Reghu himself, head south to ~/contact.\"",
       ],
       hint: "answer the phone",
+    },
+    /* opens the in-game resume viewer (PDF + download) — rendered by the
+       `resume` mode of UI.openDialog, keyed off the `copier` painter in
+       game.js, so `url` is read there rather than shown as body text. */
+    "hub-resume": {
+      path: "~/lobby/resume",
+      title: "Resume",
+      url: personal.resume,
+      hint: "view Reghu's resume",
+      /* full text of resume.pdf, rendered as a printed paper sheet by the
+         `resume` dialog mode in ui.js — keep in sync when the PDF changes */
+      sheet: {
+        name: personal.name,
+        contact: [personal.email, "linkedin.com/in/reghunaath", "Boston, MA", "(857) 351-9009"],
+        sections: [
+          {
+            heading: "Education",
+            entries: [
+              {
+                title: "Northeastern University",
+                note: "Boston, MA, USA",
+                date: "2024 – 2026",
+                sub: "Master of Science in Data Science | CGPA: 3.9",
+              },
+              {
+                title: "Vellore Institute of Technology",
+                note: "Vellore, TN, India",
+                date: "2018 – 2022",
+                sub: "Bachelor of Technology in Computer Science and Engineering | CGPA: 8.56",
+              },
+            ],
+          },
+          {
+            heading: "Work Experience",
+            entries: [
+              {
+                title: "QuantUniversity",
+                note: "Boston, MA",
+                date: "Jul 2025 – Aug 2025",
+                sub: "Graduate Intern",
+                bullets: [
+                  "Built a platform using React and FastAPI to enable AI assisted educational content creation and seamless hosting of generated materials, reducing content development time from 5 days to ~3 hours",
+                  "Identified and fixed a critical paywall bypass vulnerability in the first week, strengthening platform security",
+                  "Designed and implemented authentication and authorization systems addressing all the security and compliance for the ISO and SOC2 certification",
+                ],
+              },
+              {
+                title: "Infosys",
+                note: "Bengaluru, India",
+                date: "Aug 2023 – Jul 2024",
+                sub: "Senior Systems Engineer",
+                bullets: [
+                  "Developed and deployed a full-stack application with a .NET microservice architecture and React.js frontend, modernizing a legacy insurance platform through REST APIs, JWT based authentication, and Redux state management for a seamless user experience.",
+                  "Built a .NET rule based recommendation engine integrating 9 external systems through gRPC, SOAP, and REST APIs, with SQL used to cache external system data for efficient rule evaluation and policy recommendations.",
+                  "Developed a Python script to auto generate unit test cases and Postman integration test cases from business owned Excel sheets, reducing test case updates from hours to minutes per cycle and saving over 65 hours of manual effort long term.",
+                ],
+              },
+              {
+                title: "Danske IT",
+                note: "(subsidiary of Danske Bank, acquired by Infosys in 2023), Bengaluru, India",
+                date: "Jul 2022 – Aug 2023",
+                sub: "Associate Software Engineer",
+                bullets: [
+                  "Developed and integrated Camunda BPM workflows within the .NET backend to orchestrate customer onboarding processes, automating task execution and service interactions to improve data processing efficiency, fault tolerance, and overall system reliability.",
+                  "Built and owned CI/CD pipelines on Azure DevOps, ensuring smooth deployment workflows, version control, and continuous integration across development and production environments.",
+                  "Integrated automated load testing with Grafana K6 into the CD pipeline to evaluate system performance and ensure scalability under high traffic",
+                  "Independently implemented a monitoring solution using Kibana (Elastic Stack) to provide real time insights and enhance oversight across multiple team projects",
+                ],
+              },
+              {
+                sub: "Apprentice",
+                date: "Jan 2022 – Jul 2022",
+                bullets: [
+                  "Gained comprehensive experience in fintech software development, working across testing, DevOps, frontend, and backend in an agile environment",
+                  "Improved unit test line coverage from 60% to 95% for .NET backend",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "Projects",
+            entries: [
+              {
+                title: "RescueLine AI",
+                body: [
+                  "Developed an AI powered emergency call triage system using Twilio, ElevenLabs, and FastAPI to automatically classify and route emergency calls by urgency during natural disasters, when traditional helplines are overwhelmed. Built a real time voice AI agent and live dashboard with WebSocket based updates for emergency coordinators managing high call volumes. Earned 1st place and $700 at Northeastern's Innovate 2026 Hackathon.",
+                ],
+              },
+              {
+                title: "LeadCatch AI",
+                body: [
+                  "Developed an AI chat assistant powered by ChatGPT and Twilio APIs to turn missed calls into booked appointments for small businesses. Designed a scalable Python backend for multi user handling and automated SMS based lead conversion. Earned 2nd place and $1500 in the \"Best Startup Demonstrating Traction\" category at the Yconic AI Hackathon (Microsoft, Cambridge, MA).",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "Technical Skills",
+            entries: [
+              {
+                pairs: [
+                  ["Backend", "Java (Spring Boot), C# (.NET), Python (Django, Flask, FastAPI)"],
+                  ["Frontend", "React, Angular, Flutter"],
+                  ["DevOps", "AWS, Azure DevOps, git"],
+                  ["Other Programming Languages", "C, C++, MATLAB, R, Go"],
+                  ["Testing", "JUnit, NUnit, xUnit, Postman, Selenium, k6"],
+                  ["ML/AI", "TensorFlow, Keras, scikit-learn, Pandas, Numpy, OpenCV, Matplotlib, Seaborn, Plotly, LLMs, Streamlit"],
+                  ["DBMS", "SQL, MongoDB"],
+                ],
+              },
+            ],
+          },
+          {
+            heading: "Publications",
+            entries: [
+              {
+                body: [
+                  "Muralidharan, K., Ramesh, A., Rithvik, G., Prem, S., Reghunaath, A. A., & Gopinath, M. P. (2021). 1D Convolution approach to human activity recognition using sensor data and comparison with machine learning algorithms. International Journal of Cognitive Computing in Engineering, 2, 130–143. (56 citations)",
+                ],
+              },
+            ],
+          },
+        ],
+      },
     },
     "hub-map": {
       path: "~/lobby/map",
@@ -259,28 +384,25 @@ window.GAME_DATA = (function () {
     },
 
     /* ── contact comms room ── */
-    "contact-email": {
-      path: "~/contact/email",
-      title: "Mail Terminal",
-      body: ["Two inboxes, both monitored faster than most Slack channels.", personal.email, personal.personalEmail],
-      links: [
-        { label: "send email", url: "mailto:" + personal.email },
-        { label: "copy address", copy: personal.email },
+    "contact-directline": {
+      path: "~/contact/direct",
+      title: "Direct Line",
+      body: [
+        "Phone, WhatsApp, and two inboxes — all monitored faster than most Slack channels.",
+        personal.email,
+        personal.personalEmail,
+        personal.phone + " (US)",
+        personal.whatsapp + " (WhatsApp)",
       ],
-      core: true,
-      hint: "use the mail terminal",
-    },
-    "contact-phone": {
-      path: "~/contact/phone",
-      title: "Phone Booth",
-      body: ["Direct line and WhatsApp — pick your continent.", personal.phone + " (US)", personal.whatsapp + " (WhatsApp)"],
       links: [
         { label: "call", url: "tel:" + personal.phone },
         { label: "whatsapp", url: "https://wa.me/" + personal.whatsapp.replace("+", "") },
+        { label: "send email", url: "mailto:" + personal.email },
+        { label: "copy email", copy: personal.email },
         { label: "copy number", copy: personal.phone },
       ],
       core: true,
-      hint: "use the phone booth",
+      hint: "check the contact desk",
     },
     "contact-linkedin": {
       path: "~/contact/linkedin",

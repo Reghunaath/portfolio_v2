@@ -125,9 +125,12 @@ game.
   full-height parchment certificate with a double gold frame, a monogram
   crest seal (`crest`/`crestColor` in data.js — the game ships no image
   assets), and the GPA badge as a gold seal, over the dimmed game screen;
-  no typewriter — the parchment renders whole), and `scroll` (the research
+  no typewriter — the parchment renders whole), `scroll` (the research
   paper on the book stand — a rolled parchment manuscript with rod ends
-  sticking out top and bottom).
+  sticking out top and bottom), and `resume` (the lobby copier — the resume
+  rendered as a white printed page in a regular document font, content from
+  `sheet` on the `hub-resume` dialog in data.js which mirrors `resume.pdf`;
+  keep both in sync. Download/open-PDF links sit in a footer strip).
 - Interactable accent is phosphor green `#3fb950`; awards gold `#e3b341`; the
   lobby is deliberately warmer (burgundy pin-dot carpet floor, forest-green
   rug with a brass ring, amber `tint`); the four section rooms share a wine
@@ -183,3 +186,10 @@ game.
   plants reuse `pottedPlant`.
 - New content goes in data.js (dialog) + world.js (placement) + sprites.js
   (painter, only if a new object type is needed).
+- **Always port real sprites from the asset pack — do NOT hand-draw new art
+  procedurally (raw `ctx.fillRect`/shape primitives inside a painter) unless the
+  user explicitly asks for it.** When a needed object isn't obviously in the
+  pack, search `tools/asset-catalog.md` and port with `tools/png-to-grid.js`; if
+  the pack genuinely lacks it, ask before drawing. Painters may still compose
+  ported grids and add tiny framing pixels, but the object itself must come from
+  the pack.

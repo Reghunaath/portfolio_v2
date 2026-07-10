@@ -57,6 +57,21 @@ window.World = (function () {
         { painter: "palmPlant", x: 17.5, y: 0, w: 2, h: 3 },
         /* fire extinguisher, bottom-aligned against the right corner palm */
         { painter: "fireExtinguisher", x: 16.5, y: 0.33, w: 1, h: 2 },
+        /* resume copier on a tan office desk (used as a table) against the
+           north wall, in the gap between the north door (cols 9-10) and the
+           fire extinguisher: the 42px desk fills cols 14-16.6 exactly — left
+           edge at col 14 keeps the col-13 walkway to the door clear, right
+           edge meets the extinguisher. Interacting opens the resume viewer
+           (see game.js openDialog resume mode). */
+        {
+          painter: "copier",
+          x: 13,
+          y: 1.25,
+          w: 2.625,
+          h: 1.8125,
+          dialog: "hub-resume",
+          requireFacing: "up",
+        },
         /* framed world map, wall face between the corner palm and the door */
         {
           painter: "wallMap",
@@ -480,25 +495,16 @@ window.World = (function () {
         n: { to: "hub", spawn: [160, 180], face: "up", hint: "lobby/" },
       },
       furniture: [
+        /* merged email+phone "direct line" — a wood side table holding the
+           desk phone + phone book, one interactable (replaces the old email
+           and phone kiosks) */
         {
-          painter: "kiosk",
-          x: 2,
-          y: 2,
-          w: 2,
-          h: 2,
-          dialog: "contact-email",
-          icon: "mail",
-          color: "#3fb950",
-        },
-        {
-          painter: "kiosk",
-          x: 5,
-          y: 2,
-          w: 2,
-          h: 2,
-          dialog: "contact-phone",
-          icon: "phone",
-          color: "#58a6ff",
+          painter: "contactDesk",
+          x: 2.5,
+          y: 2.2,
+          w: 3,
+          h: 1.5,
+          dialog: "contact-directline",
         },
         {
           painter: "kiosk",

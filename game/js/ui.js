@@ -139,8 +139,120 @@ window.UI = (function () {
     el.dialog.classList.toggle("diploma", !!opts.diploma);
     /* scroll mode: rolled parchment manuscript (the research paper) */
     el.dialog.classList.toggle("scroll", !!opts.scroll);
+    /* resume mode: the resume rendered as a sheet of printed paper over the
+       blurred game (the lobby copier), with a download button below —
+       renders its own body and returns */
+    el.dialog.classList.toggle("resume", !!opts.resume);
     el.dialogPath.textContent = def.path || "~/";
     el.dialogBody.innerHTML = "";
+
+    if (opts.resume) {
+      const url = def.url || "resume.pdf";
+      const sheet = def.sheet || {};
+      /* the page itself — regular document type (see .dlg-paper in css),
+         content comes from def.sheet in data.js (mirrors resume.pdf) */
+      const paper = document.createElement("div");
+      paper.className = "dlg-paper";
+
+      const name = document.createElement("div");
+      name.className = "rp-name";
+      name.textContent = sheet.name || def.title || "Resume";
+      paper.appendChild(name);
+      if (sheet.contact) {
+        const contact = document.createElement("div");
+        contact.className = "rp-contact";
+        contact.textContent = sheet.contact.join("  |  ");
+        paper.appendChild(contact);
+      }
+
+      (sheet.sections || []).forEach(function (sec) {
+        const hd = document.createElement("div");
+        hd.className = "rp-heading";
+        hd.textContent = sec.heading;
+        paper.appendChild(hd);
+        (sec.entries || []).forEach(function (en) {
+          const entry = document.createElement("div");
+          entry.className = "rp-entry";
+          /* title row: org (bold) + location note left, dates right; a
+             role-only entry (e.g. a second position at the same org) puts
+             its italic role on the left instead */
+          if (en.title || en.date) {
+            const row = document.createElement("div");
+            row.className = "rp-row";
+            const left = document.createElement("span");
+            left.className = en.title ? "rp-title" : "rp-title rp-role";
+            left.textContent = en.title || en.sub || "";
+            if (en.title && en.note) {
+              const note = document.createElement("span");
+              note.className = "rp-note";
+              note.textContent = ", " + en.note;
+              left.appendChild(note);
+            }
+            row.appendChild(left);
+            if (en.date) {
+              const date = document.createElement("span");
+              date.className = "rp-date";
+              date.textContent = en.date;
+              row.appendChild(date);
+            }
+            entry.appendChild(row);
+          }
+          if (en.title && en.sub) {
+            const sub = document.createElement("div");
+            sub.className = "rp-subline";
+            sub.textContent = en.sub;
+            entry.appendChild(sub);
+          }
+          (en.body || []).forEach(function (para) {
+            const p = document.createElement("div");
+            p.className = "rp-para";
+            p.textContent = para;
+            entry.appendChild(p);
+          });
+          if (en.bullets) {
+            const ul = document.createElement("ul");
+            ul.className = "rp-bullets";
+            en.bullets.forEach(function (line) {
+              const li = document.createElement("li");
+              li.textContent = line;
+              ul.appendChild(li);
+            });
+            entry.appendChild(ul);
+          }
+          (en.pairs || []).forEach(function (pair) {
+            const p = document.createElement("div");
+            p.className = "rp-pair";
+            const b = document.createElement("strong");
+            b.textContent = pair[0] + ": ";
+            p.appendChild(b);
+            p.appendChild(document.createTextNode(pair[1]));
+            entry.appendChild(p);
+          });
+          paper.appendChild(entry);
+        });
+      });
+      el.dialogBody.appendChild(paper);
+
+      const row = document.createElement("div");
+      row.className = "dlg-links";
+      const dl = document.createElement("a");
+      dl.href = url;
+      dl.download = "Reghunaath_Ajith_Kumar_Ahila_Resume.pdf";
+      dl.textContent = "[ download resume.pdf ]";
+      row.appendChild(dl);
+      const open = document.createElement("a");
+      open.href = url;
+      open.target = "_blank";
+      open.rel = "noopener noreferrer";
+      open.textContent = "[ open in new tab ]";
+      row.appendChild(open);
+      el.dialogBody.appendChild(row);
+
+      el.dialog.classList.remove("hidden");
+      el.dialogBody.scrollTop = 0;
+      el.dialog.focus({ preventScroll: true });
+      return;
+    }
 
     /* university crest above the title (diploma mode) — a monogram seal,
        since the game ships no image assets */
@@ -212,7 +324,7 @@ window.UI = (function () {
   function openNamePrompt(cfg) {
     finishTyping();
     onCloseCb = cfg.onClose || null;
-    el.dialog.classList.remove("terminal", "diploma", "scroll");
+    el.dialog.classList.remove("terminal", "diploma", "scroll", "resume");
     el.dialogPath.textContent = cfg.path || "~/lobby/reception";
     el.dialogBody.innerHTML = "";
 

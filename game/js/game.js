@@ -123,6 +123,11 @@
       UI.toast(save.sound ? "sound on" : "sound off", 1200);
       return;
     }
+    /* DEV: cycle the contact-desk phone-book sprite to pick a favourite */
+    if (ev.code === "KeyB" && !ev.repeat) {
+      UI.toast("phone book: " + Sprites.cyclePhoneBook(), 1400);
+      return;
+    }
     if (ev.code === "Escape") {
       if (UI.isOpen()) {
         UI.closeDialog();
@@ -579,6 +584,9 @@
                 diploma: target.painter === "diploma",
                 /* the research paper on the book stand opens as a scroll */
                 scroll: target.painter === "lectern",
+                /* the lobby copier opens the resume viewer (embedded PDF +
+                   download button, game blurred behind) */
+                resume: target.painter === "copier",
                 onClose: function () {
                   sfx.close();
                 },

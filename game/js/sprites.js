@@ -2133,7 +2133,25 @@ window.Sprites = (function () {
     m: "#8c8c98",
     n: "#9496a3",
   };
-  const MUG_FRAMES = [
+  const MUG_CUP_ROWS = [
+    "......eebb......",
+    ".....eccddbe....",
+    ".....ecggdbce...",
+    ".....bdkkdbdb...",
+    "....baggggab....",
+    "....bahhhhae....",
+    "....bcaaaacb....",
+    "....adccccda....",
+    ".....aaaaaa.....",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+  ];
+
+  const MUG_STEAM_ROWS = [
     [
       "................",
       "................",
@@ -2146,21 +2164,6 @@ window.Sprites = (function () {
       "................",
       "................",
       "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "......eemb......",
-      ".....ecffibe....",
-      ".....efddfbce...",
-      ".....bijjibdb...",
-      "....baggggab....",
-      "....bahhhhae....",
-      "....bcaaaacb....",
-      "....adccccda....",
-      ".....aaaaaa.....",
       "................",
       "................",
       "................",
@@ -2186,21 +2189,6 @@ window.Sprites = (function () {
       ".........f......",
       "................",
       ".........f......",
-      "......enff......",
-      ".....ecfffbe....",
-      ".....ecdddbce...",
-      ".....bdjjdbdb...",
-      "....baggggab....",
-      "....bahhhhae....",
-      "....bcaaaacb....",
-      "....adccccda....",
-      ".....aaaaaa.....",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
     ],
     [
       "................",
@@ -2220,21 +2208,6 @@ window.Sprites = (function () {
       ".......fff......",
       ".......ff.......",
       ".......ff.......",
-      "......eell......",
-      ".....ecciibe....",
-      ".....ecddibce...",
-      ".....bdkkdbdb...",
-      "....baggggab....",
-      "....bahhhhae....",
-      "....bcaaaacb....",
-      "....adccccda....",
-      ".....aaaaaa.....",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
     ],
     [
       "................",
@@ -2251,21 +2224,6 @@ window.Sprites = (function () {
       ".......fff......",
       ".......fff......",
       "........f.......",
-      "................",
-      "................",
-      "................",
-      "......eebb......",
-      ".....eccddbe....",
-      ".....ecggdbce...",
-      ".....bdkkdbdb...",
-      "....baggggab....",
-      "....bahhhhae....",
-      "....bcaaaacb....",
-      "....adccccda....",
-      ".....aaaaaa.....",
-      "................",
-      "................",
-      "................",
       "................",
       "................",
       "................",
@@ -2288,21 +2246,6 @@ window.Sprites = (function () {
       "................",
       "................",
       "................",
-      "......eebb......",
-      ".....eccddbe....",
-      ".....ecggdbce...",
-      ".....bdkkdbdb...",
-      "....baggggab....",
-      "....bahhhhae....",
-      "....bcaaaacb....",
-      "....adccccda....",
-      ".....aaaaaa.....",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
     ],
     [
       "................",
@@ -2316,21 +2259,6 @@ window.Sprites = (function () {
       "................",
       "................",
       "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "......eebb......",
-      ".....eccddbe....",
-      ".....ecdddbce...",
-      ".....bdjjdbdb...",
-      "....baggggab....",
-      "....bahhhhae....",
-      "....bcaaaacb....",
-      "....adccccda....",
-      ".....aaaaaa.....",
       "................",
       "................",
       "................",
@@ -2339,6 +2267,8 @@ window.Sprites = (function () {
       "................",
     ],
   ];
+
+  const MUG_FRAMES = MUG_STEAM_ROWS.map((steam) => steam.concat(MUG_CUP_ROWS));
 
   function mug(ctx, px, py, w, h, t) {
     const frame = Math.floor(t * 3) % MUG_FRAMES.length;
@@ -2388,6 +2318,130 @@ window.Sprites = (function () {
   ];
   function deskPhone(ctx, px, py, w, h) {
     drawGrid(ctx, PHONE_GRID, px - 1, py - 11, false, PAL_PHONE);
+  }
+
+  /* ── phone-book candidates for the contact desk ──────────────────────────
+     All hand-ported from the pack. Press B in-game to cycle which one sits on
+     the desk (see game.js / Sprites.cyclePhoneBook) so a favourite can be
+     chosen; once picked, keep just that entry and drop the cycle. */
+  /* brown ledger/directory — 5_Classroom_and_library @196,355 10x15 */
+  const PAL_LEDGER = {
+    a: "#ca8854", b: "#3a3a50", c: "#b35e3f", d: "#46465e",
+    e: "#a13a30", f: "#d9a16a", g: "#565972",
+  };
+  const LEDGER_GRID = [
+    "gdbbbbbbbb",
+    "dfaaaaaace",
+    "bccccccccb",
+    "bdedbbbbbb",
+    "bccccccccb",
+    "bfaaaaaaab",
+    "efaaaaaaab",
+    "bcaaaaaaab",
+    "ecaaaaaaab",
+    "bcaaaaaaab",
+    "bcaaaaaaab",
+    "bcaaaaaaab",
+    "bcaaaaaaab",
+    "bcaaaaaaab",
+    "bcaaaaaaab",
+  ];
+  /* blue spiral diary, closed — 4_Bedroom @5,175 13x13 */
+  const PAL_DIARY = {
+    a: "#3d56d2", b: "#3a3a50", c: "#46465e", d: "#4995e3", e: "#d8d0e0",
+    f: "#5267cb", g: "#fff59a", h: "#ffe57b", i: "#374c9c", j: "#ebe4f2",
+    k: "#e63f38", l: "#b2aecb", m: "#c6bdd5", n: "#565972", o: "#fc5c46",
+  };
+  const DIARY_GRID = [
+    ".......cdedaaa",
+    "......cgadedaa",
+    ".....caaaaejda",
+    "....baaaaadejd",
+    "...baaafghfadj",
+    "...ccaaffghaad",
+    "...bkcagfghaaa",
+    "..bckncfhhfagi",
+    ".bokbbecaaaaic",
+    "..bb..beciiicl",
+    ".......beccclb",
+    "........bmemb.",
+    ".........bbb..",
+  ];
+  /* small stacked book pair — 5_Classroom_and_library @238,327 6x9 */
+  const PAL_PAIR = {
+    a: "#3a3a50", b: "#b99e86", c: "#d0be9c", d: "#9c786b",
+    e: "#916662", f: "#46465e", g: "#565972",
+  };
+  const PAIR_GRID = [
+    ".aea..",
+    ".aea..",
+    "fcdca.",
+    "abbba.",
+    ".aea..",
+    ".aba..",
+    "gcdca.",
+    "fbbba.",
+    "adbda.",
+  ];
+  /* stacked clipboard folders — 19_Hospital @48,47 11x6 */
+  const PAL_FOLDERS = {
+    a: "#ebe4f2", b: "#d8d0e0", c: "#3a3a50", d: "#46465e",
+    e: "#455c5b", f: "#9bc246", g: "#9da3b7", h: "#565972", i: "#64b63b",
+  };
+  const FOLDERS_GRID = [
+    "caaaacaaaaf",
+    "dbggbdbbbbf",
+    "caaaacaaaaf",
+    "dhhhhdbggbf",
+    ".....caaaai",
+    ".....deeeee",
+  ];
+  /* angled tome with a red bookmark — 11_Halloween @33,399 21x8 */
+  const PAL_TOME = {
+    a: "#3a3a50", b: "#d0be9c", c: "#b99e86", d: "#d8d0e0", e: "#b2aecb",
+    f: "#565972", g: "#46465e", h: "#9c786b", i: "#ebe4f2", j: "#d93232",
+    k: "#916662", l: "#e0d0b2", m: "#e63f38",
+  };
+  const TOME_GRID = [
+    ".........fdcccdjjkaa..",
+    ".......fgbbibbbdmchea.",
+    "......gdbccdblbbicckfg",
+    "......aeeafgcblbcibfde",
+    ".......aafddhbcaaghbde",
+    ".........gdebca...acee",
+    ".........aeeha.....aaa",
+    "..........aaa.........",
+  ];
+
+  const PHONEBOOKS = [
+    { name: "ledger", grid: LEDGER_GRID, pal: PAL_LEDGER },
+    { name: "blue diary", grid: DIARY_GRID, pal: PAL_DIARY },
+    { name: "stacked pair", grid: PAIR_GRID, pal: PAL_PAIR },
+    { name: "clipboard folders", grid: FOLDERS_GRID, pal: PAL_FOLDERS },
+    { name: "tome w/ bookmark", grid: TOME_GRID, pal: PAL_TOME },
+  ];
+  let phoneBookIndex = 0;
+  function cyclePhoneBook() {
+    phoneBookIndex = (phoneBookIndex + 1) % PHONEBOOKS.length;
+    return PHONEBOOKS[phoneBookIndex].name;
+  }
+
+  /* contact-room "direct line" station: the pack's tan office desk
+     (DESK_TAN_GRID) holding the desk phone (PHONE_GRID) and the currently
+     selected phone book on its surface, mirroring how cubicles seat deskItems
+     (base line at dy+15). One interactable — merges the old email + phone
+     kiosks. */
+  function contactDesk(ctx, px, py, w, h) {
+    const deskW = 42;
+    const dx = px + Math.round((w - deskW) / 2);
+    const dy = py + h - 23;
+    shadow(ctx, dx, py + h, deskW);
+    drawGrid(ctx, DESK_TAN_GRID, dx, dy, false, PAL_DESK_TAN);
+    /* items sit on the desktop surface (base line dy+15, as in cubicle) */
+    const book = PHONEBOOKS[phoneBookIndex];
+    drawGrid(ctx, PHONE_GRID, dx + 2, dy + 15 - PHONE_GRID.length, false, PAL_PHONE);
+    const bookX = dx + 31 - Math.round(book.grid[0].length / 2);
+    drawGrid(ctx, book.grid, bookX, dy + 15 - book.grid.length, false, book.pal);
   }
 
   /* potted palm hand-ported from 1_Generic_16x16.png's Theme Sorter sheet
@@ -3310,6 +3364,75 @@ window.Sprites = (function () {
     ctx.fillRect(px + 3, py - feed, w - 6, 3 + feed);
     ctx.fillStyle = "#8b949e";
     ctx.fillRect(px + 4, py - feed + 1, w - 9, 1);
+  }
+
+  /* lobby resume copier — a desktop multifunction printer/copier hand-ported
+     from the pack's Modern Office sheet (Modern_Office_Shadowless_16x16.png
+     @ 130,297, "desktop printer/scanner unit"). Bottom-anchored, centered on
+     its furniture rect so it stands on the floor against the north wall. */
+  const PAL_COPIER = {
+    a: "#ebe4f2",
+    b: "#46465e",
+    c: "#3a3a50",
+    d: "#8b8bab",
+    e: "#565972",
+    f: "#7e7f94",
+    g: "#d8d0e0",
+    h: "#c6bdd5",
+    i: "#b2aecb",
+    j: "#6c6e85",
+    k: "#b1bac8",
+    l: "#9da3b7",
+    m: "#54467f",
+    n: "#568d61",
+    o: "#50a7e8",
+    p: "#4c4e8f",
+    q: "#cb2a2a",
+    r: "#64b63b",
+    s: "#46756a",
+    t: "#f2b22b",
+  };
+  const COPIER_GRID = [
+    "............................",
+    "..............ebbbbbbbe.....",
+    "..............baaaaaaab.....",
+    "..............cgggggggc.....",
+    "..............cgggggggc.....",
+    "...........ebcbgggggggbcbe..",
+    "...........bdfehhhhhhhejfb..",
+    "...........bldfffffffffddb..",
+    "...........blddddddddddddb..",
+    ".ebbbbbbbe.bdddddddddddddb..",
+    ".baaaaaaaeebjdddddddddddjb..",
+    ".baaaaaaaebebejjjjjjjjjebe..",
+    ".baaaaaaaecbefffpmbbfakaeb..",
+    ".baaaaaaaecceqrfmcccfkakec..",
+    ".baaaaaaaeccefffffffffffec..",
+    ".baaaaaaaeccbcbbeebbbbbcbc..",
+    ".baaaaaaaecbcecgnsngdgcecb..",
+    ".ehhhhhhhec..ccaotoadacc....",
+    "..biiiiiiic...caaaaaaac.....",
+    "..biiiiiiic...bcccccccb.....",
+    "..ebccccccb.................",
+  ];
+  /* the copier sits on the pack's tan office desk (DESK_TAN_GRID) used as a
+     table, mirroring contactDesk — desk bottom-anchored on the rect, copier
+     centered on the tabletop with its base resting on the desk surface
+     (base line dy+15, as cubicle/contactDesk deskItems do). */
+  function copier(ctx, px, py, w, h) {
+    const deskW = 42;
+    const dx = px + Math.round((w - deskW) / 2);
+    const dy = py + h - 23;
+    shadow(ctx, dx, py + h, deskW);
+    drawGrid(ctx, DESK_TAN_GRID, dx, dy, false, PAL_DESK_TAN);
+    drawGrid(
+      ctx,
+      COPIER_GRID,
+      dx + Math.round((deskW - 28) / 2),
+      dy + 15 - COPIER_GRID.length,
+      false,
+      PAL_COPIER,
+    );
   }
 
   function serverRack(ctx, px, py, w, h, t) {
@@ -4236,6 +4359,7 @@ window.Sprites = (function () {
     doormat,
     mug,
     deskPhone,
+    contactDesk,
     palmPlant,
     wallMap,
     fireExtinguisher,
@@ -4254,6 +4378,7 @@ window.Sprites = (function () {
     lectern,
     kiosk,
     printer,
+    copier,
     serverRack,
     trophyBig,
     receptionCounter,
@@ -4283,5 +4408,6 @@ window.Sprites = (function () {
     glint,
     hash2,
     T,
+    cyclePhoneBook,
   };
 })();

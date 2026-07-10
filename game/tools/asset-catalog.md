@@ -34,7 +34,8 @@ Sprites already hand-ported into `game/js/sprites.js` (search the file for
 | Floor tiles (lobby) | Modern Interiors "Room Builder" floor sheet | not in the 24 theme sheets |
 | Walls, north door | `6_Home_Designs/Generic_Home_1` | not in the 24 theme sheets |
 | Coffee mug (6-frame steam strip) | `3_Animated_objects/16x16/animated_coffee.png` | not in the 24 theme sheets |
-| Desk telephone | `1_Generic_Shadowless.png` | navy/gray set |
+| Desk telephone | `1_Generic_Shadowless.png` | navy/gray set (`PHONE_GRID`, `deskPhone`; also reused by `contactDesk`) |
+| Phone-book candidates for the `contactDesk` (press B in-game to cycle, then keep the pick): ledger `LEDGER_GRID` (5_Classroom @196,355 10x15), blue diary `DIARY_GRID` (4_Bedroom @5,175 13x13), stacked pair `PAIR_GRID` (5_Classroom @238,327 6x9), clipboard folders `FOLDERS_GRID` (19_Hospital @48,47 11x6), tome+bookmark `TOME_GRID` (11_Halloween @33,399 21x8) | multiple sheets | `PHONEBOOKS` array in sprites.js, seated on `contactDesk` — the contact room's merged email+phone "direct line" |
 | Potted palm (32x48) | `1_Generic_Shadowless.png` | lobby corner |
 | Potted plant + bush | `1_Generic_Shadowless.png` | single-tile + 2-tile |
 | Office desk station (17x38) | `1_Generic_Shadowless.png` | dark monitor on white desk |
@@ -48,12 +49,13 @@ Sprites already hand-ported into `game/js/sprites.js` (search the file for
 | Wooden stool | `14_Basement_Shadowless.png` | in front of computer desks |
 | Reception counter (U-shape, 96x37 stretched) | `19_Hospital_Shadowless.png` | central U only, recolored to whites |
 | Cubicle partition (rail @ 13,420 → procedural bands/posts) | `Modern_Office_Shadowless_16x16.png` | `PAL_PARTITION`, `cubicle`/`cubicleSide` painters |
-| Office desk, tan (42x23 @ 114,457) + gray checkered (@ 162,457) | `Modern_Office_Shadowless_16x16.png` | `DESK_TAN_GRID` / `DESK_GRAY_GRID` |
+| Office desk, tan (42x23 @ 114,457) + gray checkered (@ 162,457) | `Modern_Office_Shadowless_16x16.png` | `DESK_TAN_GRID` / `DESK_GRAY_GRID` (tan also reused as the contact room's `contactDesk` surface) |
 | Monitor + keyboard + mouse set (16x22 @ 224,450) | `Modern_Office_Shadowless_16x16.png` | `MONSET_GRID`, screen recolored per company |
 | Dual-monitor arm rig (17x22 @ 160,560) | `Modern_Office_Shadowless_16x16.png` | `DUALRIG_GRID`, screen recolored per company |
 | Office swivel chair, back view (17x21 @ 0,137) | `Modern_Office_Shadowless_16x16.png` | `OFFICE_CHAIR_GRID`, `officeChair` painter |
 | Paper pile (14x3, bottom rows of doc tray @ 0,238) | `Modern_Office_Shadowless_16x16.png` | `PAPERS_GRID` — superseded by `deskItem` on the desks below, still used elsewhere |
 | Desktop clutter, per experience desk (IT-support-desk-assemblage row): quantu (36x26 @ 118,417), neu-ta (42x23 @ 160,418), infosys (36x23 @ 164,481), danske-se (46x24 @ 208,449), danske-app (36x23 @ 164,513) — infosys and danske-app both have their ported "seated person figure"/photo-frame element blanked out (cols 24-35 across rows 5-16 of the grid) to drop the framed-photo prop while keeping the filing unit/monitor/tower | `Modern_Office_Shadowless_16x16.png` | `DESK_ITEMS` map, `cubicle`'s `deskItem` obj key — replaces the generic monitor rig + papers on that desk |
+| Resume copier / desktop printer-scanner unit (28x25 @ 130,297) | `Modern_Office_Shadowless_16x16.png` | `COPIER_GRID`, `copier` painter — lobby north-wall resume viewer, drawn sitting on the tan office desk (`DESK_TAN_GRID`) used as a table (à la `contactDesk`); opens the `resume`-mode dialog: the resume rendered as a paper sheet (text from `def.sheet` in data.js) + download |
 
 ## After porting a sprite
 
