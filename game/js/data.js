@@ -70,13 +70,13 @@ window.GAME_DATA = (function () {
               {
                 title: "Northeastern University",
                 note: "Boston, MA, USA",
-                date: "2024 – 2026",
+                date: "Sep 2024 – Apr 2026",
                 sub: "Master of Science in Data Science | CGPA: 3.9",
               },
               {
                 title: "Vellore Institute of Technology",
                 note: "Vellore, TN, India",
-                date: "2018 – 2022",
+                date: "Aug 2018 – Apr 2022",
                 sub: "Bachelor of Technology in Computer Science and Engineering | CGPA: 8.56",
               },
             ],
@@ -150,12 +150,12 @@ window.GAME_DATA = (function () {
             entries: [
               {
                 pairs: [
-                  ["Backend", "Java (Spring Boot), C# (.NET), Python (Django, Flask, FastAPI)"],
+                  ["Backend", "C# (.NET), Java (Spring Boot), Python (Django, Flask, FastAPI)"],
                   ["Frontend", "React, Angular, Flutter"],
                   ["DevOps", "AWS, Azure DevOps, git"],
                   ["Other Programming Languages", "C, C++, MATLAB, R, Go"],
                   ["Testing", "JUnit, NUnit, xUnit, Postman, Selenium, k6"],
-                  ["ML/AI", "TensorFlow, Keras, scikit-learn, Pandas, Numpy, OpenCV, Matplotlib, Seaborn, Plotly, LLMs, Streamlit"],
+                  ["ML/AI", "TensorFlow, Keras, PyTorch, scikit-learn, Pandas, Numpy, OpenCV, Matplotlib, Seaborn, Plotly, LLMs, Streamlit, GenAI, LangChain, LangGraph, ElevenLabs, RAG, Claude Code, Cursor"],
                   ["DBMS", "SQL, MongoDB"],
                 ],
               },
@@ -166,7 +166,7 @@ window.GAME_DATA = (function () {
             entries: [
               {
                 body: [
-                  "Muralidharan, K., Ramesh, A., Rithvik, G., Prem, S., Reghunaath, A. A., & Gopinath, M. P. (2021). 1D Convolution approach to human activity recognition using sensor data and comparison with machine learning algorithms. International Journal of Cognitive Computing in Engineering, 2, 130–143. (56 citations)",
+                  "Muralidharan, K., Ramesh, A., Rithvik, G., Prem, S., Reghunaath, A. A., & Gopinath, M. P. (2021). 1D Convolution approach to human activity recognition using sensor data and comparison with machine learning algorithms. International Journal of Cognitive Computing in Engineering, 2, 130–143. (63 citations)",
                 ],
               },
             ],

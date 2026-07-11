@@ -40,6 +40,11 @@ Next.js 16 (App Router) · React 19 · Tailwind CSS v4 (`@theme inline` in
   sync when content changes.
 - `src/app/globals.css` — terminal color tokens (`--t-*`, GitHub-dark palette),
   CRT scanline overlay, `crt-glow` utility. Font: JetBrains Mono everywhere.
+- **Resume PDF** lives in two served copies — `public/resume.pdf` (main site) and
+  `game/resume.pdf` (game). Whenever the resume changes, replace BOTH files, and
+  also update the in-game resume printer: the `sheet` text on the `hub-resume`
+  dialog in `game/js/data.js` is a manual mirror of the PDF's content (rendered
+  as a printed page at the lobby copier), so re-sync it to the new PDF.
 
 ## User preferences
 
