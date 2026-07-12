@@ -55,6 +55,15 @@
       <div id="toast" aria-live="polite"></div>
       <canvas id="confetti" class="hidden"></canvas>
 
+      <!-- crash screen (server-unplug easter egg) -->
+      <div id="crash" class="hidden" role="alertdialog" aria-modal="true" aria-labelledby="crash-title">
+        <div id="crash-inner">
+          <div id="crash-title">*** KERNEL PANIC ***</div>
+          <pre id="crash-text"></pre>
+          <button id="crash-reset" type="button">[ RESET SERVER ]</button>
+        </div>
+      </div>
+
       <!-- touch controls -->
       <div id="touch-ui">
         <div id="dpad">

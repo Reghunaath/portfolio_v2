@@ -214,6 +214,60 @@ body {
 
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
+/* ── crash screen (server-unplug easter egg) ──────────────────────────────
+   a fake kernel panic: full-bleed black terminal over the whole play area,
+   above every other overlay (boot/dialog), ending in a [ RESET SERVER ] key */
+#crash {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: #05070a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: auto;
+}
+#crash.hidden { display: none; }
+#crash-inner {
+  max-width: 520px;
+  width: 100%;
+  font-family: var(--mono-font);
+}
+#crash-title {
+  font-family: var(--px-font);
+  font-size: clamp(11px, 2.6vw, 16px);
+  color: var(--t-red);
+  text-shadow: 0 0 12px rgba(248, 81, 73, 0.6);
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  animation: blink 1.1s step-end infinite;
+}
+#crash-text {
+  font-family: var(--mono-font);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--t-green);
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 22px;
+}
+#crash-text .crash-hl { color: var(--t-yellow); }
+#crash-text .crash-dim { color: var(--t-dim); }
+#crash-reset {
+  font-family: var(--mono-font);
+  font-size: 13px;
+  color: var(--t-bg);
+  background: var(--t-green);
+  border: none;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(63, 185, 80, 0.45);
+}
+#crash-reset:hover { background: #56d364; }
+#crash-reset:focus-visible { outline: 2px solid var(--t-text); outline-offset: 2px; }
+
 /* ── dialog window ─────────────────────────────────────────────────────── */
 #dialog {
   position: absolute;
@@ -392,6 +446,11 @@ body {
 .dlg-links a:hover, .dlg-links button:hover {
   background: #4a6cc0;
 }
+.dlg-links button.dlg-danger {
+  background: #8f2b26;
+  border-color: #6e211d;
+}
+.dlg-links button.dlg-danger:hover { background: #b3352e; }
 
 .dlg-contacts { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 .dlg-contact { display: flex; align-items: center; gap: 8px; }

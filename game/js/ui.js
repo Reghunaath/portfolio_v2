@@ -8,6 +8,7 @@ window.UI = (function () {
     dialog: null, dialogPath: null, dialogBody: null, dialogClose: null,
     hint: null, path: null, quest: null, stamps: null, coffee: null,
     toast: null, confetti: null,
+    crash: null, crashText: null, crashReset: null,
   };
   let typing = null; // {timer, spans, idx} while the typewriter runs
   let onCloseCb = null;
@@ -24,6 +25,9 @@ window.UI = (function () {
     el.coffee = document.getElementById("hud-coffee");
     el.toast = document.getElementById("toast");
     el.confetti = document.getElementById("confetti");
+    el.crash = document.getElementById("crash");
+    el.crashText = document.getElementById("crash-text");
+    el.crashReset = document.getElementById("crash-reset");
     el.dialogClose.addEventListener("click", closeDialog);
     /* dialogs take focus as a whole on open — focusing the ✕ button would
        paint a focus ring on it as if it were pre-selected */
@@ -88,6 +92,7 @@ window.UI = (function () {
       if (l.onClick) {
         const b = document.createElement("button");
         b.type = "button";
+        if (l.danger) b.className = "dlg-danger";
         b.textContent = "[ " + l.label + " ]";
         b.addEventListener("click", l.onClick);
         row.appendChild(b);
@@ -471,6 +476,35 @@ window.UI = (function () {
     }, ms || 2200);
   }
 
+  /* ── crash screen (server-unplug easter egg) ────────────────────────────
+     Full-bleed fake kernel panic. `lines` is an array of {text, cls?} chunks
+     rendered into the pre; the [ RESET SERVER ] button fires cfg.onReset. */
+  function openCrash(cfg) {
+    cfg = cfg || {};
+    finishTyping();
+    if (isOpen()) closeDialog();
+    el.crashText.innerHTML = "";
+    (cfg.lines || []).forEach(function (ln) {
+      if (ln.cls) {
+        const span = document.createElement("span");
+        span.className = ln.cls;
+        span.textContent = ln.text;
+        el.crashText.appendChild(span);
+      } else {
+        el.crashText.appendChild(document.createTextNode(ln.text));
+      }
+    });
+    /* fresh button each open so we never stack listeners */
+    const fresh = el.crashReset.cloneNode(true);
+    el.crashReset.parentNode.replaceChild(fresh, el.crashReset);
+    el.crashReset = fresh;
+    el.crashReset.addEventListener("click", function () {
+      if (cfg.onReset) cfg.onReset();
+    });
+    el.crash.classList.remove("hidden");
+    el.crashReset.focus({ preventScroll: true });
+  }
+
   /* ── confetti (quest complete) ──────────────────────────────────────── */
 
   function confetti() {
@@ -514,6 +548,6 @@ window.UI = (function () {
   return {
     init, openDialog, openNamePrompt, advanceDialog, closeDialog, isOpen,
     setHint, setPath, setQuest, setStamps, setCoffee, toast, confetti,
-    reduceMotion,
+    openCrash, reduceMotion,
   };
 })();

@@ -87,6 +87,12 @@
       beep(392, 0.06, 0.04);
       beep(523, 0.09, 0.04, "square", 0.05);
     },
+    crash: function () {
+      /* descending power-down warble */
+      [440, 330, 247, 165, 110].forEach(function (f, i) {
+        beep(f, 0.16, 0.06, "sawtooth", i * 0.1);
+      });
+    },
   };
 
   /* ── input ────────────────────────────────────────────────────────── */
@@ -437,6 +443,48 @@
     });
   }
 
+  /* ── server-unplug easter egg ─────────────────────────────────────────
+     Interacting with a contact-room server cabinet asks whether to unplug
+     it. Saying yes "crashes" the game — a fake kernel panic revealing the
+     game was running on that very server — with a [ RESET SERVER ] button
+     that reboots (reloads the page; the save is untouched). */
+  function openServerPrompt() {
+    const base = GAME_DATA.dialogs["contact-server"];
+    const def = Object.assign({}, base, {
+      body: base.body.concat([
+        "There's a chunky power cable running to the wall. Unplug this server?",
+      ]),
+      links: [
+        { label: "yes, unplug it", danger: true, onClick: crashGame },
+        { label: "no, leave it running", onClick: UI.closeDialog },
+      ],
+    });
+    UI.openDialog(def, {
+      onClose: function () {
+        sfx.close();
+      },
+    });
+  }
+
+  let crashed = false;
+  function crashGame() {
+    crashed = true; // freezes the loop below
+    sfx.crash();
+    UI.openCrash({
+      lines: [
+        { text: "A fatal exception has occurred. The system has halted.\n\n" },
+        { text: "The game was running on the server you just unplugged.\n", cls: "crash-hl" },
+        { text: "\nrack node ...... reghu-01 (contact room)\n" },
+        { text: "uptime ......... 0 days, until you touched it\n" },
+        { text: "fault .......... EX_POWER_LOSS (cable removed by visitor)\n\n" },
+        { text: "Plug it back in to bring the portfolio online.", cls: "crash-dim" },
+      ],
+      onReset: function () {
+        window.location.reload();
+      },
+    });
+  }
+
   /* ── room transition ──────────────────────────────────────────────── */
   function changeRoom(door) {
     if (transitionLock) return;
@@ -570,6 +618,10 @@
           if (target.dialog === "lobby-reception") {
             sfx.open();
             openReception();
+            markSeen(target.dialog);
+          } else if (target.dialog === "contact-server") {
+            sfx.open();
+            openServerPrompt();
             markSeen(target.dialog);
           } else {
             let def = GAME_DATA.dialogs[target.dialog];
@@ -910,6 +962,8 @@
     last = now;
     if (frameDt > 0.5) frameDt = 0.5; // returning from a suspended tab
     const t = now / 1000;
+    /* the server is unplugged — the game is "down" until reboot (reload) */
+    if (crashed) return;
     if (bootDone) {
       acc += frameDt;
       let steps = 0;

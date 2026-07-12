@@ -417,7 +417,7 @@ window.GAME_DATA = (function () {
     "contact-server": {
       path: "~/contact/server-rack",
       title: "Server Rack",
-      body: ["Blinkenlights at 2am. Uptime: excellent. Fan noise: part of the ambiance. Somewhere in here lives the visitor counter of the main site."],
+      body: ["Racks of humming metal, LEDs blinking in no particular rhythm."],
       hint: "admire the server rack",
     },
   };
