@@ -173,6 +173,55 @@ window.World = (function () {
         s: { to: "hub", spawn: [160, 36], face: "down", hint: "lobby/" },
       },
       furniture: [
+        /* wall titles over each project station (pixel nameplate font,
+           wall-navy), same style as the contact room. Rect matches each desk
+           so the centered title sits over its computer even when the name
+           overruns the 2-tile desk. */
+        {
+          painter: "wallLabel",
+          x: 2,
+          y: 0.5,
+          w: 2,
+          h: 0.5,
+          wallMounted: true,
+          text: "RescueLine AI",
+        },
+        {
+          painter: "wallLabel",
+          x: 5.5,
+          y: 0.5,
+          w: 2,
+          h: 0.5,
+          wallMounted: true,
+          text: "Doodlpop",
+        },
+        {
+          painter: "wallLabel",
+          x: 9,
+          y: 0.5,
+          w: 2,
+          h: 0.5,
+          wallMounted: true,
+          text: "LeadCatch AI",
+        },
+        {
+          painter: "wallLabel",
+          x: 12.5,
+          y: 0.5,
+          w: 2,
+          h: 0.5,
+          wallMounted: true,
+          text: "SNAPBACK",
+        },
+        {
+          painter: "wallLabel",
+          x: 16,
+          y: 0.5,
+          w: 2,
+          h: 0.5,
+          wallMounted: true,
+          text: "DEADPOOL",
+        },
         /* five computers centered on the room: 1 tile off each wall,
            uniform 1.5-tile gaps */
         {
@@ -495,6 +544,36 @@ window.World = (function () {
         n: { to: "hub", spawn: [160, 180], face: "up", hint: "lobby/" },
       },
       furniture: [
+        /* wall titles over each station (pixel nameplate font, wall-navy),
+           mirroring the experience room's cubicle signage. y sits them on the
+           light-gray top-wall face above the desks/computer. */
+        {
+          painter: "wallLabel",
+          x: 2.5,
+          y: 0.5,
+          w: 3,
+          h: 0.5,
+          wallMounted: true,
+          text: "CONTACT",
+        },
+        {
+          painter: "wallLabel",
+          x: 5.3125,
+          y: 0.5,
+          w: 2.625,
+          h: 0.5,
+          wallMounted: true,
+          text: "RESUME",
+        },
+        {
+          painter: "wallLabel",
+          x: 12.5,
+          y: 0.5,
+          w: 2,
+          h: 0.5,
+          wallMounted: true,
+          text: "LINKS",
+        },
         /* merged email+phone "direct line" — a tan office table holding the
            desk phone + a small desk printer, one interactable (replaces the
            old email and phone kiosks). The resume copier's desk abuts its
@@ -529,14 +608,14 @@ window.World = (function () {
            server columns on both side walls. */
         {
           painter: "computerDesk",
-          x: 11,
+          x: 12.5,
           y: 2,
           w: 2,
           h: 1.5,
           dialog: "contact-links",
         },
         /* stool in front of the computer (walkable), matching the arcade desks */
-        { painter: "stool", x: 11.5, y: 3.5, w: 1, h: 1, solid: false },
+        { painter: "stool", x: 13, y: 3.5, w: 1, h: 1, solid: false },
         /* server cabinets (ported jail sprite, scaled up) in two matching
            vertical columns flush against the side walls, each a pair with a
            narrow ~0.75-tile (12px) gap the player can slip through. The rect

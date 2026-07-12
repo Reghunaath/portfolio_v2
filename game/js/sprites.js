@@ -4178,6 +4178,21 @@ window.Sprites = (function () {
     }
   }
 
+  /* wall title: a single word of the pixel nameplate font (same FONT_5 as the
+     cubicle company signs) centered in its rect, painted in the wall's own
+     navy outline color so it reads as engraved signage on the light-gray wall
+     face. Placed as a wallMounted rect on the top wall above a station.
+     obj.text = the label; obj.color overrides the default navy. */
+  function wallLabel(ctx, px, py, w, h, t, obj) {
+    const label = ((obj && obj.text) || "").toUpperCase();
+    if (!label) return;
+    const tw = pixelTextWidth(label);
+    const lx = px + Math.round((w - tw) / 2);
+    const ly = py + Math.round((h - 5) / 2);
+    ctx.fillStyle = (obj && obj.color) || PAL_WALL.o;
+    drawPixelText(ctx, label, lx, ly);
+  }
+
   /* 3px partition post column: light face above the panel line, shadowed
      below, dark caps at both ends */
   function partitionPost(ctx, x, yTop, yPanelBot, yBot) {
@@ -4389,6 +4404,7 @@ window.Sprites = (function () {
     copier,
     resumeCopier,
     serverRack,
+    wallLabel,
     trophyBig,
     receptionCounter,
     receptionist,
