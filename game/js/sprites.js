@@ -2320,128 +2320,63 @@ window.Sprites = (function () {
     drawGrid(ctx, PHONE_GRID, px - 1, py - 11, false, PAL_PHONE);
   }
 
-  /* ── phone-book candidates for the contact desk ──────────────────────────
-     All hand-ported from the pack. Press B in-game to cycle which one sits on
-     the desk (see game.js / Sprites.cyclePhoneBook) so a favourite can be
-     chosen; once picked, keep just that entry and drop the cycle. */
-  /* brown ledger/directory — 5_Classroom_and_library @196,355 10x15 */
-  const PAL_LEDGER = {
-    a: "#ca8854", b: "#3a3a50", c: "#b35e3f", d: "#46465e",
-    e: "#a13a30", f: "#d9a16a", g: "#565972",
+  /* small desk printer (red control panel) that sits beside the desk phone —
+     hand-ported from 3_Modern_Office_Shadowless/Modern_Office_Shadowless_16x16.png
+     @ (0,224) 16x32 (empty top/bottom rows trimmed to the 17-tall body). */
+  const PAL_DESKPRINTER = {
+    a: "#3a3a50",
+    b: "#ebe4f2",
+    c: "#46465e",
+    d: "#d8d0e0",
+    e: "#8b8bab",
+    f: "#565972",
+    g: "#6c6e85",
+    h: "#afacc8",
+    i: "#568d61",
+    j: "#e63f38",
+    k: "#d93232",
+    l: "#50a7e8",
+    m: "#4995e3",
+    n: "#f2b22b",
+    o: "#ed931e",
   };
-  const LEDGER_GRID = [
-    "gdbbbbbbbb",
-    "dfaaaaaace",
-    "bccccccccb",
-    "bdedbbbbbb",
-    "bccccccccb",
-    "bfaaaaaaab",
-    "efaaaaaaab",
-    "bcaaaaaaab",
-    "ecaaaaaaab",
-    "bcaaaaaaab",
-    "bcaaaaaaab",
-    "bcaaaaaaab",
-    "bcaaaaaaab",
-    "bcaaaaaaab",
-    "bcaaaaaaab",
-  ];
-  /* blue spiral diary, closed — 4_Bedroom @5,175 13x13 */
-  const PAL_DIARY = {
-    a: "#3d56d2", b: "#3a3a50", c: "#46465e", d: "#4995e3", e: "#d8d0e0",
-    f: "#5267cb", g: "#fff59a", h: "#ffe57b", i: "#374c9c", j: "#ebe4f2",
-    k: "#e63f38", l: "#b2aecb", m: "#c6bdd5", n: "#565972", o: "#fc5c46",
-  };
-  const DIARY_GRID = [
-    ".......cdedaaa",
-    "......cgadedaa",
-    ".....caaaaejda",
-    "....baaaaadejd",
-    "...baaafghfadj",
-    "...ccaaffghaad",
-    "...bkcagfghaaa",
-    "..bckncfhhfagi",
-    ".bokbbecaaaaic",
-    "..bb..beciiicl",
-    ".......beccclb",
-    "........bmemb.",
-    ".........bbb..",
-  ];
-  /* small stacked book pair — 5_Classroom_and_library @238,327 6x9 */
-  const PAL_PAIR = {
-    a: "#3a3a50", b: "#b99e86", c: "#d0be9c", d: "#9c786b",
-    e: "#916662", f: "#46465e", g: "#565972",
-  };
-  const PAIR_GRID = [
-    ".aea..",
-    ".aea..",
-    "fcdca.",
-    "abbba.",
-    ".aea..",
-    ".aba..",
-    "gcdca.",
-    "fbbba.",
-    "adbda.",
-  ];
-  /* stacked clipboard folders — 19_Hospital @48,47 11x6 */
-  const PAL_FOLDERS = {
-    a: "#ebe4f2", b: "#d8d0e0", c: "#3a3a50", d: "#46465e",
-    e: "#455c5b", f: "#9bc246", g: "#9da3b7", h: "#565972", i: "#64b63b",
-  };
-  const FOLDERS_GRID = [
-    "caaaacaaaaf",
-    "dbggbdbbbbf",
-    "caaaacaaaaf",
-    "dhhhhdbggbf",
-    ".....caaaai",
-    ".....deeeee",
-  ];
-  /* angled tome with a red bookmark — 11_Halloween @33,399 21x8 */
-  const PAL_TOME = {
-    a: "#3a3a50", b: "#d0be9c", c: "#b99e86", d: "#d8d0e0", e: "#b2aecb",
-    f: "#565972", g: "#46465e", h: "#9c786b", i: "#ebe4f2", j: "#d93232",
-    k: "#916662", l: "#e0d0b2", m: "#e63f38",
-  };
-  const TOME_GRID = [
-    ".........fdcccdjjkaa..",
-    ".......fgbbibbbdmchea.",
-    "......gdbccdblbbicckfg",
-    "......aeeafgcblbcibfde",
-    ".......aafddhbcaaghbde",
-    ".........gdebca...acee",
-    ".........aeeha.....aaa",
-    "..........aaa.........",
+  const DESKPRINTER_GRID = [
+    "....fcaaaaacf...",
+    ".fcacbbbbbbbc...",
+    ".cbdcbdddddba...",
+    ".abhcbdhhhdba...",
+    ".cbhcbbbbbbba...",
+    "afbdcbdddddbcf..",
+    "afbdchhhhhihcc..",
+    "afbdfgggggigfaf.",
+    "achheeeeeeefgaf.",
+    "acaaaaaaaaacgaf.",
+    "acddldddddhfgac.",
+    "afddmdddjdhfgac.",
+    "afggggggkggfgcc.",
+    "fceeeeeeeeeeecc.",
+    ".ahbbjbbbbnbbfa.",
+    ".ceeekeeeeoeeea.",
+    ".fcaaaaaaaaaacf.",
   ];
 
-  const PHONEBOOKS = [
-    { name: "ledger", grid: LEDGER_GRID, pal: PAL_LEDGER },
-    { name: "blue diary", grid: DIARY_GRID, pal: PAL_DIARY },
-    { name: "stacked pair", grid: PAIR_GRID, pal: PAL_PAIR },
-    { name: "clipboard folders", grid: FOLDERS_GRID, pal: PAL_FOLDERS },
-    { name: "tome w/ bookmark", grid: TOME_GRID, pal: PAL_TOME },
-  ];
-  let phoneBookIndex = 0;
-  function cyclePhoneBook() {
-    phoneBookIndex = (phoneBookIndex + 1) % PHONEBOOKS.length;
-    return PHONEBOOKS[phoneBookIndex].name;
-  }
-
-  /* contact-room "direct line" station: the pack's tan office desk
-     (DESK_TAN_GRID) holding the desk phone (PHONE_GRID) and the currently
-     selected phone book on its surface, mirroring how cubicles seat deskItems
-     (base line at dy+15). One interactable — merges the old email + phone
-     kiosks. */
+  /* contact-room "direct line" station: draws ONE long continuous tan desk
+     (DESK_TAN_84 — the 42px pack desk widened to 84px, so the phone/printer
+     half and the resume-copier half below read as a single table, no seam)
+     and seats the desk phone (PHONE_GRID) + a small desk printer
+     (DESKPRINTER_GRID) on its left half (base line dy+15, as cubicles do). The
+     right half's resume copier is drawn by the separate `resumeCopier` painter
+     (its own interactable) so this desk is drawn only once. Left edge is kept
+     where the old 42px desk sat (dx = px + 3) so the run grows rightward. */
   function contactDesk(ctx, px, py, w, h) {
     const deskW = 42;
     const dx = px + Math.round((w - deskW) / 2);
     const dy = py + h - 23;
-    shadow(ctx, dx, py + h, deskW);
-    drawGrid(ctx, DESK_TAN_GRID, dx, dy, false, PAL_DESK_TAN);
+    shadow(ctx, dx, py + h, DESK_TAN_84[0].length);
+    drawGrid(ctx, DESK_TAN_84, dx, dy, false, PAL_DESK_TAN);
     /* items sit on the desktop surface (base line dy+15, as in cubicle) */
-    const book = PHONEBOOKS[phoneBookIndex];
     drawGrid(ctx, PHONE_GRID, dx + 2, dy + 15 - PHONE_GRID.length, false, PAL_PHONE);
-    const bookX = dx + 31 - Math.round(book.grid[0].length / 2);
-    drawGrid(ctx, book.grid, bookX, dy + 15 - book.grid.length, false, book.pal);
+    drawGrid(ctx, DESKPRINTER_GRID, dx + 22, dy + 15 - DESKPRINTER_GRID.length, false, PAL_DESKPRINTER);
   }
 
   /* potted palm hand-ported from 1_Generic_16x16.png's Theme Sorter sheet
@@ -3304,54 +3239,6 @@ window.Sprites = (function () {
     );
   }
 
-  function kiosk(ctx, px, py, w, h, t, obj) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#1c2530";
-    ctx.fillRect(px + 1, py + 1, w - 2, h - 2);
-    /* screen area */
-    ctx.fillStyle = "#05070a";
-    ctx.fillRect(px + 3, py + 3, w - 6, 12);
-    const accent = obj.color || "#3fb950";
-    ctx.fillStyle = accent;
-    const icon = obj.icon;
-    const cx = px + w / 2,
-      cy = py + 9;
-    if (icon === "mail") {
-      ctx.fillRect(cx - 5, cy - 3, 10, 7);
-      ctx.fillStyle = "#05070a";
-      ctx.fillRect(cx - 4, cy - 2, 8, 1);
-      ctx.fillStyle = accent;
-      ctx.fillRect(cx - 3, cy - 1, 2, 1);
-      ctx.fillRect(cx + 1, cy - 1, 2, 1);
-      ctx.fillRect(cx - 1, cy, 2, 1);
-    } else if (icon === "phone") {
-      ctx.fillRect(cx - 4, cy - 4, 3, 3);
-      ctx.fillRect(cx - 2, cy - 1, 2, 2);
-      ctx.fillRect(cx, cy + 1, 2, 2);
-      ctx.fillRect(cx + 2, cy + 2, 3, 3);
-    } else if (icon === "in") {
-      ctx.fillRect(cx - 5, cy - 4, 10, 9);
-      ctx.fillStyle = "#05070a";
-      ctx.fillRect(cx - 3, cy - 2, 1, 5);
-      ctx.fillRect(cx - 1, cy - 2, 1, 1);
-      ctx.fillRect(cx - 1, cy, 1, 3);
-      ctx.fillRect(cx + 1, cy - 1, 2, 4);
-    } else if (icon === "gh") {
-      ctx.fillRect(cx - 4, cy - 4, 8, 7); // head
-      ctx.fillRect(cx - 5, cy - 5, 2, 2); // ears
-      ctx.fillRect(cx + 3, cy - 5, 2, 2);
-      ctx.fillStyle = "#05070a";
-      ctx.fillRect(cx - 2, cy - 2, 1, 1); // eyes
-      ctx.fillRect(cx + 1, cy - 2, 1, 1);
-    }
-    /* blinking status led */
-    const on = Math.floor(t * 2 + px) % 2 === 0;
-    ctx.fillStyle = on ? accent : "#30363d";
-    ctx.fillRect(px + w - 4, py + h - 5, 2, 2);
-  }
-
   function printer(ctx, px, py, w, h, t) {
     shadow(ctx, px, py + h, w);
     ctx.fillStyle = "#464f5d";
@@ -3435,28 +3322,135 @@ window.Sprites = (function () {
     );
   }
 
-  function serverRack(ctx, px, py, w, h, t) {
-    shadow(ctx, px, py + h, w);
-    ctx.fillStyle = "#10141a";
-    ctx.fillRect(px, py, w, h);
-    ctx.fillStyle = "#1c2128";
-    ctx.fillRect(px + 1, py + 1, w - 2, h - 2);
-    for (let u = 0; u < 4; u++) {
-      const uy = py + 3 + u * 6;
-      ctx.fillStyle = "#0d1117";
-      ctx.fillRect(px + 2, uy, w - 4, 4);
-      for (let l = 0; l < 3; l++) {
-        const on = hash2(u * 3 + l, Math.floor(t * 3)) < 55;
-        ctx.fillStyle = on
-          ? l === 0
-            ? "#3fb950"
-            : l === 1
-              ? "#e3b341"
-              : "#f85149"
-          : "#21262d";
-        ctx.fillRect(px + 3 + l * 3, uy + 1, 2, 2);
+  /* copier machine ONLY (no desk) — for the contact room, where it sits on the
+     right half of contactDesk's shared long desk. Centered on its rect at the
+     same desktop base line (dy+15) so it lines up with that desk's phone/
+     printer. game.js maps this painter to resume mode, same as `copier`. */
+  function resumeCopier(ctx, px, py, w, h) {
+    const dy = py + h - 23;
+    drawGrid(
+      ctx,
+      COPIER_GRID,
+      px + Math.round((w - 28) / 2),
+      dy + 15 - COPIER_GRID.length,
+      false,
+      PAL_COPIER,
+    );
+  }
+
+  /* ─── server rack ────────────────────────────────────────────────────────
+     Double-door server cabinet hand-ported from 18_Jail_Shadowless.png
+     (32x34 @ 128,330), drawn ~1.6x scale (crisp nearest-neighbor) so it reads
+     as a floor-standing rack in the contact room. */
+  const PAL_SERVER_RACK_JAIL = {
+    a: "#3a3a50",
+    b: "#acafbf",
+    c: "#626976",
+    d: "#838897",
+    e: "#6c737d",
+    f: "#46465e",
+    g: "#7e8791",
+    h: "#565972",
+    i: "#6c6e85",
+    j: "#5a606e",
+    k: "#945656",
+    l: "#5f8657",
+    m: "#76808c",
+    n: "#57809e",
+    o: "#838f9a",
+    p: "#7d8791",
+    q: "#545668",
+    r: "#8f9ca6",
+    s: "#88949e",
+    t: "#87909c",
+  };
+  const SERVER_RACK_JAIL_GRID = [
+    "hfaaaaaaaaaaaafhhfaaaaaaaaaaaafh",
+    "fbbbbbbbbbbbbbbffbbbbbbbbbbbbbbf",
+    "fbbbbbbbbbbbbbbafbbbbbbbbbbbbbba",
+    "abbbbbbbbbbbbbbaabbbbbbbbbbbbbba",
+    "abbbbbbbbbbbbbbaabbbbbbbbbbbbbba",
+    "abbbbbbbbbbbbbbaabbbbbbbbbbbbbba",
+    "abbbbbbbbbbbbbbaabbbbbbbbbbbbbba",
+    "abbbbbbbbbbbbbbaabbbbbbbbbbbbbba",
+    "ffhihfffhfffffffffhihfffhfffffff",
+    "addddddddddddddaadddddddddddddda",
+    "adhfaaaaaaaafhdaadhfaaaaaaaafhda",
+    "adfnekekelegefdaadfnekekelegefda",
+    "adajommccccccadaadajommccccccada",
+    "fdflekegelekeadafdflekegelekeada",
+    "fdfjmccccccccadafdfjmccccccccada",
+    "hdfgeneleleneadahdfgeneleleneada",
+    "hdfjcccccccccadahdfjcccccccccada",
+    "hdfgenelenektadahdfgenelenektada",
+    "fdfjccccccccqhdafdfjccccccccqhda",
+    "fdfnekeleleehdiafdfnekeleleehdia",
+    "hdfjccccccccfdhahdfjccccccccfdha",
+    "fdfgekegeleefdhafdfgekegeleefdha",
+    "fdfjcccccccchdiafdfjcccccccchdia",
+    "adfgegekegekehdaadfgegekegekehda",
+    "adfjcccccccccfdaadfjcccccccccfda",
+    "adfgekekelekeadaadfgekekelekeada",
+    "adajccccccccmadaadajccccccccmada",
+    "adalekegenegpadaadalekegenegpada",
+    "adajccccccccoadaadajccccccccoada",
+    "adalekekelprsadaadalekekelprsada",
+    "adajcccccccccadaadajcccccccccada",
+    "adfaaaaaaaaaafdaadfaaaaaaaaaafda",
+    "aiiiiiiiiiiiiiiaaiiiiiiiiiiiiiia",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  ];
+  const SERVER_RACK_SCALE = 1.6;
+
+  /* nearest-neighbor scale of a string-grid — each source cell becomes an
+     integer-pixel block (rounded edges) so it stays crisp under the canvas's
+     outer pixelated scaling. `override(ch, r, c)` may return a replacement
+     color string per cell (falsy → use the palette). `flipX` mirrors the grid
+     horizontally (source column read right-to-left). */
+  function drawGridScaled(ctx, grid, px, py, pal, s, override, flipX) {
+    const colors = pal || PAL;
+    for (let r = 0; r < grid.length; r++) {
+      const row = grid[r];
+      const y0 = py + Math.round(r * s);
+      const y1 = py + Math.round((r + 1) * s);
+      for (let c = 0; c < row.length; c++) {
+        const sc = flipX ? row.length - 1 - c : c;
+        const ch = row[sc];
+        if (ch === ".") continue;
+        const col = (override && override(ch, r, sc)) || colors[ch];
+        if (!col) continue;
+        const x0 = px + Math.round(c * s);
+        const x1 = px + Math.round((c + 1) * s);
+        ctx.fillStyle = col;
+        ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
       }
     }
+  }
+
+  /* the rack's colored LED chars → bright "on" / dim "off" colors, flickered
+     randomly. On uses the site's GitHub-dark accents so the lit LEDs pop. */
+  const RACK_LED_ON = { n: "#58a6ff", k: "#ff5f56", l: "#3fb950" };
+  const RACK_LED_OFF = { n: "#2f3d4a", k: "#3d2f2f", l: "#2f3d2f" };
+
+  /* server rack — bottom-anchored & centered on its furniture rect. The blue/
+     red/green LED cells (n/k/l) flicker independently, ~6 changes/sec, so the
+     rack reads as live. Frozen on its lit frame under reduced motion. */
+  function serverRack(ctx, px, py, w, h, t, obj) {
+    const s = SERVER_RACK_SCALE;
+    const gw = Math.round(SERVER_RACK_JAIL_GRID[0].length * s);
+    const gh = Math.round(SERVER_RACK_JAIL_GRID.length * s);
+    const gx = px + Math.round((w - gw) / 2);
+    const gy = py + h - gh;
+    const still = window.UI && window.UI.reduceMotion;
+    const frame = still ? 0 : Math.floor(t * 6);
+    /* seed the flicker with px+py so multiple cabinets blink independently */
+    const seed = Math.round(px) * 1000 + Math.round(py);
+    const ledOverride = function (ch, r, c) {
+      if (!RACK_LED_ON[ch]) return null;
+      return hash2(seed + r * 40 + c, frame) < 60 ? RACK_LED_ON[ch] : RACK_LED_OFF[ch];
+    };
+    shadow(ctx, gx, py + h, gw);
+    drawGridScaled(ctx, SERVER_RACK_JAIL_GRID, gx, gy, PAL_SERVER_RACK_JAIL, s, ledOverride, obj && obj.flip);
   }
 
   function trophyBig(ctx, px, py, w, h, t) {
@@ -3592,6 +3586,21 @@ window.Sprites = (function () {
     ".biib...............................biib..",
     ".dffd...............................dffd..",
   ];
+  /* widen the 42-col tan desk into one continuous run of `targetW` columns:
+     keep the capped/legged left (12 cols) and right (8 cols) and repeat the
+     plain middle column between them — a single long desk with legs only at the
+     ends, no internal edge or seam. Used by contactDesk (84px) so its phone/
+     printer half and the resume-copier half read as one table. */
+  function deskRun(grid, targetW) {
+    const W0 = grid[0].length;
+    const L = 12,
+      R = 8;
+    return grid.map(function (row) {
+      const fill = row[Math.floor(W0 / 2)];
+      return row.slice(0, L) + fill.repeat(targetW - L - R) + row.slice(W0 - R);
+    });
+  }
+  const DESK_TAN_84 = deskRun(DESK_TAN_GRID, 84);
 
   const PAL_DESK_GRAY = {
     a: "#787878",
@@ -4376,9 +4385,9 @@ window.Sprites = (function () {
     officeChair,
     diploma,
     lectern,
-    kiosk,
     printer,
     copier,
+    resumeCopier,
     serverRack,
     trophyBig,
     receptionCounter,
@@ -4408,6 +4417,5 @@ window.Sprites = (function () {
     glint,
     hash2,
     T,
-    cyclePhoneBook,
   };
 })();

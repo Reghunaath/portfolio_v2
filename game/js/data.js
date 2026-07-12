@@ -387,45 +387,32 @@ window.GAME_DATA = (function () {
     "contact-directline": {
       path: "~/contact/direct",
       title: "Direct Line",
-      body: [
-        "Phone, WhatsApp, and two inboxes — all monitored faster than most Slack channels.",
-        personal.email,
-        personal.personalEmail,
-        personal.phone + " (US)",
-        personal.whatsapp + " (WhatsApp)",
-      ],
-      links: [
-        { label: "call", url: "tel:" + personal.phone },
-        { label: "whatsapp", url: "https://wa.me/" + personal.whatsapp.replace("+", "") },
-        { label: "send email", url: "mailto:" + personal.email },
-        { label: "copy email", copy: personal.email },
-        { label: "copy number", copy: personal.phone },
+      contacts: [
+        { value: personal.email },
+        { value: personal.personalEmail },
+        { value: personal.phone, note: "US" },
+        { value: personal.whatsapp, note: "WhatsApp" },
       ],
       core: true,
       hint: "check the contact desk",
     },
-    "contact-linkedin": {
-      path: "~/contact/linkedin",
-      title: "LinkedIn Kiosk",
-      body: ["The professional teleporter. Connects you to the suit-and-tie mirror universe."],
-      links: [{ label: "open linkedin", url: personal.linkedin }],
+    "contact-links": {
+      path: "~/contact/links",
+      title: "Link Terminal",
+      body: ["Reghu's outbound ports, all open. Pick a destination and connect."],
+      links: [
+        { label: "linkedin", url: personal.linkedin },
+        { label: "github", url: personal.github },
+        {
+          label: "portfolio",
+          onClick: function () {
+            window.UI.toast("You're already inside the portfolio. It's portfolios all the way down. 🐢", 3200);
+          },
+        },
+        { label: "google scholar", url: "https://scholar.google.com/citations?user=C9GVXKYAAAAJ&hl=en&authuser=1" },
+      ],
       core: true,
-      hint: "use the LinkedIn kiosk",
-    },
-    "contact-github": {
-      path: "~/contact/github",
-      title: "GitHub Kiosk",
-      body: ["Where the commits live. Green squares sold separately."],
-      links: [{ label: "open github", url: personal.github }],
-      core: true,
-      hint: "use the GitHub kiosk",
-    },
-    "contact-printer": {
-      path: "~/contact/printer",
-      title: "Resume Printer",
-      body: ["The printer whirs, thinks about it, and prints a QR-less business card:", "'resume.pdf — available on the terminal version of this portfolio.'"],
-      links: [{ label: "open terminal portfolio", url: personal.mainSite }],
-      hint: "print the resume",
+      hint: "browse the link terminal",
     },
     "contact-server": {
       path: "~/contact/server-rack",

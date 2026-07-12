@@ -123,11 +123,6 @@
       UI.toast(save.sound ? "sound on" : "sound off", 1200);
       return;
     }
-    /* DEV: cycle the contact-desk phone-book sprite to pick a favourite */
-    if (ev.code === "KeyB" && !ev.repeat) {
-      UI.toast("phone book: " + Sprites.cyclePhoneBook(), 1400);
-      return;
-    }
     if (ev.code === "Escape") {
       if (UI.isOpen()) {
         UI.closeDialog();
@@ -319,6 +314,20 @@
          requireFacing restricts the probe to players approaching from
          that side instead of reaching through the back/sides */
       if (f.requireFacing && player.dir !== f.requireFacing) return;
+      /* frontSide: only reachable from the open, room-facing side — the player
+         must both face that way AND stand outside the footprint on that side.
+         Blocks interacting while standing on top of / inside the furniture
+         (e.g. wedged in the gap between two stacked server racks). */
+      if (f.frontSide) {
+        const fs = f.frontSide;
+        if (fs === "left" && (player.dir !== "left" || player.x < f.px + f.pw))
+          return;
+        if (fs === "right" && (player.dir !== "right" || player.x > f.px))
+          return;
+        if (fs === "up" && (player.dir !== "up" || player.y < f.py + f.ph))
+          return;
+        if (fs === "down" && (player.dir !== "down" || player.y > f.py)) return;
+      }
       /* interactPad shrinks/grows the probe's hit margin around the
          furniture rect — cubicles use a smaller one so the desk isn't
          triggerable from well out in the corridor */
@@ -584,9 +593,12 @@
                 diploma: target.painter === "diploma",
                 /* the research paper on the book stand opens as a scroll */
                 scroll: target.painter === "lectern",
-                /* the lobby copier opens the resume viewer (embedded PDF +
-                   download button, game blurred behind) */
-                resume: target.painter === "copier",
+                /* the lobby copier + the contact-room resume copier open the
+                   resume viewer (embedded PDF + download button, game blurred
+                   behind) */
+                resume:
+                  target.painter === "copier" ||
+                  target.painter === "resumeCopier",
                 onClose: function () {
                   sfx.close();
                 },
@@ -772,10 +784,13 @@
       const glintY = target.wallMounted
         ? target.py + target.ph - 12
         : target.py;
+      /* round to whole pixels — fractional-width furniture (e.g. the server
+         racks at 51px wide) would otherwise center the glint on a half-pixel
+         and render it blurry */
       Sprites.glint(
         ctx,
-        target.px + target.pw / 2,
-        glintY,
+        Math.round(target.px + target.pw / 2),
+        Math.round(glintY),
         reduceMotion ? 0 : t,
       );
     } else if (target && target.isCat) {

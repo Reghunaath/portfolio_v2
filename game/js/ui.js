@@ -36,6 +36,51 @@ window.UI = (function () {
     return !el.dialog.classList.contains("hidden");
   }
 
+  function copyToClipboard(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, done);
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) { /* no-op */ }
+      document.body.removeChild(ta);
+      done();
+    }
+  }
+
+  /* a stacked list of contact values, each with a clipboard-copy button */
+  function buildContacts(contacts) {
+    const wrap = document.createElement("div");
+    wrap.className = "dlg-contacts";
+    contacts.forEach(function (c) {
+      const row = document.createElement("div");
+      row.className = "dlg-contact";
+      const val = document.createElement("span");
+      val.className = "dlg-contact-val";
+      val.textContent = c.note ? c.value + " (" + c.note + ")" : c.value;
+      row.appendChild(val);
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "dlg-copy";
+      b.title = "copy";
+      b.setAttribute("aria-label", "copy " + c.value);
+      b.textContent = "⧉";
+      b.addEventListener("click", function () {
+        copyToClipboard(c.value, function () {
+          b.classList.add("copied");
+          b.textContent = "✓";
+          toast("copied " + c.value);
+          setTimeout(function () { b.classList.remove("copied"); b.textContent = "⧉"; }, 1400);
+        });
+      });
+      row.appendChild(b);
+      wrap.appendChild(row);
+    });
+    return wrap;
+  }
+
   function buildLinks(links) {
     const row = document.createElement("div");
     row.className = "dlg-links";
@@ -51,21 +96,10 @@ window.UI = (function () {
         b.type = "button";
         b.textContent = "[ " + l.label + " ]";
         b.addEventListener("click", function () {
-          const done = function () {
+          copyToClipboard(l.copy, function () {
             b.textContent = "[ copied! ]";
             setTimeout(function () { b.textContent = "[ " + l.label + " ]"; }, 1400);
-          };
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(l.copy).then(done, done);
-          } else {
-            const ta = document.createElement("textarea");
-            ta.value = l.copy;
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand("copy"); } catch (e) { /* no-op */ }
-            document.body.removeChild(ta);
-            done();
-          }
+          });
         });
         row.appendChild(b);
       } else {
@@ -88,7 +122,7 @@ window.UI = (function () {
      onDone fires once everything is revealed */
   function typewrite(container, onDone) {
     const deferred = Array.prototype.slice.call(
-      container.querySelectorAll(".dlg-tags, .dlg-links, .dlg-input")
+      container.querySelectorAll(".dlg-tags, .dlg-links, .dlg-input, .dlg-copy")
     );
     const nodes = [];
     (function collect(n) {
@@ -294,6 +328,7 @@ window.UI = (function () {
       });
       el.dialogBody.appendChild(ul);
     }
+    if (def.contacts) el.dialogBody.appendChild(buildContacts(def.contacts));
     if (def.tags) {
       const tr = document.createElement("div");
       tr.className = "dlg-tags";

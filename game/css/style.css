@@ -393,6 +393,31 @@ body {
   background: #4a6cc0;
 }
 
+.dlg-contacts { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.dlg-contact { display: flex; align-items: center; gap: 8px; }
+.dlg-contact-val {
+  flex: 1;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  line-height: 1.65;
+  color: #3c3c46;
+  word-break: break-all;
+}
+.dlg-copy {
+  flex: none;
+  font-family: var(--mono-font);
+  font-size: 14px;
+  line-height: 1;
+  color: #fff;
+  background: #3a5aa8;
+  border: 2px solid #2a4079;
+  border-radius: 5px;
+  padding: 5px 9px;
+  cursor: pointer;
+}
+.dlg-copy:hover { background: #4a6cc0; }
+.dlg-copy.copied { background: #3fb950; border-color: #2ea043; }
+
 /* ── terminal-mode dialog (project computers) ──────────────────────────────
    full-screen black & green terminal covering the whole game window,
    mirroring the main site's macOS-terminal chrome + phosphor green */

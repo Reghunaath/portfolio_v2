@@ -495,52 +495,92 @@ window.World = (function () {
         n: { to: "hub", spawn: [160, 180], face: "up", hint: "lobby/" },
       },
       furniture: [
-        /* merged email+phone "direct line" — a wood side table holding the
-           desk phone + phone book, one interactable (replaces the old email
-           and phone kiosks) */
+        /* merged email+phone "direct line" — a tan office table holding the
+           desk phone + a small desk printer, one interactable (replaces the
+           old email and phone kiosks). The resume copier's desk abuts its
+           right edge (below) so the two read as one long extended desk run. */
         {
           painter: "contactDesk",
           x: 2.5,
-          y: 2.2,
+          y: 1.25,
           w: 3,
           h: 1.5,
           dialog: "contact-directline",
         },
+        /* a copy of the lobby resume copier — a second interactable on the
+           right half of the contactDesk's shared long desk (contactDesk draws
+           the whole table + the phone/printer; this only draws the copier
+           machine on top). Its rect abuts the desk's right half. Uses the
+           `resumeCopier` painter → the resume viewer (game.js maps it to resume
+           mode, same as `copier`) + the shared `hub-resume` dialog. Replaces
+           the old joke "Resume Printer". */
         {
-          painter: "kiosk",
-          x: 13,
+          painter: "resumeCopier",
+          x: 5.3125,
+          y: 1.25,
+          w: 2.625,
+          h: 1.5,
+          dialog: "hub-resume",
+          requireFacing: "up",
+        },
+        /* a project-room-style computer (opens the full-screen green terminal)
+           holding Reghu's outbound links — LinkedIn, GitHub, portfolio, Google
+           Scholar. Top-center (right of the north-door lane), clear of the
+           server columns on both side walls. */
+        {
+          painter: "computerDesk",
+          x: 11,
           y: 2,
           w: 2,
-          h: 2,
-          dialog: "contact-linkedin",
-          icon: "in",
-          color: "#79c0ff",
+          h: 1.5,
+          dialog: "contact-links",
         },
+        /* stool in front of the computer (walkable), matching the arcade desks */
+        { painter: "stool", x: 11.5, y: 3.5, w: 1, h: 1, solid: false },
+        /* server cabinets (ported jail sprite, scaled up) in two matching
+           vertical columns flush against the side walls, each a pair with a
+           narrow ~0.75-tile (12px) gap the player can slip through. The rect
+           width equals the sprite width (3.1875t = 51px, no centering offset),
+           so left rects sit at col 1 (touching the col-0 wall) and right rects
+           end at col 19 (touching the wall). The right column mirrors the left
+           (flipX). */
         {
-          painter: "kiosk",
-          x: 16,
-          y: 2,
-          w: 2,
-          h: 2,
-          dialog: "contact-github",
-          icon: "gh",
-          color: "#a371f7",
-        },
-        {
-          painter: "printer",
+          painter: "serverRack",
           x: 1,
-          y: 6,
-          w: 2,
-          h: 1.4,
-          dialog: "contact-printer",
+          y: 4,
+          w: 3.1875,
+          h: 3.25,
+          dialog: "contact-server",
+          frontSide: "up",
         },
         {
           painter: "serverRack",
-          x: 17,
-          y: 7,
-          w: 2,
-          h: 3,
+          x: 1,
+          y: 8,
+          w: 3.1875,
+          h: 3.25,
           dialog: "contact-server",
+          frontSide: "up",
+        },
+        {
+          painter: "serverRack",
+          x: 15.8125,
+          y: 4,
+          w: 3.1875,
+          h: 3.25,
+          flip: true,
+          dialog: "contact-server",
+          frontSide: "up",
+        },
+        {
+          painter: "serverRack",
+          x: 15.8125,
+          y: 8,
+          w: 3.1875,
+          h: 3.25,
+          flip: true,
+          dialog: "contact-server",
+          frontSide: "up",
         },
         { painter: "rug", x: 6, y: 5, w: 8, h: 4, solid: false },
       ],
