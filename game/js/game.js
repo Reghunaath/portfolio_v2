@@ -639,8 +639,11 @@
                 });
               }
               UI.openDialog(def, {
-                /* project computers open a full-screen terminal window */
-                terminal: target.painter === "computerDesk",
+                /* project computers (+ the contact-room PC) open a full-screen
+                   terminal window */
+                terminal:
+                  target.painter === "computerDesk" ||
+                  target.painter === "contactPC",
                 /* wall diplomas open as a parchment certificate */
                 diploma: target.painter === "diploma",
                 /* the research paper on the book stand opens as a scroll */
@@ -795,7 +798,9 @@
       !player.moving &&
       room.furniture.some(function (f) {
         return (
-          (f.painter === "stool" || f.painter === "officeChair") &&
+          (f.painter === "stool" ||
+            f.painter === "officeChair" ||
+            f.painter === "contactChair") &&
           player.x >= f.px &&
           player.x < f.px + f.pw &&
           player.y >= f.py &&
@@ -830,12 +835,15 @@
 
     /* interaction glint on top — items mounted high on the wall (whiteboard,
        wall map, diplomas) have no headroom above them for the glint's bob,
-       so anchor those off the sprite's bottom edge instead of its top */
+       so anchor those off the sprite's bottom edge instead of its top.
+       `glintPad` pushes the anchor down for furniture whose rect top sits
+       higher than its visible sprite (e.g. the wall-hugging vending machine,
+       whose glint would otherwise bob off the top of the screen). */
     const target = UI.isOpen() ? null : interactTarget();
     if (target && !target.isCat) {
       const glintY = target.wallMounted
         ? target.py + target.ph - 12
-        : target.py;
+        : target.py + (target.glintPad || 0);
       /* round to whole pixels — fractional-width furniture (e.g. the server
          racks at 51px wide) would otherwise center the glint on a half-pixel
          and render it blurry */

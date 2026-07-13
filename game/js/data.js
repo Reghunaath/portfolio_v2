@@ -382,6 +382,12 @@ window.GAME_DATA = (function () {
       body: ["Statistics, distributed systems, computer vision, one shelf of pure sci-fi. A library card falls out; it just says 'curiosity'."],
       hint: "browse the shelves",
     },
+    "edu-vending": {
+      path: "~/education/vending",
+      title: "Vending Machine",
+      body: ["You insert a dollar. The machine hums, whirs... and keeps it. A snack dangles half dropped behind the glass, mocking you."],
+      hint: "buy a snack",
+    },
 
     /* ── contact comms room ── */
     "contact-directline": {

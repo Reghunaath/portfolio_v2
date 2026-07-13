@@ -3602,6 +3602,73 @@ window.Sprites = (function () {
   }
   const DESK_TAN_84 = deskRun(DESK_TAN_GRID, 84);
 
+  /* contact-room computer: a compact monitor+tower+keyboard workstation
+     hand-ported from Interiors_16x16.png @ (112,752) — 16x32. It sits on a
+     short tan office table (the DESK_TAN run narrowed to 32px, same table as
+     contactDesk) so it reads as a computer on a desk; replaces the wider
+     exhibit PC. Opens the links terminal (see game.js painter check). */
+  const PAL_CONTACT_PC = {
+    a: "#3a3a50",
+    b: "#42425a",
+    c: "#b6a8a2",
+    d: "#d7cdbc",
+    e: "#c5b7ae",
+    f: "#cdbeaf",
+    g: "#59a063",
+  };
+  const CONTACT_PC_GRID = [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "...aaaaaaaaaa...",
+    "..aaffffffffaa..",
+    "..afddddddddfa..",
+    "..adddddddddda..",
+    "..abbbbbbbbbba..",
+    "..acccccccccca..",
+    "..acbbbbbbbbca..",
+    "aaacggbgbggbcaaa",
+    "acbcbbbbbbbbcbca",
+    "acbcggbgbggbcbca",
+    "aebccccccccccbca",
+    "adbbbbbbbbbbbbca",
+    "adddddddddddddda",
+    "abbbbbbbbbbbbbba",
+    "acececeffffffffa",
+    "acececefeccccefa",
+    "acececefebbbbefa",
+    "acececefeccccefa",
+    "aaaaaaaaaaaaaaaa",
+    "................",
+    "aaaaaaaaaaa.aaa.",
+    "aededededeaadeda",
+    "adedeeededaaddda",
+    "acccccccccaaccca",
+    "aaaaaaaaaaa.aaa.",
+  ];
+  const CONTACT_PC_TABLE = deskRun(DESK_TAN_GRID, 32);
+  function contactPC(ctx, px, py, w, h) {
+    const tableW = 32;
+    const dx = px + Math.round((w - tableW) / 2);
+    const dy = py + h - 23;
+    shadow(ctx, dx, py + h, tableW);
+    drawGrid(ctx, CONTACT_PC_TABLE, dx, dy, false, PAL_DESK_TAN);
+    /* computer base (keyboard) resting on the desktop surface (dy+15) */
+    const cx = px + Math.round((w - CONTACT_PC_GRID[0].length) / 2);
+    drawGrid(
+      ctx,
+      CONTACT_PC_GRID,
+      cx,
+      dy + 15 - CONTACT_PC_GRID.length,
+      false,
+      PAL_CONTACT_PC,
+    );
+  }
+
   const PAL_DESK_GRAY = {
     a: "#787878",
     b: "#808079",
@@ -4068,6 +4135,55 @@ window.Sprites = (function () {
     "...caa....aac....",
   ];
 
+  /* contact-room desk chair: an orange office chair hand-ported from
+     Modern_Office_Shadowless_16x16.png @ (0,160) — 16x32 (content in rows
+     9-29). Drawn bottom-anchored like officeChair; idling on it seats the
+     player (see game.js seated check). Replaces the contact-room stool. */
+  const PAL_CONTACT_CHAIR = {
+    a: "#3a3a50",
+    b: "#c7754b",
+    c: "#b35e3f",
+    d: "#ca8854",
+    e: "#46465e",
+    f: "#ab4a36",
+    g: "#a13a30",
+    h: "#565972",
+  };
+  const CONTACT_CHAIR_GRID = [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "...eeaaaaaaaa...",
+    "..ebdbdbdbdbba..",
+    ".ecdbdbdbdbdbfa.",
+    ".acagbgbggggafa.",
+    ".aabbbbbbbbbbaa.",
+    ".aebceeeeeecbea.",
+    ".acdeh.h.h.ebca.",
+    ".acba.h.h.hadca.",
+    ".acdah.h.h.abca.",
+    ".gababebebeadag.",
+    "adacfaaaaaafcaba",
+    "adafccccccccfaba",
+    "adaccbdbdbdccaba",
+    "adfcbdbdbdbdcfca",
+    "acccdbdbdbdbccga",
+    "afaccdbdbdbccaga",
+    ".agccccccccccga.",
+    "..affffffffffa..",
+    "...aaaaaaaaaa...",
+    "...ahea..aeha...",
+    "...eaa....aae...",
+    "................",
+    "................",
+  ];
+
   /* company-colored screen: clone a rig palette with the pack's blue screen
      ramp (#4280dd / #50a7e8 / #1652b9) swapped for shades of the color */
   function shadeHex(hex, f) {
@@ -4361,6 +4477,116 @@ window.Sprites = (function () {
     );
   }
 
+  /* bottom-anchored so the chair's feet (grid row 29) sit at the rect bottom,
+     matching officeChair's anchoring */
+  function contactChair(ctx, px, py, w, h) {
+    drawGrid(
+      ctx,
+      CONTACT_CHAIR_GRID,
+      px + Math.round((w - 16) / 2),
+      py + h - 30,
+      false,
+      PAL_CONTACT_CHAIR,
+    );
+  }
+
+  /* drinks vending machine hand-ported from Modern_Office_Shadowless_16x16.png
+     @ (32,368) — 32x48 (content in cols 5-26, rows 5-38). Bottom-anchored so
+     the cabinet base sits on the floor line; decorative (education room). */
+  const PAL_VENDING = {
+    a: "#3a3a50",
+    b: "#6c6e85",
+    c: "#565972",
+    d: "#838897",
+    e: "#46465e",
+    f: "#727a8c",
+    g: "#c6c7da",
+    h: "#9099ab",
+    i: "#9aa7b6",
+    j: "#798194",
+    k: "#cad4e4",
+    l: "#838ca0",
+    m: "#abb9c9",
+    n: "#e58e86",
+    o: "#d1757a",
+    p: "#ad7177",
+    q: "#b9c3d5",
+    r: "#9da3b7",
+    s: "#8b8bab",
+    t: "#d0d2e1",
+    u: "#9eabbb",
+    v: "#e7b6bb",
+    w: "#dbdfec",
+    x: "#d2a4ac",
+    y: "#dfcad2",
+    z: "#d8e3ef",
+    A: "#9da8b6",
+    B: "#deb3b3",
+    C: "#d1dbe8",
+    D: "#d87d7e",
+    E: "#a3b2c2",
+    F: "#b3c2cf",
+    G: "#d6a9ae",
+    H: "#cb2a2a",
+    I: "#568d61",
+    J: "#bca2aa",
+  };
+  const VENDING_GRID = [
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    ".....ceaaaaaaaaaaaaaaaaaaec.....",
+    ".....errrdrdrrdddddddddddde.....",
+    ".....adddddddddddddddddddda.....",
+    ".....adddddddddddddddddddda.....",
+    ".....adddddddddddddddddddda.....",
+    ".....adddddddddddddddddddda.....",
+    ".....abbbbbbbbbbbbbbbbbbbba.....",
+    ".....eaaebbeeaaaaaaaaaaaaae.....",
+    ".....acccccccccccccccccccca.....",
+    ".....acbeaaaaaaaaaedbbbbbca.....",
+    ".....acefffjfiijfffebbbbbca.....",
+    ".....abanDopBGxpnDoabbbbbca.....",
+    ".....ebanvopByopnvoacbbbcea.....",
+    ".....ebagwgEkzglgwgabsqsbca.....",
+    ".....ebagtguktgjgtgabqsqbca.....",
+    ".....acaffuFuffAjfiabsqsbca.....",
+    ".....aballmmhhhhhmmabqsqbca.....",
+    ".....ebafiiifffffiiabHqIbca.....",
+    ".....acanyxpnvopByxacbbbcea.....",
+    ".....acakzklgwglkzgabbbbbca.....",
+    ".....acakCgjgtgukCgabeebaca.....",
+    ".....acaifjAjffFuffabeebaca.....",
+    ".....acaElhhhhmmmhhabccbcca.....",
+    ".....acaffffffiifffabbbbbca.....",
+    ".....acanvopnyxJnvoaeccccea.....",
+    ".....acagwglgzklgwgabbbbbca.....",
+    ".....acagtgjkCkjgtgabcccbca.....",
+    ".....acaffjAuifAjffabaaabca.....",
+    ".....acellhmmmhhhhhebeeebca.....",
+    ".....acdeaaaaaaaaaedcccccca.....",
+    ".....acbbbbbbbbbbbbbbbbbbca.....",
+    ".....acbbbbbbbbbcbcbcbcbbca.....",
+    ".....accccccccccececececcca.....",
+    ".....eaaaaaaaaaaaaaaaaaaaae.....",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+    "................................",
+  ];
+  function vendingMachine(ctx, px, py, w, h) {
+    const gx = px + Math.round((w - 32) / 2);
+    shadow(ctx, gx + 5, py + h, 22);
+    drawGrid(ctx, VENDING_GRID, gx, py + h - 39, false, PAL_VENDING);
+  }
+
   function receptionCounter(ctx, px, py) {
     drawGrid(ctx, RECEPTION_COUNTER_GRID, px, py, false, PAL_RECEPTION_COUNTER);
   }
@@ -4404,6 +4630,9 @@ window.Sprites = (function () {
     copier,
     resumeCopier,
     serverRack,
+    contactPC,
+    contactChair,
+    vendingMachine,
     wallLabel,
     trophyBig,
     receptionCounter,

@@ -519,6 +519,21 @@ window.World = (function () {
            sit flush against the bottom-right corner walls */
         { painter: "palmPlant", x: 17.5, y: 0, w: 2, h: 3 },
         { painter: "pottedBush", x: 17.5, y: 10, w: 2, h: 2 },
+        /* drinks vending machine flush against the top wall (its back overlaps
+           the wall face, like the corner palm) just left of the palm and clear
+           of the east door on row 6 */
+        {
+          painter: "vendingMachine",
+          x: 15.5,
+          y: 0.5,
+          w: 2,
+          h: 2.75,
+          dialog: "edu-vending",
+          requireFacing: "up",
+          /* rect top (y8) sits above the visible sprite (~y18); push the glint
+             anchor down to the machine top so it doesn't bob off-screen */
+          glintPad: 10,
+        },
       ],
     },
 
@@ -602,20 +617,33 @@ window.World = (function () {
           dialog: "hub-resume",
           requireFacing: "up",
         },
-        /* a project-room-style computer (opens the full-screen green terminal)
-           holding Reghu's outbound links — LinkedIn, GitHub, portfolio, Google
-           Scholar. Top-center (right of the north-door lane), clear of the
-           server columns on both side walls. */
+        /* a computer on a small tan table (opens the full-screen green
+           terminal) holding Reghu's outbound links — LinkedIn, GitHub,
+           portfolio, Google Scholar. Top-center (right of the north-door lane),
+           clear of the server columns on both side walls. The rect is 2.5 tiles
+           tall so the ported 16x32 monitor+tower stacks over the table within
+           it. */
         {
-          painter: "computerDesk",
+          painter: "contactPC",
           x: 12.5,
-          y: 2,
+          y: 0.75,
           w: 2,
-          h: 1.5,
+          h: 2.5,
           dialog: "contact-links",
         },
-        /* stool in front of the computer (walkable), matching the arcade desks */
-        { painter: "stool", x: 13, y: 3.5, w: 1, h: 1, solid: false },
+        /* orange office chair in front of the computer (walkable); idling on
+           it seats the player at the desk. Placed like the experience room's
+           officeChair — overlapping the desk bottom by 0.5 tile with sortY at
+           its own bottom edge so it draws tucked over the desk front. */
+        {
+          painter: "contactChair",
+          x: 13,
+          y: 2.75,
+          w: 1,
+          h: 1.3125,
+          solid: false,
+          sortY: 4.0625,
+        },
         /* server cabinets (ported jail sprite, scaled up) in two matching
            vertical columns flush against the side walls, each a pair with a
            narrow ~0.75-tile (12px) gap the player can slip through. The rect
