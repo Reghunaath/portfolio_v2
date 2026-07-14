@@ -26,6 +26,8 @@
     done: false,
     name: "",
     nameSkipped: false,
+    feedback: null, // { rating, comment, at, pct, name } once given
+    feedbackAsked: false, // the receptionist asks for feedback exactly once
   };
   try {
     const raw = localStorage.getItem(SAVE_KEY);
@@ -242,6 +244,32 @@
     },
   };
 
+  /* ── receptionist feedback greeter ─────────────────────────────────────
+     Once the visitor has explored more than GREET_PCT, the receptionist
+     leaves her desk and walks over — in whatever room they're in — to thank
+     them and ask for a rating. She enters from the door back to the lobby
+     (or from her desk when they're already in the lobby), walks up to the
+     player, asks exactly once, then heads back out. */
+  const GREET_PCT = 25; // ask after strictly more than this % explored
+  const GREET_SPEED = 74; // px/s — a touch slower than the player's walk
+  const GREET_GAP = 18; // she stops this far directly in front of the player
+  let pendingGreeter = false; // crossed the threshold; waiting for a calm moment
+  const greeter = {
+    active: false,
+    phase: "idle", // "enter" → "ask" → "leave"
+    x: 0,
+    y: 0,
+    dir: "down",
+    faceDir: "down", // cardinal she'll face the player from
+    moving: false,
+    animT: 0,
+    homeX: 0, // entry point, to retreat to when leaving
+    homeY: 0,
+    path: null, // BFS waypoints she's currently following
+    wp: 0, // index into path
+    timer: 0, // seconds in the current phase (walk-timeout failsafe)
+  };
+
   function feetRect(px, py) {
     return {
       x: px - player.w / 2,
@@ -294,6 +322,9 @@
         sfx.stamp();
         const pct = questPct();
         refreshHud();
+        /* crossed the explore threshold — arm the receptionist to come over
+           and ask for feedback once the player is done with this dialog */
+        if (!save.feedbackAsked && pct > GREET_PCT) pendingGreeter = true;
         if (pct >= 100 && !save.done) {
           save.done = true;
           persist();
@@ -454,6 +485,371 @@
     });
   }
 
+  /* the receptionist's entry point in the current room: standing in the
+     doorway back to the lobby (so she walks in through it), facing into the
+     room — or her desk when the player is already in the lobby. Positioned so
+     she reads as filling the open doorway yet stays fully on-screen. */
+  function greeterEntry() {
+    if (room.id === "hub") return { x: INTRO_X, y: INTRO_DESK_Y, dir: "down" };
+    const rects = room.doorRects.filter(function (dr) {
+      return dr.door && dr.door.to === "hub";
+    });
+    if (!rects.length) return { x: INTRO_X, y: INTRO_DESK_Y, dir: "down" };
+    let cx = 0,
+      cy = 0;
+    rects.forEach(function (dr) {
+      cx += dr.x + dr.w / 2;
+      cy += dr.y + dr.h / 2;
+    });
+    cx /= rects.length;
+    cy /= rects.length;
+    switch (rects[0].ch) {
+      case "n":
+        return { x: cx, y: 2 * T + 4, dir: "down" }; // just inside the top wall
+      case "s":
+        return { x: cx, y: cy - 20, dir: "up" };
+      case "w":
+        return { x: 16, y: cy, dir: "right" }; // near the west jamb (door opens)
+      default: // "e"
+        return { x: VW - 16, y: cy, dir: "left" }; // near the east jamb
+    }
+  }
+
+  /* true while the receptionist is walking in from / back out to the lobby
+     door — used by the door-swing render so the door opens for her too */
+  function greeterUsingDoor() {
+    return (
+      greeter.active &&
+      room.id !== "hub" &&
+      (greeter.phase === "enter" || greeter.phase === "leave")
+    );
+  }
+
+  function startGreeter() {
+    pendingGreeter = false;
+    const entry = greeterEntry();
+    greeter.active = true;
+    greeter.homeX = entry.x; // walk back here to exit
+    greeter.homeY = entry.y;
+    greeter.faceDir = entry.dir; // squares up on this axis in front of the player
+    greeter.moving = false;
+    greeter.animT = 0;
+    greeter.timer = 0;
+    if (reduceMotion) {
+      /* no walk animation — she appears directly in front of the player and
+         asks at once */
+      const onRight = player.x < VW / 2;
+      greeter.x = onRight
+        ? Math.min(VW - 12, player.x + GREET_GAP)
+        : Math.max(12, player.x - GREET_GAP);
+      greeter.y = player.y;
+      greeter.dir = onRight ? "left" : "right";
+      greeter.faceDir = greeter.dir;
+      facePlayerAtGreeter();
+      greeter.phase = "ask";
+      sfx.open();
+      openFeedback();
+      return;
+    }
+    greeter.x = entry.x;
+    greeter.y = entry.y;
+    greeter.dir = entry.dir;
+    greeter.phase = "enter";
+    const fo = chooseFaceOff(); // reachable side to square up on + path to it
+    greeter.faceDir = fo.dir;
+    greeter.path = fo.path;
+    greeter.wp = fo.path.length > 1 ? 1 : 0;
+    if (room.id !== "hub") sfx.door(); // the lobby door opens as she steps in
+  }
+
+  /* greedy steer toward (tx,ty) with the player's x-then-y wall slide; returns
+     the distance still remaining to the target after this step */
+  function moveGreeterToward(tx, ty, dt) {
+    const dx = tx - greeter.x,
+      dy = ty - greeter.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 0.01) {
+      greeter.moving = false;
+      return 0;
+    }
+    if (Math.abs(dx) > Math.abs(dy)) greeter.dir = dx > 0 ? "right" : "left";
+    else greeter.dir = dy > 0 ? "down" : "up";
+    const step = GREET_SPEED * dt;
+    const solids = roomSolids();
+    let nx = greeter.x + (dx / dist) * step;
+    let r = feetRect(nx, greeter.y);
+    if (!solids.some(function (s) { return hit(r, s); })) greeter.x = nx;
+    let ny = greeter.y + (dy / dist) * step;
+    r = feetRect(greeter.x, ny);
+    if (!solids.some(function (s) { return hit(r, s); })) greeter.y = ny;
+    greeter.x = Math.max(6, Math.min(VW - 6, greeter.x));
+    greeter.y = Math.max(10, Math.min(VH - 4, greeter.y));
+    greeter.moving = true;
+    greeter.animT += dt * 8;
+    return Math.hypot(tx - greeter.x, ty - greeter.y);
+  }
+
+  /* ── path-finding (BFS on the tile grid) so she routes around furniture
+     instead of crashing into it ──────────────────────────────────────────── */
+  function greeterWalkable(cx, cy, solids) {
+    if (cx < 6 || cx > VW - 6 || cy < 10 || cy > VH - 4) return false;
+    const fr = feetRect(cx, cy);
+    for (let i = 0; i < solids.length; i++) if (hit(fr, solids[i])) return false;
+    return true;
+  }
+  /* BFS from (fromX,fromY) to (toX,toY) over walkable tile centers; returns a
+     list of waypoints (start→goal, last one the exact goal) or null if the
+     goal tile is blocked/unreachable */
+  function computePath(fromX, fromY, toX, toY) {
+    const cols = World.COLS,
+      rows = World.ROWS,
+      solids = roomSolids();
+    function walk(c, r) {
+      return (
+        c >= 0 &&
+        r >= 0 &&
+        c < cols &&
+        r < rows &&
+        greeterWalkable(c * T + T / 2, r * T + T / 2, solids)
+      );
+    }
+    const clamp = function (v, hi) { return Math.max(0, Math.min(hi, v)); };
+    const sc = clamp(Math.round((fromX - T / 2) / T), cols - 1),
+      sr = clamp(Math.round((fromY - T / 2) / T), rows - 1),
+      gc = clamp(Math.round((toX - T / 2) / T), cols - 1),
+      gr = clamp(Math.round((toY - T / 2) / T), rows - 1);
+    if (!walk(gc, gr)) return null;
+    const prev = new Array(cols * rows).fill(-1);
+    const start = sr * cols + sc,
+      goal = gr * cols + gc;
+    prev[start] = start;
+    const queue = [start];
+    const dc = [1, -1, 0, 0],
+      dr = [0, 0, 1, -1];
+    let qi = 0,
+      found = false;
+    while (qi < queue.length) {
+      const k = queue[qi++];
+      if (k === goal) { found = true; break; }
+      const c = k % cols,
+        r = (k - c) / cols;
+      for (let d = 0; d < 4; d++) {
+        const nc = c + dc[d],
+          nr = r + dr[d],
+          nk = nr * cols + nc;
+        /* connect only if the neighbour is walkable AND the move between the
+           two tile centres is actually collision-free — a tile-centre check
+           alone misses thin furniture (e.g. the 3px cubicle-side strips) that
+           sits between two otherwise-open tiles and would jam her mid-step */
+        if (
+          nc >= 0 &&
+          nr >= 0 &&
+          nc < cols &&
+          nr < rows &&
+          prev[nk] === -1 &&
+          walk(nc, nr) &&
+          losClear(c * T + T / 2, r * T + T / 2, nc * T + T / 2, nr * T + T / 2, solids)
+        ) {
+          prev[nk] = k;
+          queue.push(nk);
+        }
+      }
+    }
+    if (!found) return null;
+    const path = [];
+    let k = goal;
+    while (k !== start) {
+      const c = k % cols,
+        r = (k - c) / cols;
+      path.unshift({ x: c * T + T / 2, y: r * T + T / 2 });
+      k = prev[k];
+    }
+    path.unshift({ x: sc * T + T / 2, y: sr * T + T / 2 });
+    path[path.length - 1] = { x: toX, y: toY }; // land on the exact goal point
+    return path;
+  }
+  function losClear(ax, ay, bx, by, solids) {
+    const steps = Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay) / 4));
+    for (let i = 1; i <= steps; i++) {
+      const fr = feetRect(
+        ax + (bx - ax) * (i / steps),
+        ay + (by - ay) * (i / steps),
+      );
+      for (let j = 0; j < solids.length; j++) if (hit(fr, solids[j])) return false;
+    }
+    return true;
+  }
+  /* walk the greeter along greeter.path; returns true once it's exhausted */
+  function followPath(dt) {
+    if (!greeter.path || greeter.wp >= greeter.path.length) return true;
+    const solids = roomSolids();
+    /* string-pull: skip ahead to the furthest waypoint with a clear line, so
+       she cuts corners smoothly instead of hitting every tile centre */
+    while (
+      greeter.wp + 1 < greeter.path.length &&
+      losClear(greeter.x, greeter.y, greeter.path[greeter.wp + 1].x, greeter.path[greeter.wp + 1].y, solids)
+    ) {
+      greeter.wp++;
+    }
+    const wp = greeter.path[greeter.wp];
+    const rem = moveGreeterToward(wp.x, wp.y, dt);
+    if (rem <= 4 && ++greeter.wp >= greeter.path.length) return true;
+    return false;
+  }
+  /* choose which side of the player to square up on: prefer the axis she came
+     in on, but fall back to any side that's walkable AND reachable — so a
+     player standing against furniture (e.g. right under the contact desk)
+     still gets approached from an open side instead of a crash */
+  function chooseFaceOff() {
+    const g = GREET_GAP;
+    const sides = [
+      { dir: "down", x: player.x, y: player.y - g },
+      { dir: "up", x: player.x, y: player.y + g },
+      { dir: "right", x: player.x - g, y: player.y },
+      { dir: "left", x: player.x + g, y: player.y },
+    ];
+    sides.sort(function (a, b) {
+      return (b.dir === greeter.faceDir) - (a.dir === greeter.faceDir);
+    });
+    for (let i = 0; i < sides.length; i++) {
+      const p = computePath(greeter.x, greeter.y, sides[i].x, sides[i].y);
+      if (p) {
+        sides[i].path = p;
+        return sides[i];
+      }
+    }
+    const s = sides[0]; // nothing reachable — greedy fallback to the preferred side
+    s.path = [{ x: s.x, y: s.y }];
+    return s;
+  }
+
+  function stepGreeterEnter(dt) {
+    greeter.timer += dt;
+    if (followPath(dt) || greeter.timer > 9) arriveGreeter();
+  }
+
+  /* turn the player to look at the receptionist while she talks to them */
+  function facePlayerAtGreeter() {
+    const dx = greeter.x - player.x,
+      dy = greeter.y - player.y;
+    if (Math.abs(dx) > Math.abs(dy)) player.dir = dx > 0 ? "right" : "left";
+    else player.dir = dy > 0 ? "down" : "up";
+    player.moving = false;
+    player.animT = 0;
+  }
+
+  function arriveGreeter() {
+    greeter.moving = false;
+    greeter.animT = 0;
+    greeter.dir = greeter.faceDir; // square up, facing the player head-on
+    facePlayerAtGreeter();
+    greeter.phase = "ask";
+    sfx.open();
+    openFeedback();
+  }
+
+  function stepGreeterLeave(dt) {
+    greeter.timer += dt;
+    if (followPath(dt) || greeter.timer > 9) {
+      greeter.active = false; // reached the doorway (or gave up) — exit
+      greeter.phase = "idle";
+      greeter.moving = false;
+    }
+  }
+
+  function leaveGreeter() {
+    if (reduceMotion) {
+      greeter.active = false;
+      greeter.phase = "idle";
+      greeter.moving = false;
+      return;
+    }
+    greeter.phase = "leave";
+    greeter.timer = 0;
+    greeter.path =
+      computePath(greeter.x, greeter.y, greeter.homeX, greeter.homeY) ||
+      [{ x: greeter.homeX, y: greeter.homeY }];
+    greeter.wp = greeter.path.length > 1 ? 1 : 0;
+  }
+
+  function openFeedback() {
+    const who = save.name || "";
+    const pct = questPct();
+    UI.openFeedbackPrompt({
+      path: "~/lobby/reception",
+      title: "Front Desk",
+      body: [
+        (who ? who + ", you've" : "You've") +
+          " explored " +
+          pct +
+          "% of the portfolio so far — thank you for taking the time to look around!",
+        "Before you carry on: how would you rate your visit? A star rating (and any thoughts you'd like to leave) would mean a lot to Reghu.",
+      ],
+      commentPlaceholder: "anything you'd like to add? (optional)",
+      submitLabel: "send feedback",
+      dismissLabel: "maybe later",
+      onSubmit: function (rating, comment) {
+        save.feedback = {
+          rating: rating,
+          comment: comment,
+          at: Date.now(),
+          pct: pct,
+          name: save.name || null,
+        };
+        save.feedbackAsked = true;
+        persist();
+        sfx.stamp();
+        UI.toast(
+          (who ? "thanks, " + who + "! " : "thank you! ") +
+            rating +
+            "★ noted.",
+          3000,
+        );
+        leaveGreeter();
+      },
+      onDismiss: function () {
+        save.feedbackAsked = true; // asked exactly once, even if declined
+        persist();
+        sfx.close();
+        leaveGreeter();
+      },
+    });
+  }
+
+  /* dev-only: set explored % to the highest value at or below `cap`
+     (default: just under the greeter threshold) by trimming/adding core
+     dialog ids, and clear the once-only feedback flag. Left just under 25%,
+     interacting with one more core item trips the greeter naturally — lets you
+     test the real crossing (in any room) without visiting four rooms. Wired to
+     a hotkey/badge below, only when DEV is on. */
+  function devSetProgress(cap) {
+    const total = CORE.length;
+    cap = cap == null ? GREET_PCT : cap;
+    let n = 0;
+    for (let k = 0; k <= total; k++) {
+      if (Math.round((k / total) * 100) <= cap) n = k;
+    }
+    save.seen = save.seen.filter(function (id) {
+      return CORE.indexOf(id) === -1; // drop core ids, keep any non-core seen
+    });
+    for (let i = 0; i < n; i++) save.seen.push(CORE[i]);
+    save.feedback = null;
+    save.feedbackAsked = false;
+    greeter.active = false;
+    greeter.phase = "idle";
+    greeter.moving = false;
+    pendingGreeter = questPct() > GREET_PCT;
+    persist();
+    refreshHud();
+    const p = questPct();
+    UI.toast(
+      p > GREET_PCT
+        ? "dev · explored " + p + "% — greeter armed"
+        : "dev · explored " + p + "% — interact once more to trip the greeter",
+      2800,
+    );
+  }
+
   /* ── server-unplug easter egg ─────────────────────────────────────────
      Interacting with a contact-room server cabinet asks whether to unplug
      it. Saying yes "crashes" the game — a fake kernel panic revealing the
@@ -502,6 +898,13 @@
   /* ── room transition ──────────────────────────────────────────────── */
   function changeRoom(door) {
     if (transitionLock) return;
+    /* don't strand the receptionist in the room being left (she can only be
+       up during her "leave" retreat here — asking freezes the player) */
+    if (greeter.active) {
+      greeter.active = false;
+      greeter.phase = "idle";
+      greeter.moving = false;
+    }
     transitionLock = true;
     sfx.door();
     const go = function () {
@@ -560,7 +963,13 @@
       return;
     }
 
-    if (!transitionLock && intro) {
+    if (!transitionLock && greeter.active && greeter.phase === "enter") {
+      /* scripted approach — the receptionist walks over to the player; input
+         is ignored while she does, same as the check-in intro */
+      actionQueued = false;
+      UI.setHint("");
+      stepGreeterEnter(dt);
+    } else if (!transitionLock && intro) {
       /* scripted check-in walk — steered by the game, not the keys. The
          route (col 10 from the doormat to the desk) crosses no solid
          furniture, so collision is skipped on purpose */
@@ -686,6 +1095,14 @@
         const nearDoor = nearestDoorHint();
         UI.setHint(nearDoor ? "walk through → " + nearDoor : defaultHint);
       }
+
+      /* the receptionist retreats after asking — the player is free to move */
+      if (greeter.active && greeter.phase === "leave") stepGreeterLeave(dt);
+
+      /* she comes over once the visitor has explored enough and is between
+         interactions (no dialog open, not mid-transition or check-in) */
+      if (pendingGreeter && !greeter.active && !intro && !transitionLock)
+        startGreeter();
     }
 
     /* cat tail-sweep loop (holds the resting frame under reduced motion) */
@@ -727,27 +1144,39 @@
         else floorPainter(ctx, c, r);
       }
     }
-    /* north doors: the pair swings open when the player is in front of
-       the two-tile gap (within it sideways, approaching from below) */
-    function northSwing(c) {
-      if (Math.abs((c + 1) * World.T - player.x) > World.T) return 0;
-      const dist = Math.max(0, player.y - 2 * World.T);
+    /* north doors: the pair swings open when the player (or the receptionist
+       arriving/leaving through it) is in front of the two-tile gap */
+    function northSwingFor(c, ax, ay) {
+      if (Math.abs((c + 1) * World.T - ax) > World.T) return 0;
+      const dist = Math.max(0, ay - 2 * World.T);
       return Math.floor((21 - dist) / 3); // starts opening at 18px, open at 9px
+    }
+    function northSwing(c) {
+      let k = northSwingFor(c, player.x, player.y);
+      if (greeterUsingDoor())
+        k = Math.max(k, northSwingFor(c, greeter.x, greeter.y));
+      return k;
     }
     for (let c = 0; c < World.COLS; c++) {
       if (room.map[0][c] === "n" && room.map[0][c - 1] !== "n") {
         Sprites.TILES.doorNorth(ctx, c, 0, northSwing(c));
       }
     }
-    /* side doors: the leaf swings open as the player approaches the gap.
-       vertical_left_1's frames swing into the room on the east wall; the
-       west wall gets the same frames mirrored */
-    function sideSwing(tc, tr) {
-      /* only react to a player standing in front of the doorway (on the
+    /* side doors: the leaf swings open as the player (or the arriving/leaving
+       receptionist) approaches the gap. vertical_left_1's frames swing into
+       the room on the east wall; the west wall gets the same frames mirrored */
+    function sideSwingFor(tc, tr, ax, ay) {
+      /* only react to an actor standing in front of the doorway (on the
          gap's row) — beside the wall above/below it stays closed */
-      if (Math.abs(tr * World.T + 8 - player.y) > 8) return 0;
-      const dist = Math.abs(tc * World.T + 8 - player.x);
+      if (Math.abs(tr * World.T + 8 - ay) > 8) return 0;
+      const dist = Math.abs(tc * World.T + 8 - ax);
       return Math.floor((21 - dist) / 3); // starts opening at 18px, open at 9px
+    }
+    function sideSwing(tc, tr) {
+      let k = sideSwingFor(tc, tr, player.x, player.y);
+      if (greeterUsingDoor())
+        k = Math.max(k, sideSwingFor(tc, tr, greeter.x, greeter.y));
+      return k;
     }
     for (let r = 1; r < World.ROWS; r++) {
       if (room.map[r][0] === "w")
@@ -775,6 +1204,10 @@
     const drawables = [];
     room.furniture.forEach(function (f) {
       if (!furnitureActive(f)) return;
+      /* while the receptionist is up and walking the lobby, don't also draw
+         her standing behind the desk */
+      if (greeter.active && room.id === "hub" && f.painter === "receptionist")
+        return;
       /* flat items (rugs, mats) and wall art draw beneath everything that
          stands; overhead items (hanging signs) draw above everything;
          sortY (tiles) pins an explicit depth line — e.g. countertop items
@@ -840,6 +1273,24 @@
         Sprites.drawGrid(ctx, grid, px, py, false); // sheet has native left frames
       },
     });
+    /* the receptionist, while she's up walking to/from the player */
+    if (greeter.active) {
+      drawables.push({
+        y: greeter.y,
+        draw: function () {
+          const frames = Sprites.RECEPTIONIST_WALK[greeter.dir];
+          const idx = greeter.moving
+            ? 1 + (Math.floor(greeter.animT) % (frames.length - 1))
+            : 0;
+          const grid = frames[Math.min(idx, frames.length - 1)];
+          const px = Math.round(greeter.x - 8),
+            py = Math.round(greeter.y - 25);
+          ctx.fillStyle = "rgba(0,0,0,0.3)";
+          ctx.fillRect(px + 4, Math.round(greeter.y) + 1, 8, 2);
+          Sprites.drawGrid(ctx, grid, px, py, false, Sprites.PAL_RECEPTIONIST_WALK);
+        },
+      });
+    }
     drawables.sort(function (a, b) {
       return a.y - b.y;
     });
@@ -853,7 +1304,10 @@
        `glintPad` pushes the anchor down for furniture whose rect top sits
        higher than its visible sprite (e.g. the wall-hugging vending machine,
        whose glint would otherwise bob off the top of the screen). */
-    const target = UI.isOpen() ? null : interactTarget();
+    const target =
+      UI.isOpen() || (greeter.active && greeter.phase === "enter")
+        ? null
+        : interactTarget();
     if (target && !target.isCat) {
       const glintY = target.wallMounted
         ? target.py + target.ph - 12
@@ -935,6 +1389,9 @@
     UI.setPath(room.label);
     refreshHud();
     updateSoundBtn();
+    /* returning visitor who's already past the threshold but was never asked:
+       arm the greeter so she comes over once they're in control */
+    if (!save.feedbackAsked && questPct() > GREET_PCT) pendingGreeter = true;
     let rebooted = false;
     try {
       rebooted = sessionStorage.getItem("reghu-rebooted") === "1";
@@ -1018,11 +1475,65 @@
       fade: fade.a,
       lock: transitionLock,
       intro: !!intro,
+      pct: questPct(),
+      greeter: greeter.active ? greeter.phase : false,
+      pending: pendingGreeter,
     };
   };
+
+  /* ── dev toggle ─────────────────────────────────────────────────────────
+     Only on localhost / file:// / an explicit ?dev=1 — never on the deployed
+     portfolio. Shows a small clickable badge (and binds the ` hotkey) that
+     sets explored % to just under the greeter threshold, so one more core
+     interaction trips the feedback flow. Also exposes
+     window.__DEV.progress(cap) for the console. */
+  const DEV = (function () {
+    try {
+      const h = location.hostname;
+      return (
+        /(^|[?&])dev=1(&|$)/.test(location.search) ||
+        h === "localhost" ||
+        h === "127.0.0.1" ||
+        h === ""
+      );
+    } catch (e) {
+      return false;
+    }
+  })();
+  function initDev() {
+    window.__DEV = { progress: devSetProgress };
+    document.addEventListener("keydown", function (ev) {
+      const tgt = ev.target;
+      if (tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA")) return;
+      if (ev.code === "Backquote") {
+        ev.preventDefault();
+        devSetProgress();
+      }
+    });
+    const badge = document.createElement("button");
+    badge.type = "button";
+    badge.textContent = "DEV · set <25%";
+    badge.title =
+      "dev: set explored % just under the greeter threshold — then interact " +
+      "with one more core item to trip it (or press `)";
+    badge.style.cssText =
+      "position:fixed;left:8px;bottom:8px;z-index:9999;" +
+      "font:10px/1 ui-monospace,monospace;color:#3fb950;" +
+      "background:rgba(0,0,0,0.6);padding:5px 8px;" +
+      "border:1px solid #3fb950;border-radius:4px;cursor:pointer;opacity:0.85;";
+    badge.addEventListener("click", function () {
+      devSetProgress();
+      badge.blur(); // don't keep focus (space/enter would re-fire it)
+    });
+    badge.addEventListener("keydown", function (e) {
+      e.stopPropagation(); // keys on the badge never reach the game engine
+    });
+    document.body.appendChild(badge);
+  }
 
   UI.init();
   fitCanvas();
   runBoot();
+  if (DEV) initDev();
   requestAnimationFrame(loop);
 })();

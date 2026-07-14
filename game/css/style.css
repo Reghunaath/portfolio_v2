@@ -421,6 +421,46 @@ body {
   cursor: pointer;
 }
 .dlg-input button:hover { background: #4a6cc0; }
+.dlg-input button:disabled { background: #8a8f9c; border-color: #6b7080; opacity: 0.55; cursor: default; }
+
+/* feedback prompt: 5-star rating + optional comment (the receptionist's
+   end-of-visit ask). Stars are gold when filled, muted gold when empty. */
+.dlg-rating { display: flex; align-items: center; gap: 3px; margin-top: 12px; }
+.dlg-star {
+  font-size: 22px;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+  color: #cbb271;
+  transition: color 0.08s, transform 0.08s;
+}
+.dlg-star.on { color: #e3b341; text-shadow: 0 0 6px rgba(227, 179, 65, 0.6); }
+.dlg-star:hover { transform: scale(1.18); }
+.dlg-rating-label {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  color: #8a7a56;
+  margin-left: 8px;
+}
+.dlg-comment {
+  width: 100%;
+  margin-top: 10px;
+  background: #fff;
+  border: 2px solid #cbb271;
+  border-radius: 5px;
+  color: #3c3c46;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 6px 10px;
+  resize: vertical;
+  min-height: 46px;
+  caret-color: #d84848;
+}
+.dlg-comment::placeholder { color: #8a7a56; }
+.dlg-comment:focus { outline: 2px solid #d84848; outline-offset: 1px; }
 
 .dlg-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .dlg-links a, .dlg-links button {

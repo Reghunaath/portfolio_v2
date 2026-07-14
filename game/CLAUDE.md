@@ -64,8 +64,11 @@ matters; each file exposes one global:
   `ev.target` is an INPUT/TEXTAREA (names like "Wade" contain WASD keys). Touch
   D-pad shows via `(pointer: coarse)` or `max-width: 700px`.
 - **Save** (`localStorage["reghu-quest-v1"]`): `{seen[], rooms[], coffee, sound,
-  done, name, nameSkipped}`. Quest % = seen∩coreIds / coreIds. Changing dialog
-  ids invalidates existing saves' progress for those items.
+  done, name, nameSkipped, feedback, feedbackAsked}`. Quest % = seen∩coreIds /
+  coreIds. `feedback` is `{rating 1-5, comment, at, pct, name}` once given (kept
+  locally only — nothing is sent anywhere yet); `feedbackAsked` gates the
+  greeter to fire once. Changing dialog ids invalidates existing saves'
+  progress for those items.
 - **Check-in flow**: on first start the player spawns on the doormat and
   auto-walks up col 10 to the reception desk (`intro` state in game.js; input
   ignored while it runs, reduced-motion places the player at the desk
@@ -74,6 +77,34 @@ matters; each file exposes one global:
   (`openReception`) embeds the same name input inline. Both are built
   dynamically in game.js via `UI.openNamePrompt` (which typewrites like every
   dialog), not read verbatim from data.js.
+- **Feedback greeter**: once quest % passes 25 (`GREET_PCT`) and
+  `!feedbackAsked`, the receptionist leaves her desk and walks to the player —
+  in whatever room they're in — to ask for a star rating + comment
+  (`greeter` state machine in game.js: `enter` → `ask` → `leave`). She's armed
+  (`pendingGreeter`) the moment the threshold is crossed but only starts once
+  no dialog is open (i.e. after the player finishes interacting), and freezes
+  input during her approach like the check-in intro. She spawns in the doorway
+  back to the lobby (`greeterEntry`, from the room's `doorRects`) and the door
+  swings open for her — `northSwing`/`sideSwing` take the max of the player's
+  and (while `greeterUsingDoor()`) her position, so it opens as she emerges and
+  closes behind her; the arcade's south door is static in the art, so there
+  she just walks out of it. She routes to the player with tile-grid BFS
+  (`computePath` over `greeterWalkable` tiles; edges are `losClear`-checked so
+  thin furniture between two open tiles — e.g. the 3px cubicle-side strips —
+  doesn't jam her mid-step; `followPath` string-pulls with `losClear` for
+  smooth corners) so she goes around furniture instead of crashing into it,
+  and `chooseFaceOff()` picks a walkable+reachable side one
+  `GREET_GAP` from the player — preferring her entry axis but falling back
+  (e.g. a player standing right under the contact desk gets approached from an
+  open side). On arrival she and the player turn to face each other head-on
+  (`facePlayerAtGreeter`) for the conversation, then she paths back to that
+  doorway and despawns; in the lobby the desk `receptionist` painter is hidden
+  while she's up. She
+  walks with `Sprites.RECEPTIONIST_WALK` (a separate 4-dir walk cycle from her
+  desk idle `RECEPTIONIST_FRAMES`). The prompt is `UI.openFeedbackPrompt`
+  (rating required, comment optional; ✕/Esc/tap = dismiss); asked exactly once
+  whether submitted or declined. Reduced motion skips the walk (she appears
+  beside the player and asks).
 - **Reduced motion**: honored everywhere — boot/typewriter/confetti skipped, the
   cat's tail-sweep loop freezes on its resting frame, glints stop bobbing.
 
@@ -82,8 +113,17 @@ matters; each file exposes one global:
 - Don't launch a Playwright playtest on your own initiative after a change —
   only do it when the user explicitly asks for one. This overrides the general
   "test UI changes in a browser before reporting done" default for this game.
-- `window.__DBG()` returns `{x, y, room, dir, boot, fade, lock}` — used by
-  automated Playwright playtests to steer the player.
+- `window.__DBG()` returns `{x, y, room, dir, boot, fade, lock, intro, pct,
+  greeter, pending}` — used by automated Playwright playtests to steer the
+  player.
+- **Dev toggle** (only on `localhost` / `127.0.0.1` / `file://` / an explicit
+  `?dev=1` — never on the deployed site): a small bottom-left "DEV · set <25%"
+  badge and the `` ` `` hotkey both call `devSetProgress()`, which sets
+  explored % to the highest value at/under the greeter threshold (20% with the
+  current 15 core dialogs) and clears `feedbackAsked` — so interacting with one
+  more core item trips the feedback greeter naturally, in whatever room you're
+  in, without visiting four rooms. Also exposed as `window.__DEV.progress(cap)`
+  (highest % at or below `cap`).
 - When driving with Playwright: call `page.bringToFront()` first (occluded
   windows throttle rAF to ~2fps and short key-holds land between frames), and
   avoid `animations: 'disabled'` screenshots (they produce black frames here).
@@ -100,6 +140,7 @@ game.
 | File | Role |
 | --- | --- |
 | `tools/png-to-grid.js` | Node script (built-in `zlib` only, no npm install) — slices a PNG region into the string-grid + palette format `sprites.js` uses (see `drawGrid()`), including multi-frame strips (`--frames`). Run with no args for usage. |
+| `tools/composite.js` | Multi-layer companion to `png-to-grid.js`: alpha-composites Character_Generator layer sheets (Body/Eyes/Outfit/Hairstyle, bottom-to-top) into one character and slices its idle+walk frames into the `[idle,walk1..6]`-per-direction grid format (used to port the receptionist's walk cycle, `RECEPTIONIST_WALK`). Run with no args for usage. |
 | `tools/gen-manifest.js` | Scans a folder of PNGs and writes `tools/asset-manifest.js` (file paths + dimensions only) for the viewer's file list. Defaults to scanning `game/assets` — pass a different root as the first arg if the pack lives elsewhere. Re-run after adding/replacing pack files. |
 | `tools/asset-viewer.html` | Standalone browser tool — open directly (or serve `game/` so the transparency-skip in "extract tiles → gallery" works; file:// taints canvas readback). Browse a pack's sheets at adjustable zoom with a grid overlay, click or drag to select a region, and it generates the exact `png-to-grid.js` command for that selection. |
 | `tools/asset-catalog.md` | **Check this first when porting.** Text index of every sprite on the shadowless 16x16 theme sheets — per-item description + bounding box in original sheet pixels (±2px; trim at port time), plus a "Ported so far" section mapping ported sprites to their source sheets and `sprites.js` grid constants. Searching it replaces browsing sheets visually. Keep "Ported so far" updated after each port. |
@@ -149,7 +190,10 @@ game.
   (rows 6–31 of each 16x32 sheet cell, feet on the bottom row).
   `PLAYER_FRAMES[dir]` = `[idle, walk1..walk6]` with native left-facing frames —
   the player draw call passes `flipX: false`. The receptionist plays her
-  6-frame down idle. The sheets' direction blocks are right/up/left/down,
+  6-frame down idle at the desk (`RECEPTIONIST_FRAMES`) and has a full 4-dir
+  walk cycle for the feedback greeter (`RECEPTIONIST_WALK`, `[idle,walk1..6]`
+  per direction like the player) generated from the same layers by
+  `tools/composite.js`. The sheets' direction blocks are right/up/left/down,
   6 frames each; idle row starts at y 32, walk row at y 64. The pack's sit rows
   (y 128/160) are side-facing only, so the desk-stool sit is derived:
   `PLAYER_SIT_UP` in sprites.js (standing up-frame lowered 3px, legs cut) is

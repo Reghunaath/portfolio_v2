@@ -127,7 +127,7 @@ window.UI = (function () {
      onDone fires once everything is revealed */
   function typewrite(container, onDone) {
     const deferred = Array.prototype.slice.call(
-      container.querySelectorAll(".dlg-tags, .dlg-links, .dlg-input, .dlg-copy")
+      container.querySelectorAll(".dlg-tags, .dlg-links, .dlg-input, .dlg-copy, .dlg-rating, .dlg-comment")
     );
     const nodes = [];
     (function collect(n) {
@@ -424,6 +424,126 @@ window.UI = (function () {
     });
   }
 
+  /* feedback prompt: a 1-5 star rating (required) + an optional comment, in the
+     dialog chrome. The receptionist opens this once, near the end of a visit.
+     Closing via ✕/Esc/tap counts as a dismiss; submit needs at least one star.
+     cfg: {path,title,body[],commentPlaceholder,submitLabel,dismissLabel,
+           onSubmit(rating,comment), onDismiss()} */
+  function openFeedbackPrompt(cfg) {
+    finishTyping();
+    onCloseCb = null;
+    el.dialog.classList.remove("terminal", "diploma", "scroll", "resume");
+    el.dialogPath.textContent = cfg.path || "~/lobby/reception";
+    el.dialogBody.innerHTML = "";
+
+    const h = document.createElement("h2");
+    h.textContent = cfg.title || "Front Desk";
+    el.dialogBody.appendChild(h);
+    (cfg.body || []).forEach(function (para) {
+      const p = document.createElement("p");
+      p.textContent = para;
+      el.dialogBody.appendChild(p);
+    });
+
+    let rating = 0;
+    let submitted = false;
+
+    /* forward declarations so the star/comment handlers can call them */
+    function doSubmit() {
+      if (rating < 1 || submitted) return;
+      submitted = true;
+      onCloseCb = null;
+      closeDialog();
+      if (cfg.onSubmit) cfg.onSubmit(rating, comment.value.trim().slice(0, 500));
+    }
+    function doDismiss() {
+      if (submitted) return;
+      submitted = true;
+      onCloseCb = null;
+      closeDialog();
+      if (cfg.onDismiss) cfg.onDismiss();
+    }
+
+    const rrow = document.createElement("div");
+    rrow.className = "dlg-rating";
+    const stars = [];
+    function paint(n) {
+      stars.forEach(function (s, i) { s.classList.toggle("on", i < n); });
+    }
+    const label = document.createElement("span");
+    label.className = "dlg-rating-label";
+    label.textContent = "tap a star";
+    function pick(n) {
+      rating = n;
+      paint(rating);
+      label.textContent = rating + " / 5";
+      submit.disabled = false;
+    }
+    for (let i = 0; i < 5; i++) {
+      (function (idx) {
+        const s = document.createElement("button");
+        s.type = "button";
+        s.className = "dlg-star";
+        s.textContent = "★"; // ★
+        s.setAttribute("aria-label", idx + 1 + (idx ? " stars" : " star"));
+        s.addEventListener("mouseenter", function () { paint(idx + 1); });
+        s.addEventListener("click", function () { pick(idx + 1); });
+        s.addEventListener("keydown", function (e) {
+          e.stopPropagation(); // never let the game engine see this key
+          if (e.key >= "1" && e.key <= "5") {
+            pick(parseInt(e.key, 10));
+            stars[rating - 1].focus();
+            e.preventDefault();
+          }
+        });
+        stars.push(s);
+        rrow.appendChild(s);
+      })(i);
+    }
+    rrow.addEventListener("mouseleave", function () { paint(rating); });
+    rrow.appendChild(label);
+    el.dialogBody.appendChild(rrow);
+
+    const comment = document.createElement("textarea");
+    comment.className = "dlg-comment";
+    comment.placeholder = cfg.commentPlaceholder || "anything you'd like to add? (optional)";
+    comment.maxLength = 500;
+    comment.rows = 2;
+    comment.addEventListener("keydown", function (e) {
+      e.stopPropagation(); // typing must never move the player
+      if (e.key === "Escape") doDismiss();
+    });
+    el.dialogBody.appendChild(comment);
+
+    const row = document.createElement("div");
+    row.className = "dlg-input";
+    const submit = document.createElement("button");
+    submit.type = "button";
+    submit.textContent = "[ " + (cfg.submitLabel || "send feedback") + " ]";
+    submit.disabled = true;
+    const dismiss = document.createElement("button");
+    dismiss.type = "button";
+    dismiss.textContent = "[ " + (cfg.dismissLabel || "maybe later") + " ]";
+    submit.addEventListener("click", doSubmit);
+    dismiss.addEventListener("click", doDismiss);
+    submit.addEventListener("keydown", function (e) { e.stopPropagation(); });
+    dismiss.addEventListener("keydown", function (e) { e.stopPropagation(); });
+    row.appendChild(submit);
+    row.appendChild(dismiss);
+    el.dialogBody.appendChild(row);
+
+    /* closing via the ✕ button, Esc, or a tap counts as a dismiss */
+    onCloseCb = function () {
+      if (!submitted) { submitted = true; if (cfg.onDismiss) cfg.onDismiss(); }
+    };
+
+    el.dialog.classList.remove("hidden");
+    el.dialogBody.scrollTop = 0;
+    typewrite(el.dialogBody, function () {
+      stars[0].focus({ preventScroll: true });
+    });
+  }
+
   /* returns true if it consumed the action (skip-to-end vs close) */
   function advanceDialog() {
     if (typing) { finishTyping(); return true; }
@@ -548,8 +668,8 @@ window.UI = (function () {
   }
 
   return {
-    init, openDialog, openNamePrompt, advanceDialog, closeDialog, isOpen,
-    setHint, setPath, setQuest, setStamps, setCoffee, toast, confetti,
-    openCrash, reduceMotion,
+    init, openDialog, openNamePrompt, openFeedbackPrompt, advanceDialog,
+    closeDialog, isOpen, setHint, setPath, setQuest, setStamps, setCoffee,
+    toast, confetti, openCrash, reduceMotion,
   };
 })();
