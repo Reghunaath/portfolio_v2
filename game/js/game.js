@@ -153,6 +153,17 @@
     const k = KEYMAP[ev.code];
     if (k) keys[k] = false;
   });
+  /* losing focus (alt-tab, or a dialog link opening a new tab) swallows the
+     keyup — release everything so the player doesn't keep auto-walking */
+  function releaseKeys() {
+    Object.keys(keys).forEach(function (k) {
+      keys[k] = false;
+    });
+  }
+  window.addEventListener("blur", releaseKeys);
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) releaseKeys();
+  });
 
   /* touch controls */
   function bindTouch(id, key) {
@@ -480,6 +491,9 @@
         { text: "Plug it back in to bring the portfolio online.", cls: "crash-dim" },
       ],
       onReset: function () {
+        try {
+          sessionStorage.setItem("reghu-rebooted", "1");
+        } catch (e) {}
         window.location.reload();
       },
     });
@@ -921,7 +935,14 @@
     UI.setPath(room.label);
     refreshHud();
     updateSoundBtn();
-    if (save.name) {
+    let rebooted = false;
+    try {
+      rebooted = sessionStorage.getItem("reghu-rebooted") === "1";
+      if (rebooted) sessionStorage.removeItem("reghu-rebooted");
+    } catch (e) {}
+    if (rebooted) {
+      UI.toast("power restored. let's never speak of this.", 3200);
+    } else if (save.name) {
       UI.toast(
         "welcome back, " +
           save.name +

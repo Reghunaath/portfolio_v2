@@ -94,15 +94,6 @@ body {
 }
 #hud-quest.quest-done { color: var(--t-green); text-shadow: 0 0 8px rgba(63, 185, 80, 0.7); }
 
-#hud-stamps { display: flex; gap: 4px; }
-.stamp {
-  font-size: 11px;
-  line-height: 1;
-  color: var(--t-border);
-}
-.stamp.on { color: var(--t-green); text-shadow: 0 0 5px rgba(63, 185, 80, 0.6); }
-
-#hud-coffee { font-size: 11px; color: var(--t-yellow); }
 
 #hud-sound {
   background: var(--t-button);

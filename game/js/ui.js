@@ -452,6 +452,7 @@ window.UI = (function () {
   }
   function setStamps(visited) {
     /* visited: {arcade,office,library,comms} booleans */
+    if (!el.stamps) return;
     const icons = { arcade: "▶", office: "▤", library: "▥", comms: "✉" };
     el.stamps.innerHTML = "";
     Object.keys(icons).forEach(function (k) {
@@ -463,6 +464,7 @@ window.UI = (function () {
     });
   }
   function setCoffee(n) {
+    if (!el.coffee) return;
     el.coffee.textContent = n > 0 ? "☕×" + n : "";
   }
 

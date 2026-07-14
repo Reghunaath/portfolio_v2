@@ -134,7 +134,7 @@ window.GAME_DATA = (function () {
               {
                 title: "RescueLine AI",
                 body: [
-                  "Developed an AI powered emergency call triage system using Twilio, ElevenLabs, and FastAPI to automatically classify and route emergency calls by urgency during natural disasters, when traditional helplines are overwhelmed. Built a real time voice AI agent and live dashboard with WebSocket based updates for emergency coordinators managing high call volumes. Earned 1st place and $700 at Northeastern's Innovate 2026 Hackathon.",
+                  "Developed an AI powered emergency call triage system using Twilio, ElevenLabs, and FastAPI to automatically classify and route emergency calls by urgency during natural disasters, when traditional helplines are overwhelmed. Built a real time voice AI agent and live dashboard with WebSocket based updates for emergency coordinators managing high call volumes. Earned 1st place and $700 at Northeastern's Innovaite 2026 Hackathon.",
                 ],
               },
               {
