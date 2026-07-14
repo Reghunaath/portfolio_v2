@@ -119,8 +119,8 @@ matters; each file exposes one global:
 - **Dev toggle** (only on `localhost` / `127.0.0.1` / `file://` / an explicit
   `?dev=1` — never on the deployed site): a small bottom-left "DEV · set <25%"
   badge and the `` ` `` hotkey both call `devSetProgress()`, which sets
-  explored % to the highest value at/under the greeter threshold (20% with the
-  current 15 core dialogs) and clears `feedbackAsked` — so interacting with one
+  explored % to the highest value at/under the greeter threshold (25% with the
+  current 16 core dialogs) and clears `feedbackAsked` — so interacting with one
   more core item trips the feedback greeter naturally, in whatever room you're
   in, without visiting four rooms. Also exposed as `window.__DEV.progress(cap)`
   (highest % at or below `cap`).

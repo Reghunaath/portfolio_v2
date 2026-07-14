@@ -57,6 +57,7 @@ window.GAME_DATA = (function () {
       path: "~/lobby/resume",
       title: "Resume",
       url: personal.resume,
+      core: true,
       hint: "view Reghu's resume",
       /* full text of resume.pdf, rendered as a printed paper sheet by the
          `resume` dialog mode in ui.js — keep in sync when the PDF changes */
