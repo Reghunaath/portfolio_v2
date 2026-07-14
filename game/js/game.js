@@ -1343,8 +1343,12 @@
     const stage = document.getElementById("stage");
     const availW = stage.clientWidth;
     const availH = stage.clientHeight;
-    let scale = Math.min(availW / VW, availH / VH);
-    if (scale > 2) scale = Math.floor(scale); // integer scaling when large
+    /* uniform contain-scale: grow the 320x208 canvas to the largest size that
+       still fits the stage, without cropping or distorting it. Bars on one
+       axis are unavoidable when the stage's aspect ratio differs from the
+       canvas's; we no longer snap to whole multiples, so those bars are as
+       small as they can be (at the cost of slightly uneven scaled pixels). */
+    const scale = Math.min(availW / VW, availH / VH);
     canvas.style.width = Math.floor(VW * scale) + "px";
     canvas.style.height = Math.floor(VH * scale) + "px";
   }

@@ -29,7 +29,10 @@ matters; each file exposes one global:
 ## Key facts & invariants
 
 - **Canvas**: 320×208 logical px, 16px tiles, rooms are exactly one screen (20×13
-  tiles). CSS-scaled with `image-rendering: pixelated`; integer scaling above 2×.
+  tiles). CSS-scaled with `image-rendering: pixelated`; uniform contain-scale
+  (`fitCanvas` in game.js) grows it to the largest size that fits the stage
+  without cropping or stretching — no integer snapping, so letterbox bars stay
+  minimal.
 - **Rooms**: `hub` (lobby — the id stays `hub` for save compatibility), `arcade`
   (projects), `office` (experience), `library` (education), `comms` (contact).
 - **Map legend**: `#` wall, `~` window wall, `.` floor, `n/s/e/w` walkable door
