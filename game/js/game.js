@@ -780,9 +780,9 @@
       title: "Front Desk",
       body: [
         (who ? who + ", you've" : "You've") +
-          " explored " +
-          pct +
-          "% of the portfolio so far — thank you for taking the time to look around!",
+          " explored more than " +
+          GREET_PCT +
+          "% of the portfolio so far, thank you for taking the time to look around!",
         "Before you carry on: how would you rate your visit? A star rating (and any thoughts you'd like to leave) would mean a lot to Reghu.",
       ],
       commentPlaceholder: "anything you'd like to add? (optional)",
