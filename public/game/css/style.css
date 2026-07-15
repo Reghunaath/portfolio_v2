@@ -24,6 +24,18 @@ html, body {
   color: var(--t-text);
   font-family: var(--mono-font);
   overflow: hidden;
+  /* it's a game, not a document — never let clicks select dialogue/UI text or
+     show the I-beam text caret. Form fields re-enable selection below. */
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* the only places text selection makes sense: the name/feedback inputs */
+input, textarea {
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 body {
@@ -981,6 +993,14 @@ body {
 
 @media (pointer: coarse), (max-width: 700px) {
   #touch-ui { display: block; }
+
+  /* Hide the D-pad + A button while a plain dialogue (message box) is open —
+     it sits low over the controls on a phone. Only the default dialogue mode:
+     the terminal/diploma/scroll/resume modes are full-screen/centered overlays
+     with their own close button, so leave the controls for those. */
+  #dialog:not(.hidden):not(.terminal):not(.diploma):not(.scroll):not(.resume) ~ #touch-ui {
+    display: none;
+  }
 }
 
 #dpad {

@@ -80,10 +80,17 @@ matters; each file exposes one global:
   auto-walks up col 10 to the reception desk (`intro` state in game.js; input
   ignored while it runs, reduced-motion places the player at the desk
   directly), then the check-in prompt opens (`openCheckIn`; skip sets
-  `nameSkipped` so it never nags again). The reception desk dialog
-  (`openReception`) embeds the same name input inline. Both are built
-  dynamically in game.js via `UI.openNamePrompt` (which typewrites like every
-  dialog), not read verbatim from data.js.
+  `nameSkipped` so it never nags again). The name is entered **only once** —
+  `openCheckIn` (via `UI.openNamePrompt`, which typewrites like every dialog)
+  is the sole place it's ever asked; the reception desk never re-prompts for
+  it. Right after that decision a controls primer shows (`openControlsHelp` /
+  `controlsLines`): whether the visitor checked in (`checkInAs`) or skipped
+  (`openCheckIn.onSkip`) — WASD/arrows + E to interact on desktop, D-pad + A
+  button on touch (detected with the same `(pointer: coarse), (max-width:
+  700px)` query the CSS uses to show `#touch-ui`). Afterwards, every time the
+  visitor talks to the receptionist (`openReception`) they get a greeting
+  (welcome-back with their name, or a generic welcome if skipped) + directions
+  + that same controls reminder — no name field, ever.
 - **Feedback greeter**: once quest % passes 25 (`GREET_PCT`) and
   `!feedbackAsked`, the receptionist leaves her desk and walks to the player —
   in whatever room they're in — to ask for a star rating + comment

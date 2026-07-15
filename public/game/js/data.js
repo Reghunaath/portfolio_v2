@@ -348,7 +348,7 @@ window.GAME_DATA = (function () {
       crest: "N",
       crestColor: "#c93c35",
       badge: "GPA 3.9 / 4.0",
-      body: ["Master of Science in Data Science. Also serves as TA for cloud computing and data science courses."],
+      body: ["Master of Science in Data Science. Also served as TA for cloud computing and data science courses."],
       core: true,
       hint: "read the Northeastern diploma",
     },

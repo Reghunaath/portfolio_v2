@@ -115,6 +115,21 @@
   };
   let actionQueued = false;
 
+  /* Cancel the next click (capture phase, before it reaches any target) — used
+     after a touch/tap on the A button, whose compatibility click would
+     otherwise leak to whatever the button was hidden over. */
+  function swallowNextClick() {
+    const kill = function (e) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      clearTimeout(timer);
+    };
+    const timer = setTimeout(function () {
+      document.removeEventListener("click", kill, true);
+    }, 700);
+    document.addEventListener("click", kill, { capture: true, once: true });
+  }
+
   const KEYMAP = {
     ArrowUp: "up",
     KeyW: "up",
@@ -201,6 +216,13 @@
     btnA.addEventListener("pointerdown", function (ev) {
       ev.preventDefault();
       actionQueued = true;
+      /* A tap also emits a compatibility "click" a moment later. Opening a
+         dialog hides the touch controls (CSS), so by the time that click
+         lands this button is display:none and the click falls through to the
+         dialog underneath — and for a short message box (e.g. the cat) the ✕
+         sits right where this button was, closing it the instant it opened.
+         Swallow the one ghost click that this tap produces. */
+      swallowNextClick();
     });
   }
 
@@ -440,40 +462,71 @@
     persist();
     sfx.stamp();
     UI.toast("checked in — welcome, " + name + "!", 2600);
+    /* first thing after checking in: how to get around */
+    openControlsHelp();
+  }
+
+  /* touch-aware controls reminder — on touch devices the game is driven by
+     the on-screen D-pad + A button, on desktop by the keyboard. Shared by the
+     standalone primer and the reception desk greeting. */
+  function controlsLines() {
+    const touch =
+      !!(window.matchMedia &&
+        window.matchMedia("(pointer: coarse), (max-width: 700px)").matches);
+    return touch
+      ? [
+          "Use the on-screen D-pad to move, and tap the A button to interact.",
+          "Most objects in here are interactable — so poke around and explore!",
+        ]
+      : [
+          "Move with WASD or the arrow keys, and press E to interact.",
+          "Most objects in here are interactable — so poke around and explore!",
+        ];
+  }
+
+  /* standalone controls primer, shown right after the intro check-in / skip */
+  function openControlsHelp() {
+    UI.openDialog(
+      {
+        path: "~/lobby/reception",
+        title: "Front Desk",
+        body: ["Here's how to get around:"].concat(controlsLines()),
+      },
+      {
+        onClose: function () {
+          sfx.close();
+        },
+      }
+    );
   }
 
   const DIRECTIONS =
     "Projects are through the north door, experience is east, education west, and every way to reach Reghu is south.";
 
-  /* desk dialog: welcome + directions with the guest-book input inline —
-     no extra click needed to enter or change the name */
+  /* desk dialog: a greeting + directions + the controls reminder, shown every
+     time the visitor talks to the receptionist. The name is entered only once
+     (at the intro check-in, openCheckIn) — the desk never re-prompts for it. */
   function openReception() {
     const base = GAME_DATA.dialogs["lobby-reception"];
-    UI.openNamePrompt({
-      path: base.path,
-      title: base.title,
-      body: save.name
-        ? [
-            "Welcome back, " + save.name + "! Great to see you again.",
-            DIRECTIONS,
-            "Checked in under the wrong name? Type a new one below.",
-          ]
-        : [
-            "Welcome to REGHU.EXE — Reghu's walkable portfolio!",
-            DIRECTIONS,
-            "Could you enter your name below so I can greet you by it?",
-          ],
-      placeholder: "your name",
-      submitLabel: save.name ? "update name" : "check in",
-      skipLabel: save.name ? "close" : "skip",
-      onSubmit: checkInAs,
-      onClose: function () {
-        sfx.close();
+    const greeting = save.name
+      ? "Welcome back, " + save.name + "! Great to see you again."
+      : "Welcome to REGHU.EXE — Reghu's walkable portfolio!";
+    UI.openDialog(
+      {
+        path: base.path,
+        title: base.title,
+        body: [greeting, DIRECTIONS].concat(controlsLines()),
       },
-    });
+      {
+        onClose: function () {
+          sfx.close();
+        },
+      }
+    );
   }
 
-  /* first-visit prompt the receptionist opens after the intro walk */
+  /* first-visit prompt the receptionist opens after the intro walk — the only
+     place a name is ever entered */
   function openCheckIn() {
     UI.openNamePrompt({
       path: "~/lobby/reception",
@@ -490,6 +543,8 @@
         save.nameSkipped = true;
         persist();
         UI.toast("no problem — enjoy the tour!", 2000);
+        /* still show the controls, even though they skipped the name */
+        openControlsHelp();
       },
     });
   }
@@ -1305,7 +1360,8 @@
       /* hint line */
       if (target) {
         const def = GAME_DATA.dialogs[target.dialog];
-        UI.setHint("E — " + ((def && def.hint) || "interact"));
+        const key = isTouch() ? "A" : "E";
+        UI.setHint("Press " + key + " to " + ((def && def.hint) || "interact"));
       } else if (nearStairway(20)) {
         UI.setHint("walk in → basement/");
       } else {
