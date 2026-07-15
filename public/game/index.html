@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>REGHU.EXE — Portfolio Quest</title>
+  <meta name="description" content="A playable pixel portfolio — walk through Reghunaath's projects, experience, education, and contact rooms." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="crt">
+    <!-- HUD -->
+    <header id="hud">
+      <div class="hud-left">
+        <div class="dots" aria-hidden="true">
+          <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+        </div>
+        <span id="hud-path">~/hub</span>
+      </div>
+      <div class="hud-right">
+        <span id="hud-quest">EXPLORED 0%</span>
+        <button id="hud-sound" type="button" aria-label="toggle sound">♪</button>
+      </div>
+    </header>
+
+    <!-- game canvas -->
+    <div id="stage">
+      <canvas id="game" width="320" height="208" aria-label="pixel world — use arrow keys to walk between portfolio rooms"></canvas>
+
+      <!-- boot overlay -->
+      <div id="boot">
+        <h1>REGHU<span>.EXE</span></h1>
+        <div id="boot-sub">A PORTFOLIO YOU CAN WALK AROUND IN</div>
+        <pre id="boot-text"></pre>
+      </div>
+
+      <!-- dialog -->
+      <div id="dialog" class="hidden" role="dialog" aria-modal="true" aria-labelledby="dialog-path">
+        <div class="dlg-window">
+          <div class="dlg-titlebar">
+            <span id="dialog-path">~/</span>
+            <button id="dialog-close" type="button" aria-label="close">✕</button>
+          </div>
+          <div id="dialog-body"></div>
+        </div>
+      </div>
+
+      <!-- toast + confetti -->
+      <div id="toast" aria-live="polite"></div>
+      <canvas id="confetti" class="hidden"></canvas>
+
+      <!-- crash screen (server-unplug easter egg) -->
+      <div id="crash" class="hidden" role="alertdialog" aria-modal="true" aria-labelledby="crash-title">
+        <div id="crash-inner">
+          <div id="crash-title">*** KERNEL PANIC ***</div>
+          <pre id="crash-text"></pre>
+          <button id="crash-reset" type="button">[ RESET SERVER ]</button>
+        </div>
+      </div>
+
+      <!-- touch controls -->
+      <div id="touch-ui">
+        <div id="dpad">
+          <button id="dp-up" type="button" aria-label="up">▲</button>
+          <button id="dp-left" type="button" aria-label="left">◀</button>
+          <button id="dp-right" type="button" aria-label="right">▶</button>
+          <button id="dp-down" type="button" aria-label="down">▼</button>
+        </div>
+        <button id="btn-a" type="button" aria-label="interact">A</button>
+      </div>
+    </div>
+
+    <!-- hint bar -->
+    <footer id="hint">WASD / arrows to move · E to interact</footer>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

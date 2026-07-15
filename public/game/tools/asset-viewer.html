@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Asset Viewer — REGHU.EXE tools</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #30363d; --text: #e6edf3;
+    --dim: #8b949e; --accent: #3fb950;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "JetBrains Mono", Consolas, monospace;
+    background: var(--bg); color: var(--text); font-size: 13px;
+  }
+  #app { display: grid; grid-template-columns: 260px 1fr; height: 100vh; }
+  aside {
+    background: var(--panel); border-right: 1px solid var(--border);
+    padding: 12px; overflow-y: auto;
+  }
+  aside h1 { font-size: 14px; margin: 0 0 10px; color: var(--accent); }
+  #search {
+    width: 100%; padding: 6px 8px; margin-bottom: 10px;
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    font-family: inherit; font-size: 12px; border-radius: 4px;
+  }
+  .folder-label {
+    color: var(--dim); text-transform: uppercase; font-size: 10px;
+    letter-spacing: 0.05em; margin: 12px 0 4px; cursor: pointer; user-select: none;
+  }
+  .folder-label:hover { color: var(--text); }
+  .file-item {
+    padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .file-item:hover { background: #1f2630; }
+  .file-item.active { background: #1c3a24; color: var(--accent); }
+  .file-dims { color: var(--dim); font-size: 10px; }
+
+  main { display: flex; flex-direction: column; min-width: 0; }
+  #toolbar {
+    display: flex; align-items: center; gap: 14px; padding: 10px 14px;
+    background: var(--panel); border-bottom: 1px solid var(--border); flex-wrap: wrap;
+  }
+  #toolbar label { display: flex; align-items: center; gap: 6px; color: var(--dim); }
+  #toolbar input[type=number] { width: 52px; }
+  input, textarea, button {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    font-family: inherit; font-size: 12px; border-radius: 4px; padding: 4px 6px;
+  }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  #stage {
+    flex: 1; overflow: auto; padding: 20px; position: relative;
+    background:
+      linear-gradient(45deg, #10141a 25%, transparent 25%),
+      linear-gradient(-45deg, #10141a 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #10141a 75%),
+      linear-gradient(-45deg, transparent 75%, #10141a 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    background-color: #0a0d12;
+  }
+  #canvas { image-rendering: pixelated; cursor: crosshair; display: block; }
+  #empty-hint { color: var(--dim); padding: 40px; }
+
+  #selection-panel {
+    padding: 10px 14px; background: var(--panel); border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  #sel-info { color: var(--dim); min-width: 220px; }
+  #sel-cmd { flex: 1; min-width: 280px; resize: none; }
+
+  #gallery {
+    display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px;
+    border-top: 1px solid var(--border); max-height: 180px; overflow-y: auto;
+  }
+  .thumb {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+    padding: 3px; cursor: pointer; text-align: center;
+  }
+  .thumb:hover { border-color: var(--accent); }
+  .thumb canvas { image-rendering: pixelated; display: block; }
+  .thumb .idx { color: var(--dim); font-size: 9px; }
+  #gallery-hint { color: var(--dim); padding: 4px 0; }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside>
+    <h1>ASSET VIEWER</h1>
+    <input id="search" placeholder="filter files...">
+    <div id="file-list"></div>
+  </aside>
+  <main>
+    <div id="toolbar">
+      <label>tile w <input id="tileW" type="number" value="16" min="1"></label>
+      <label>tile h <input id="tileH" type="number" value="16" min="1"></label>
+      <label>zoom <input id="zoom" type="range" min="1" max="16" value="6"><span id="zoomVal">6x</span></label>
+      <label><input id="showGrid" type="checkbox" checked> grid</label>
+      <button id="extractBtn">extract tiles → gallery</button>
+      <span id="loadNote" style="color:var(--dim)"></span>
+    </div>
+    <div id="stage">
+      <canvas id="canvas"></canvas>
+      <div id="empty-hint">Pick a file on the left to view it. Click a grid cell to select a sprite; drag to select a larger region.</div>
+    </div>
+    <div id="selection-panel">
+      <div id="sel-info">no selection</div>
+      <label>name <input id="sel-name" value="SPRITE" size="14"></label>
+      <label>frames <input id="sel-frames" type="number" value="1" min="1" style="width:44px"></label>
+      <textarea id="sel-cmd" readonly rows="1"></textarea>
+      <button id="copyBtn">copy command</button>
+    </div>
+    <div id="gallery"><div id="gallery-hint">"extract tiles" slices the whole sheet into a gallery using the tile size above — click a thumbnail to select it.</div></div>
+  </main>
+</div>
+<script src="asset-manifest.js"></script>
+<script>
+(function () {
+  var manifest = window.ASSET_MANIFEST || [];
+  var fileListEl = document.getElementById("file-list");
+  var searchEl = document.getElementById("search");
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var emptyHint = document.getElementById("empty-hint");
+  var loadNote = document.getElementById("loadNote");
+  var tileWEl = document.getElementById("tileW");
+  var tileHEl = document.getElementById("tileH");
+  var zoomEl = document.getElementById("zoom");
+  var zoomValEl = document.getElementById("zoomVal");
+  var showGridEl = document.getElementById("showGrid");
+  var selInfoEl = document.getElementById("sel-info");
+  var selNameEl = document.getElementById("sel-name");
+  var selFramesEl = document.getElementById("sel-frames");
+  var selCmdEl = document.getElementById("sel-cmd");
+  var galleryEl = document.getElementById("gallery");
+
+  var current = null; // { entry, img }
+  var selection = null; // { x, y, w, h } in source pixels
+  var drag = null; // { startCellX, startCellY }
+  var expanded = {}; // "path/segments" -> manually opened (ignored while a search filter is active)
+
+  function tileW() { return Math.max(1, parseInt(tileWEl.value, 10) || 16); }
+  function tileH() { return Math.max(1, parseInt(tileHEl.value, 10) || 16); }
+  function zoom() { return parseInt(zoomEl.value, 10) || 1; }
+
+  /* ── file list (nested category tree, built from folder path segments) ── */
+
+  function buildTree(filter) {
+    var root = { children: {}, files: [] };
+    manifest.forEach(function (e) {
+      if (filter && e.path.toLowerCase().indexOf(filter) === -1) return;
+      var parts = e.folder === "." ? [] : e.folder.split("/");
+      var node = root;
+      parts.forEach(function (part) {
+        if (!node.children[part]) node.children[part] = { children: {}, files: [] };
+        node = node.children[part];
+      });
+      node.files.push(e);
+    });
+    return root;
+  }
+
+  function countFiles(node) {
+    var n = node.files.length;
+    Object.keys(node.children).forEach(function (k) { n += countFiles(node.children[k]); });
+    return n;
+  }
+
+  function expandPath(folder) {
+    if (folder === ".") return;
+    var path = "";
+    folder.split("/").forEach(function (part) {
+      path = path ? path + "/" + part : part;
+      expanded[path] = true;
+    });
+  }
+
+  function renderNode(node, path, depth, filter) {
+    node.files.forEach(function (entry) {
+      var item = document.createElement("div");
+      item.className = "file-item";
+      item.style.paddingLeft = (8 + depth * 12) + "px";
+      if (current && current.entry === entry) item.className += " active";
+      item.innerHTML = entry.name + '<div class="file-dims">' + entry.width + "×" + entry.height + "</div>";
+      item.addEventListener("click", function () { loadFile(entry); });
+      fileListEl.appendChild(item);
+    });
+
+    Object.keys(node.children).sort().forEach(function (name) {
+      var child = node.children[name];
+      var childPath = path ? path + "/" + name : name;
+      var total = countFiles(child);
+      var isOpen = !!filter || !!expanded[childPath]; // searching auto-expands matches
+
+      var label = document.createElement("div");
+      label.className = "folder-label";
+      label.style.paddingLeft = (depth * 12) + "px";
+      label.textContent = (isOpen ? "▾ " : "▸ ") + name + " (" + total + ")";
+      label.addEventListener("click", function () {
+        expanded[childPath] = !isOpen;
+        renderFileList(searchEl.value.trim().toLowerCase());
+      });
+      fileListEl.appendChild(label);
+
+      if (isOpen) renderNode(child, childPath, depth + 1, filter);
+    });
+  }
+
+  function renderFileList(filter) {
+    fileListEl.innerHTML = "";
+    renderNode(buildTree(filter), "", 0, filter);
+  }
+
+  searchEl.addEventListener("input", function () {
+    renderFileList(searchEl.value.trim().toLowerCase());
+  });
+
+  /* ── loading + drawing ────────────────────────────────────────────── */
+
+  function loadFile(entry) {
+    var img = new Image();
+    img.onload = function () {
+      current = { entry: entry, img: img };
+      expandPath(entry.folder);
+      selection = null;
+      galleryEl.innerHTML = '<div id="gallery-hint">"extract tiles" slices the whole sheet into a gallery using the tile size above — click a thumbnail to select it.</div>';
+      emptyHint.style.display = "none";
+      loadNote.textContent = "";
+      redraw();
+      renderFileList(searchEl.value.trim().toLowerCase());
+      updateSelectionPanel();
+    };
+    img.onerror = function () {
+      loadNote.textContent = "failed to load — try serving this folder (npx serve tools) instead of opening the file directly";
+    };
+    img.src = entry.path;
+  }
+
+  function redraw() {
+    if (!current) return;
+    var z = zoom();
+    zoomValEl.textContent = z + "x";
+    var w = current.img.width * z, h = current.img.height * z;
+    canvas.width = w;
+    canvas.height = h;
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(current.img, 0, 0, w, h);
+
+    if (showGridEl.checked) {
+      ctx.strokeStyle = "rgba(255,255,255,0.18)";
+      ctx.lineWidth = 1;
+      var tw = tileW() * z, th = tileH() * z;
+      for (var x = 0; x <= w; x += tw) {
+        ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); ctx.stroke();
+      }
+      for (var y = 0; y <= h; y += th) {
+        ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke();
+      }
+    }
+
+    if (selection) {
+      ctx.strokeStyle = "#3fb950";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(selection.x * z + 1, selection.y * z + 1, selection.w * z - 2, selection.h * z - 2);
+      ctx.fillStyle = "rgba(63,185,80,0.15)";
+      ctx.fillRect(selection.x * z, selection.y * z, selection.w * z, selection.h * z);
+    }
+  }
+
+  [tileWEl, tileHEl, showGridEl].forEach(function (el) {
+    el.addEventListener("input", redraw);
+  });
+  zoomEl.addEventListener("input", redraw);
+
+  /* ── selection via click/drag on the canvas ──────────────────────── */
+
+  function cellAt(evt) {
+    var rect = canvas.getBoundingClientRect();
+    var z = zoom();
+    var sx = Math.floor((evt.clientX - rect.left) / z);
+    var sy = Math.floor((evt.clientY - rect.top) / z);
+    return { cx: Math.floor(sx / tileW()), cy: Math.floor(sy / tileH()) };
+  }
+
+  canvas.addEventListener("mousedown", function (evt) {
+    if (!current) return;
+    drag = cellAt(evt);
+    updateDragSelection(drag);
+  });
+  canvas.addEventListener("mousemove", function (evt) {
+    if (!current || !drag) return;
+    updateDragSelection(cellAt(evt));
+  });
+  window.addEventListener("mouseup", function () { drag = null; });
+
+  function updateDragSelection(endCell) {
+    var startCx = Math.min(drag.cx, endCell.cx), endCx = Math.max(drag.cx, endCell.cx);
+    var startCy = Math.min(drag.cy, endCell.cy), endCy = Math.max(drag.cy, endCell.cy);
+    selection = {
+      x: startCx * tileW(),
+      y: startCy * tileH(),
+      w: (endCx - startCx + 1) * tileW(),
+      h: (endCy - startCy + 1) * tileH(),
+    };
+    redraw();
+    updateSelectionPanel();
+  }
+
+  /* ── selection panel + generated command ─────────────────────────── */
+
+  function updateSelectionPanel() {
+    if (!current || !selection) {
+      selInfoEl.textContent = "no selection";
+      selCmdEl.value = "";
+      return;
+    }
+    selInfoEl.textContent = current.entry.name + "  @ (" + selection.x + "," + selection.y + ")  " + selection.w + "×" + selection.h;
+    var frames = Math.max(1, parseInt(selFramesEl.value, 10) || 1);
+    var name = (selNameEl.value || "SPRITE").trim() || "SPRITE";
+    var frameW = frames > 1 ? Math.round(selection.w / frames) : selection.w;
+    var srcPath = current.entry.path.replace(/^\.\.\//, "");
+    var cmd = 'node tools/png-to-grid.js "' + srcPath + '" --x=' + selection.x +
+      " --y=" + selection.y + " --w=" + frameW + " --h=" + selection.h + " --name=" + name;
+    if (frames > 1) cmd += " --frames=" + frames;
+    selCmdEl.value = cmd;
+  }
+  selNameEl.addEventListener("input", updateSelectionPanel);
+  selFramesEl.addEventListener("input", updateSelectionPanel);
+
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    if (!selCmdEl.value) return;
+    navigator.clipboard.writeText(selCmdEl.value).then(function () {
+      var btn = document.getElementById("copyBtn");
+      var old = btn.textContent;
+      btn.textContent = "copied!";
+      setTimeout(function () { btn.textContent = old; }, 1200);
+    });
+  });
+
+  /* ── extract → gallery (slices the whole sheet at the current tile size) ── */
+
+  document.getElementById("extractBtn").addEventListener("click", function () {
+    if (!current) return;
+    var tw = tileW(), th = tileH();
+    var cols = Math.floor(current.img.width / tw);
+    var rows = Math.floor(current.img.height / th);
+    galleryEl.innerHTML = "";
+
+    /* off-screen full-res canvas so we can test each cell for transparency
+       (best-effort: file:// loaded images may taint the canvas and block
+       getImageData — falls back to showing every cell, blank ones included) */
+    var full = document.createElement("canvas");
+    full.width = current.img.width;
+    full.height = current.img.height;
+    var fctx = full.getContext("2d");
+    fctx.drawImage(current.img, 0, 0);
+    var canRead = true;
+    try { fctx.getImageData(0, 0, 1, 1); } catch (e) { canRead = false; }
+    if (!canRead) {
+      loadNote.textContent = "transparency skip disabled (serve this folder, e.g. \"npx serve tools\", to enable it)";
+    }
+
+    var shown = 0;
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var sx = c * tw, sy = r * th;
+        if (canRead) {
+          var data = fctx.getImageData(sx, sy, tw, th).data;
+          var hasPixel = false;
+          for (var i = 3; i < data.length; i += 4) { if (data[i] > 8) { hasPixel = true; break; } }
+          if (!hasPixel) continue;
+        }
+        shown++;
+        var thumb = document.createElement("div");
+        thumb.className = "thumb";
+        var tc = document.createElement("canvas");
+        var scale = 4;
+        tc.width = tw * scale; tc.height = th * scale;
+        var tctx = tc.getContext("2d");
+        tctx.imageSmoothingEnabled = false;
+        tctx.drawImage(full, sx, sy, tw, th, 0, 0, tw * scale, th * scale);
+        var idx = document.createElement("div");
+        idx.className = "idx";
+        idx.textContent = c + "," + r;
+        thumb.appendChild(tc);
+        thumb.appendChild(idx);
+        (function (sx, sy, tw, th) {
+          thumb.addEventListener("click", function () {
+            selection = { x: sx, y: sy, w: tw, h: th };
+            redraw();
+            updateSelectionPanel();
+          });
+        })(sx, sy, tw, th);
+        galleryEl.appendChild(thumb);
+      }
+    }
+    if (shown === 0) {
+      galleryEl.innerHTML = '<div id="gallery-hint">no non-empty cells found at this tile size — try a different tile w/h.</div>';
+    }
+  });
+
+  renderFileList("");
+})();
+</script>
+</body>
+</html>

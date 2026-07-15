@@ -141,6 +141,28 @@ export function HeroSection() {
         </motion.div>
       </div>
 
+      {/* $ ./portfolio-quest.exe — the playable pixel-art version */}
+      <div className="flex flex-col gap-1 mb-6">
+        <Prompt command="./portfolio-quest.exe" delay={1.5} />
+        <motion.div {...fadeUp(1.7)} className="mt-1">
+          {/* /game is a static standalone app (redirect -> /game/index.html in
+              next.config.ts), not a Next page — we want a full navigation into
+              it, not a client-side route transition, so a plain <a> is correct. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
+            href="/game"
+            onClick={() => posthog.capture("game_opened")}
+            className="group inline-flex items-center gap-2 text-sm text-t-green px-4 py-2 border border-t-green/40 bg-t-button crt-glow transition-colors select-none hover:bg-t-border"
+          >
+            <span aria-hidden="true">🕹️</span>
+            <span>launch the playable portfolio</span>
+            <span className="text-t-dim transition-colors group-hover:text-t-green" aria-hidden="true">
+              &rarr;
+            </span>
+          </a>
+        </motion.div>
+      </div>
+
       <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} />
     </section>
   );

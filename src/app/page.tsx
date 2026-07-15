@@ -5,6 +5,7 @@ import { ExperienceSection } from "@/components/sections/ExperienceSection";
 import { EducationSection } from "@/components/sections/EducationSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { VisitCounterGrid } from "@/components/ui/visit-counter-grid";
+import { GamePromptModal } from "@/components/ui/game-prompt-modal";
 import { navSections } from "@/data/personal";
 
 const navLinks = [
@@ -26,6 +27,7 @@ export default function Home() {
           <VisitCounterGrid />
         </div>
       </main>
+      <GamePromptModal />
     </>
   );
 }
