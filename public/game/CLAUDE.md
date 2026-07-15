@@ -1,16 +1,20 @@
-# REGHU.EXE — Portfolio Quest (game/)
+# REGHU.EXE — Portfolio Quest (public/game/)
 
 Gamified alternate of the main terminal portfolio: a top-down pixel world where the
 visitor walks between rooms, each room being a portfolio section. Fully static —
 plain HTML/CSS/JS, no build step, no dependencies, no image assets (all art is
-drawn procedurally on canvas). Designed to be droppable into the Next.js app's
-`public/` folder and served at `/game/` with zero code changes.
+drawn procedurally on canvas). It lives under the Next.js app's `public/` folder,
+so Next serves it verbatim: the clean route `/game` is wired to it in the repo
+root's `next.config.ts` (`/game` → `/game/` redirect, then a `/game/` →
+`/game/index.html` rewrite so relative `css/…`/`js/…` paths resolve). Still
+self-contained — nothing here imports from or depends on the Next app.
 
 ## Run
 
 ```bash
-npx serve .            # or: python -m http.server 8123
+npx serve .            # from public/game/ — or: python -m http.server 8123
 # or just open index.html — classic scripts work on file://
+# through the Next site it's at http://localhost:3000/game (npm run dev)
 ```
 
 ## Architecture
