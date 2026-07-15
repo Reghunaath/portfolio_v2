@@ -28,6 +28,8 @@
     nameSkipped: false,
     feedback: null, // { rating, comment, at, pct, name } once given
     feedbackAsked: false, // the receptionist asks for feedback exactly once
+    basement: false, // the odd library book was pulled; the staircase exists
+    basementNumber: null, // finder ordinal assigned by /api/basement, once claimed
   };
   try {
     const raw = localStorage.getItem(SAVE_KEY);
@@ -93,6 +95,12 @@
       /* descending power-down warble */
       [440, 330, 247, 165, 110].forEach(function (f, i) {
         beep(f, 0.16, 0.06, "sawtooth", i * 0.1);
+      });
+    },
+    rumble: function () {
+      /* low stone-grinding descent — the library floor sliding open */
+      [131, 98, 82, 65].forEach(function (f, i) {
+        beep(f, 0.22, 0.07, "triangle", i * 0.11);
       });
     },
   };
@@ -285,6 +293,7 @@
   }
   function furnitureActive(f) {
     if (f.requires === "questDone") return save.done;
+    if (f.requires === "basement") return !!save.basement;
     return true;
   }
   function roomSolids() {
@@ -578,10 +587,20 @@
     const solids = roomSolids();
     let nx = greeter.x + (dx / dist) * step;
     let r = feetRect(nx, greeter.y);
-    if (!solids.some(function (s) { return hit(r, s); })) greeter.x = nx;
+    if (
+      !solids.some(function (s) {
+        return hit(r, s);
+      })
+    )
+      greeter.x = nx;
     let ny = greeter.y + (dy / dist) * step;
     r = feetRect(greeter.x, ny);
-    if (!solids.some(function (s) { return hit(r, s); })) greeter.y = ny;
+    if (
+      !solids.some(function (s) {
+        return hit(r, s);
+      })
+    )
+      greeter.y = ny;
     greeter.x = Math.max(6, Math.min(VW - 6, greeter.x));
     greeter.y = Math.max(10, Math.min(VH - 4, greeter.y));
     greeter.moving = true;
@@ -594,7 +613,8 @@
   function greeterWalkable(cx, cy, solids) {
     if (cx < 6 || cx > VW - 6 || cy < 10 || cy > VH - 4) return false;
     const fr = feetRect(cx, cy);
-    for (let i = 0; i < solids.length; i++) if (hit(fr, solids[i])) return false;
+    for (let i = 0; i < solids.length; i++)
+      if (hit(fr, solids[i])) return false;
     return true;
   }
   /* BFS from (fromX,fromY) to (toX,toY) over walkable tile centers; returns a
@@ -613,7 +633,9 @@
         greeterWalkable(c * T + T / 2, r * T + T / 2, solids)
       );
     }
-    const clamp = function (v, hi) { return Math.max(0, Math.min(hi, v)); };
+    const clamp = function (v, hi) {
+      return Math.max(0, Math.min(hi, v));
+    };
     const sc = clamp(Math.round((fromX - T / 2) / T), cols - 1),
       sr = clamp(Math.round((fromY - T / 2) / T), rows - 1),
       gc = clamp(Math.round((toX - T / 2) / T), cols - 1),
@@ -630,7 +652,10 @@
       found = false;
     while (qi < queue.length) {
       const k = queue[qi++];
-      if (k === goal) { found = true; break; }
+      if (k === goal) {
+        found = true;
+        break;
+      }
       const c = k % cols,
         r = (k - c) / cols;
       for (let d = 0; d < 4; d++) {
@@ -648,7 +673,13 @@
           nr < rows &&
           prev[nk] === -1 &&
           walk(nc, nr) &&
-          losClear(c * T + T / 2, r * T + T / 2, nc * T + T / 2, nr * T + T / 2, solids)
+          losClear(
+            c * T + T / 2,
+            r * T + T / 2,
+            nc * T + T / 2,
+            nr * T + T / 2,
+            solids,
+          )
         ) {
           prev[nk] = k;
           queue.push(nk);
@@ -675,7 +706,8 @@
         ax + (bx - ax) * (i / steps),
         ay + (by - ay) * (i / steps),
       );
-      for (let j = 0; j < solids.length; j++) if (hit(fr, solids[j])) return false;
+      for (let j = 0; j < solids.length; j++)
+        if (hit(fr, solids[j])) return false;
     }
     return true;
   }
@@ -687,7 +719,13 @@
        she cuts corners smoothly instead of hitting every tile centre */
     while (
       greeter.wp + 1 < greeter.path.length &&
-      losClear(greeter.x, greeter.y, greeter.path[greeter.wp + 1].x, greeter.path[greeter.wp + 1].y, solids)
+      losClear(
+        greeter.x,
+        greeter.y,
+        greeter.path[greeter.wp + 1].x,
+        greeter.path[greeter.wp + 1].y,
+        solids,
+      )
     ) {
       greeter.wp++;
     }
@@ -766,9 +804,12 @@
     }
     greeter.phase = "leave";
     greeter.timer = 0;
-    greeter.path =
-      computePath(greeter.x, greeter.y, greeter.homeX, greeter.homeY) ||
-      [{ x: greeter.homeX, y: greeter.homeY }];
+    greeter.path = computePath(
+      greeter.x,
+      greeter.y,
+      greeter.homeX,
+      greeter.homeY,
+    ) || [{ x: greeter.homeX, y: greeter.homeY }];
     greeter.wp = greeter.path.length > 1 ? 1 : 0;
   }
 
@@ -800,9 +841,7 @@
         persist();
         sfx.stamp();
         UI.toast(
-          (who ? "thanks, " + who + "! " : "thank you! ") +
-            rating +
-            "★ noted.",
+          (who ? "thanks, " + who + "! " : "thank you! ") + rating + "★ noted.",
           3000,
         );
         leaveGreeter();
@@ -880,17 +919,177 @@
     UI.openCrash({
       lines: [
         { text: "A fatal exception has occurred. The system has halted.\n\n" },
-        { text: "The game was running on the server you just unplugged.\n", cls: "crash-hl" },
+        {
+          text: "The game was running on the server you just unplugged.\n",
+          cls: "crash-hl",
+        },
         { text: "\nrack node ...... reghu-01 (contact room)\n" },
         { text: "uptime ......... 0 days, until you touched it\n" },
-        { text: "fault .......... EX_POWER_LOSS (cable removed by visitor)\n\n" },
-        { text: "Plug it back in to bring the portfolio online.", cls: "crash-dim" },
+        {
+          text: "fault .......... EX_POWER_LOSS (cable removed by visitor)\n\n",
+        },
+        {
+          text: "Plug it back in to bring the portfolio online.",
+          cls: "crash-dim",
+        },
       ],
       onReset: function () {
         try {
           sessionStorage.setItem("reghu-rebooted", "1");
         } catch (e) {}
         window.location.reload();
+      },
+    });
+  }
+
+  /* ── hidden-basement easter egg ───────────────────────────────────────
+     Every library bookshelf offers a quiet "look closer": one book sticks
+     out, pulling it opens a staircase below the middle shelf (persisted via
+     save.basement), and the chessboard basement below holds the Finders'
+     Ledger — a statue whose plaque shows the visitor's real discovery
+     ordinal, claimed once per browser from /api/basement. */
+  function openShelfPrompt() {
+    const base = GAME_DATA.dialogs["edu-shelf"];
+    const def = Object.assign({}, base, {
+      links: [{ label: "look closer", onClick: openOddBook }],
+    });
+    UI.openDialog(def, {
+      onClose: function () {
+        sfx.close();
+      },
+    });
+  }
+
+  function openOddBook() {
+    if (save.basement) {
+      /* already pulled — the shelf remembers */
+      UI.openDialog(GAME_DATA.dialogs["edu-shelf-pulled"], {
+        onClose: function () {
+          sfx.close();
+        },
+      });
+      return;
+    }
+    const base = GAME_DATA.dialogs["edu-shelf-odd"];
+    const def = Object.assign({}, base, {
+      links: [
+        { label: "pull it out", danger: true, onClick: pullOddBook },
+        { label: "leave it", onClick: UI.closeDialog },
+      ],
+    });
+    UI.openDialog(def, {
+      onClose: function () {
+        sfx.close();
+      },
+    });
+  }
+
+  /* the library stair hole (px). The hole itself is solid (rails on the
+     sides, void at the top) — the only entrance is its south lip: a thin
+     trigger strip just below the rect, entered by walking up against it.
+     The strip sits OUTSIDE the solid because collision never lets the feet
+     overlap the rect itself. */
+  const STAIR_RECT = { x: 24, y: 136, w: 32, h: 32 };
+  const STAIR_LIP = {
+    x: STAIR_RECT.x + 4,
+    y: STAIR_RECT.y + STAIR_RECT.h,
+    w: STAIR_RECT.w - 8,
+    h: 6,
+  };
+
+  function pullOddBook() {
+    UI.closeDialog();
+    save.basement = true;
+    persist();
+    sfx.rumble();
+    /* the floor opens below the middle shelf — if the player happens to be
+       standing on that exact patch, shove them clear so they aren't swallowed
+       mid-dialog by the walk-in trigger */
+    if (hit(feetRect(player.x, player.y), STAIR_RECT)) {
+      player.x = 72;
+      player.y = 152;
+      player.dir = "left";
+    }
+    UI.toast(
+      "The floor slides open — a staircase descends into darkness.",
+      3800,
+    );
+  }
+
+  /* near the south entrance (for the hint line) */
+  function nearStairway(pad) {
+    return (
+      room.id === "library" &&
+      save.basement &&
+      hit(feetRect(player.x, player.y), {
+        x: STAIR_LIP.x - pad,
+        y: STAIR_LIP.y,
+        w: STAIR_LIP.w + pad * 2,
+        h: STAIR_LIP.h + pad,
+      })
+    );
+  }
+
+  /* walking up against the south lip is the only way in */
+  function stairwayEntered() {
+    return player.dir === "up" && nearStairway(0);
+  }
+
+  /* claim this browser's finder number exactly once. Root-relative URL: the
+     game is served at /game/ on the same domain as the Next.js site, so
+     "/api/basement" reaches the site API; on file:// or a standalone static
+     host the fetch fails and we quietly fall back (no number saved → retried
+     on the next plaque interaction). */
+  let basementClaimBusy = false;
+  function claimBasementNumber() {
+    if (save.basementNumber || basementClaimBusy) return;
+    basementClaimBusy = true;
+    const done = function () {
+      basementClaimBusy = false;
+    };
+    try {
+      fetch("/api/basement", { method: "POST" })
+        .then(function (r) {
+          return r.ok ? r.json() : null;
+        })
+        .then(function (data) {
+          if (data && typeof data.n === "number") {
+            save.basementNumber = data.n;
+            persist();
+          }
+          done();
+        })
+        .catch(done);
+    } catch (e) {
+      done(); // file:// can throw synchronously
+    }
+  }
+
+  function ordinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  function openBasementPlaque() {
+    claimBasementNumber(); // no-op if claimed; background retry otherwise
+    const base = GAME_DATA.dialogs["basement-plaque"];
+    const body = base.body.concat(
+      save.basementNumber
+        ? [
+            "You're the " +
+              ordinal(save.basementNumber) +
+              " visitor to ever find this room.",
+            "Congratulations, Reghu owes you a drink if you ever meet him.",
+          ]
+        : [
+            "You found the hidden room.",
+            "Congratulations, Reghu owes you a drink if you ever meet him.",
+          ],
+    );
+    UI.openDialog(Object.assign({}, base, { body: body }), {
+      onClose: function () {
+        sfx.close();
       },
     });
   }
@@ -1033,6 +1232,14 @@
       const d = doorTarget();
       if (d) changeRoom(d.door);
 
+      /* the open stairway is a walk-in door — entered from below only */
+      if (stairwayEntered()) {
+        /* kick the claim off now so the number is usually ready by the time
+           the player crosses the basement to the ledger */
+        claimBasementNumber();
+        changeRoom({ to: "basement", spawn: [160, 180], face: "up" });
+      }
+
       /* interact */
       const target = interactTarget();
       if (actionQueued) {
@@ -1045,6 +1252,14 @@
           } else if (target.dialog === "contact-server") {
             sfx.open();
             openServerPrompt();
+            markSeen(target.dialog);
+          } else if (target.dialog === "edu-shelf") {
+            sfx.open();
+            openShelfPrompt();
+            markSeen(target.dialog);
+          } else if (target.dialog === "basement-plaque") {
+            sfx.open();
+            openBasementPlaque();
             markSeen(target.dialog);
           } else {
             let def = GAME_DATA.dialogs[target.dialog];
@@ -1091,6 +1306,8 @@
       if (target) {
         const def = GAME_DATA.dialogs[target.dialog];
         UI.setHint("E — " + ((def && def.hint) || "interact"));
+      } else if (nearStairway(20)) {
+        UI.setHint("walk in → basement/");
       } else {
         const nearDoor = nearestDoorHint();
         UI.setHint(nearDoor ? "walk through → " + nearDoor : defaultHint);
@@ -1100,8 +1317,16 @@
       if (greeter.active && greeter.phase === "leave") stepGreeterLeave(dt);
 
       /* she comes over once the visitor has explored enough and is between
-         interactions (no dialog open, not mid-transition or check-in) */
-      if (pendingGreeter && !greeter.active && !intro && !transitionLock)
+         interactions (no dialog open, not mid-transition or check-in) — but
+         never into the hidden basement (greeterEntry has no doorway there);
+         she waits until the player resurfaces */
+      if (
+        pendingGreeter &&
+        !greeter.active &&
+        !intro &&
+        !transitionLock &&
+        room.id !== "basement"
+      )
         startGreeter();
     }
 
@@ -1287,7 +1512,14 @@
             py = Math.round(greeter.y - 25);
           ctx.fillStyle = "rgba(0,0,0,0.3)";
           ctx.fillRect(px + 4, Math.round(greeter.y) + 1, 8, 2);
-          Sprites.drawGrid(ctx, grid, px, py, false, Sprites.PAL_RECEPTIONIST_WALK);
+          Sprites.drawGrid(
+            ctx,
+            grid,
+            px,
+            py,
+            false,
+            Sprites.PAL_RECEPTIONIST_WALK,
+          );
         },
       });
     }
@@ -1508,7 +1740,8 @@
     window.__DEV = { progress: devSetProgress };
     document.addEventListener("keydown", function (ev) {
       const tgt = ev.target;
-      if (tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA")) return;
+      if (tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA"))
+        return;
       if (ev.code === "Backquote") {
         ev.preventDefault();
         devSetProgress();

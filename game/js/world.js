@@ -513,7 +513,22 @@ window.World = (function () {
           h: 1.25,
           dialog: "edu-paper",
         },
-        { painter: "bookshelf", x: 1, y: 8, w: 3, h: 2, dialog: "edu-shelf" },
+        /* hidden staircase down — appears only after the odd book is pulled
+           (save.basement, see furnitureActive). Centered between the middle
+           bookshelf and the south wall, under the shelf column's width.
+           Solid (the stone rails block the sides and the void blocks the top);
+           the only way in is walking up against its south lip, which game.js
+           watches like a door trigger. sortY 0 draws the hole flat beneath
+           the player like a rug. */
+        {
+          painter: "stairsDown",
+          x: 1.5,
+          y: 8.5,
+          w: 2,
+          h: 2,
+          requires: "basement",
+          sortY: 0,
+        },
         /* greenery on the right side — clear of the east door row (6). The
            bush grid has ~5px transparent margins, so it's nudged right to
            sit flush against the bottom-right corner walls */
@@ -690,6 +705,45 @@ window.World = (function () {
           frontSide: "up",
         },
         { painter: "rug", x: 6, y: 5, w: 8, h: 4, solid: false },
+      ],
+    },
+
+    /* hidden basement under the library — reached only via the bookshelf
+       easter egg (pull the odd book → staircase). Deliberately absent from
+       STAMP_ROOMS and from every core dialog: finding it changes nothing on
+       the HUD. */
+    basement: {
+      label: "~/basement",
+      floor: "floorChessboard",
+      map: [
+        "####################",
+        "####################",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#########ss#########",
+      ],
+      doors: {
+        /* back up the stairs — spawns just east of the library's stair hole */
+        s: { to: "library", spawn: [72, 152], face: "right", hint: "library/" },
+      },
+      furniture: [
+        /* the Finders' Ledger — a stone figure guarding the engraved count */
+        {
+          painter: "basementStatue",
+          x: 9,
+          y: 4.5,
+          w: 2,
+          h: 3,
+          dialog: "basement-plaque",
+        },
       ],
     },
   };

@@ -2143,6 +2143,58 @@ window.Sprites = (function () {
     "mcccccccccccccmg",
   ];
 
+  /* basement: chessboard floor built from the Room Builder floor sheet's
+     stone checker swatch (@192,64 — 8px cells); each cell's face/edge layout
+     is kept but scaled to a full 16px tile so the squares alternate per tile
+     (same stretch-the-pack-art approach as the reception counter). */
+  /* classic black-and-white chessboard tones: white lights, near-black darks
+     (recolor of the pack's grayscale checker — cell layout unchanged) */
+  const PAL_CHESS = {
+    b: "#f4f4f4", // light square face
+    g: "#dcdcdc", // light square left edge
+    h: "#c4c4c4", // light square right edge
+    e: "#e4e4e4", // light square bottom seam
+    f: "#bdbdbd", // light square bottom-right corner
+    d: "#161616", // dark square face
+    i: "#000000", // dark square bottom seam
+  };
+  const CHESS_LIGHT_GRID = [
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "gbbbbbbbbbbbbbbh",
+    "eeeeeeeeeeeeeeef",
+  ];
+  const CHESS_DARK_GRID = [
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "dddddddddddddddd",
+    "iiiiiiiiiiiiiiii",
+  ];
+
   /* walls hand-ported from the pack's Generic_Home_1 (6_Home_Designs):
      white wall-top strips with navy outlines, light-gray face on the top
      wall, shaded top-of-wall bands running down the sides, white strip +
@@ -2339,6 +2391,18 @@ window.Sprites = (function () {
   /* section rooms: Modern Interiors warm herringbone-weave floor tile */
   function floorCarpetTiles(ctx, tx, ty) {
     drawGrid(ctx, FLOOR_ROOM_GRID, tx * T, ty * T, false, PAL_FLOOR_ROOM);
+  }
+
+  /* hidden basement: stone squares alternating per tile like a chessboard */
+  function floorChessboard(ctx, tx, ty) {
+    drawGrid(
+      ctx,
+      (tx + ty) % 2 ? CHESS_LIGHT_GRID : CHESS_DARK_GRID,
+      tx * T,
+      ty * T,
+      false,
+      PAL_CHESS,
+    );
   }
 
   /* north door: gold lintel + jambs hand-ported from Generic_Home_1's
@@ -2883,6 +2947,7 @@ window.Sprites = (function () {
   const TILES = {
     floorLobbyCarpet,
     floorCarpetTiles,
+    floorChessboard,
     wall,
     windowNight,
     doorNorth,
@@ -5419,6 +5484,146 @@ window.Sprites = (function () {
     );
   }
 
+  /* hidden staircase down to the basement — composed from the Room Builder
+     Floor_Connectors sheet's dark-stone stairs (rails @0,176; the rail
+     columns' own dd→ff→cc depth shading is kept, nearest rows lightest) and
+     its navy step strips (@64,438), stacked as treads that darken into the
+     engine's door-void black as they descend. */
+  const PAL_STAIRWELL = {
+    v: "#05070a",
+    b: "#3a3a50",
+    h: "#353549",
+    d: "#46465e",
+    f: "#565972",
+    c: "#6c6e85",
+    a: "#b1bac8",
+    e: "#9da3b7",
+  };
+  const STAIRWELL_GRID = [
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "bddbvvvvvvvvvvvvvvvvvvvvvvvvbddb",
+    "bddbvvvvvvvvvvvvvvvvvvvvvvvvbddb",
+    "bddbvvvvvvvvvvvvvvvvvvvvvvvvbddb",
+    "bddbvvvvvvvvvvvvvvvvvvvvvvvvbddb",
+    "bddbvvvvvvvvvvvvvvvvvvvvvvvvbddb",
+    "bddbvvvvvvvvvvvvvvvvvvvvvvvvbddb",
+    "bddbvvvvvvvvvvvvvvvvvvvvvvvvbddb",
+    "bddbhhhhhhhhhhhhhhhhhhhhhhhhbddb",
+    "bddbbbbbbbbbbbbbbbbbbbbbbbbbbddb",
+    "bffbbbbbbbbbbbbbbbbbbbbbbbbbbffb",
+    "bffbhhhhhhhhhhhhhhhhhhhhhhhhbffb",
+    "bffbbbbbbbbbbbbbbbbbbbbbbbbbbffb",
+    "bffbddddddddddddddddddddddddbffb",
+    "bffbddddddddddddddddddddddddbffb",
+    "bffbhhhhhhhhhhhhhhhhhhhhhhhhbffb",
+    "bffbddddddddddddddddddddddddbffb",
+    "bffbffffffffffffffffffffffffbffb",
+    "bffbffffffffffffffffffffffffbffb",
+    "bffbbbbbbbbbbbbbbbbbbbbbbbbbbffb",
+    "bccbffffffffffffffffffffffffbccb",
+    "bccbccccccccccccccccccccccccbccb",
+    "bccbccccccccccccccccccccccccbccb",
+    "bccbbbbbbbbbbbbbbbbbbbbbbbbbbccb",
+    "bccbffffffffffffffffffffffffbccb",
+    "bccbccccccccccccccccccccccccbccb",
+    "bccbccccccccccccccccccccccccbccb",
+    "bccbbbbbbbbbbbbbbbbbbbbbbbbbbccb",
+    "bccbaaaaaaaaaaaaaaaaaaaaaaaabccb",
+    "bccbeeeeeeeeeeeeeeeeeeeeeeeebccb",
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    ".bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.",
+  ];
+  function stairsDown(ctx, px, py, w, h) {
+    drawGrid(
+      ctx,
+      STAIRWELL_GRID,
+      px + Math.round((w - 32) / 2),
+      py + h - 32,
+      false,
+      PAL_STAIRWELL,
+    );
+  }
+
+  /* seated stone statue with an engraved plaque set into its pedestal —
+     the basement's "Finders' Ledger" (26x48, 22_Museum shadowless sheet). */
+  const PAL_STATUE = {
+    a: "#3a3a50",
+    b: "#a29087",
+    c: "#8d736d",
+    d: "#ad9f94",
+    e: "#6b5052",
+    f: "#97837c",
+    g: "#b8ada2",
+    h: "#c3baaf",
+    i: "#b9c3d5",
+    j: "#46465e",
+    k: "#d4cec2",
+    l: "#d4dee6",
+    m: "#838897",
+    p: "#565972",
+    q: "#acafbf",
+  };
+  const STATUE_GRID = [
+    ".........aaaaaaa..........",
+    "........adgggggba.........",
+    ".......adkkgdddbba........",
+    ".......egkkddddbbe........",
+    "......cegggddddbbea.......",
+    "......adggddddbbbdaa......",
+    "......abdddddbbbbdaga.....",
+    "......abdddddbbbbbage.....",
+    ".....eebccebfbeccecgca....",
+    ".....aebeecfffceeebdfa....",
+    ".....aecggdcbcdggabffa....",
+    ".....afafbdeeedbfaceea....",
+    ".....ageafdfffbfaeaea.....",
+    ".....eaaadcccccbaaaca.....",
+    "......aeeabbbbbaeeafa.....",
+    ".....abceceeeeececaba.....",
+    "....akgdcbcccccbcbabae....",
+    "...cegddgcdcbcdcbdadaa....",
+    "...aggdggdcgggcbddabaa....",
+    "...agdbcggdcbcbddfafaa....",
+    "...adbbegggdfbdddcabae....",
+    "...eaaaeccfddbfcceaaaca...",
+    "..ecgegafbbdddbbbackdfa...",
+    "..adgdgefbdddddbbeebdba...",
+    "..ecbbcgafdddddffacdbbe...",
+    "..agdbedaccffcccceecfca...",
+    "..abffcaeffbbffffcaaae....",
+    "..eaaaadgggggggddfaea.....",
+    ".....adgdddddddbbdaca.....",
+    ".eacaaaffffffcccccecaaae..",
+    ".adhhheaaaaaaaaaaaebahda..",
+    ".ahhhhhaeeeahaeeeaebahha..",
+    "eahhhhdabccadaccbaedaddae.",
+    "eahhhdebcccabacccbabaddae.",
+    "aahhbaggddcebacddgabaddaa.",
+    "aahhbafcccabbbafccabaddaa.",
+    "aahhdeaaaabbbbbaaaabaddaa.",
+    "aadhhdbbbbbbbbbbbbeaeddaa.",
+    "aacccccccccccccccccccccaa.",
+    "aaaccccaaaaaaapjjjjjjpaaa.",
+    "aebdddbbbbbbbdjlllllljbea.",
+    "aebbddbbbdbbbdaiiiiiiafea.",
+    "aebbdbbbbdbbbbaqmmmmqafea.",
+    "acbbbbbbbddbbbaiiiiiiafca.",
+    "afffffffffffffjaaaaaajcca.",
+    "aaeeeeeeaaaaaaaaaaaaaaaaa.",
+    "accccccccccccccccccccccca.",
+    "eaaaaaaaaaaaaaaaaaaaaaaae.",
+  ];
+  function basementStatue(ctx, px, py, w, h) {
+    drawGrid(
+      ctx,
+      STATUE_GRID,
+      px + Math.round((w - 26) / 2),
+      py + h - 48,
+      false,
+      PAL_STATUE,
+    );
+  }
+
   const PAINTERS = {
     rug,
     neonRug,
@@ -5453,6 +5658,8 @@ window.Sprites = (function () {
     trophyBig,
     receptionCounter,
     receptionist,
+    stairsDown,
+    basementStatue,
   };
 
   /* bobbing "!" glint above an interactable */

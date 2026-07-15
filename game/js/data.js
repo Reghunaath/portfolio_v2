@@ -380,8 +380,27 @@ window.GAME_DATA = (function () {
     "edu-shelf": {
       path: "~/education/shelves",
       title: "Library Shelves",
-      body: ["Statistics, distributed systems, computer vision, one shelf of pure sci-fi. A library card falls out; it just says 'curiosity'."],
+      body: ["A perfectly normal bookshelf. Alphabetized, dusted, unremarkable. Nothing to see here."],
       hint: "browse the shelves",
+    },
+
+    /* ── hidden basement easter egg (none of these are core — the room and
+       everything in it stays out of the quest % and the HUD) ── */
+    "edu-shelf-odd": {
+      path: "~/education/shelves",
+      title: "Something's Off",
+      body: ["Wait — one book looks odd. It sticks out slightly and won't sit flush with the rest, no matter how the other spines line up.", "Pull it out?"],
+    },
+    "edu-shelf-pulled": {
+      path: "~/education/shelves",
+      title: "Something's Off",
+      body: ["The odd book rests at a lazy angle now, its secret spent.", "Below the shelves, the staircase waits."],
+    },
+    "basement-plaque": {
+      path: "~/basement/ledger",
+      title: "Finders' Ledger",
+      body: ["A stern stone figure sits on a pedestal, older than anything upstairs. Set into its base is a small engraved plaque."],
+      hint: "read the plaque",
     },
     "edu-vending": {
       path: "~/education/vending",
