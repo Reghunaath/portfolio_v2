@@ -981,6 +981,14 @@ body {
 
 @media (pointer: coarse), (max-width: 700px) {
   #touch-ui { display: block; }
+
+  /* Hide the D-pad + A button while a plain dialogue (message box) is open —
+     it sits low over the controls on a phone. Only the default dialogue mode:
+     the terminal/diploma/scroll/resume modes are full-screen/centered overlays
+     with their own close button, so leave the controls for those. */
+  #dialog:not(.hidden):not(.terminal):not(.diploma):not(.scroll):not(.resume) ~ #touch-ui {
+    display: none;
+  }
 }
 
 #dpad {

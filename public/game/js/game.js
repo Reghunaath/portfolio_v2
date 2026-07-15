@@ -115,6 +115,21 @@
   };
   let actionQueued = false;
 
+  /* Cancel the next click (capture phase, before it reaches any target) — used
+     after a touch/tap on the A button, whose compatibility click would
+     otherwise leak to whatever the button was hidden over. */
+  function swallowNextClick() {
+    const kill = function (e) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      clearTimeout(timer);
+    };
+    const timer = setTimeout(function () {
+      document.removeEventListener("click", kill, true);
+    }, 700);
+    document.addEventListener("click", kill, { capture: true, once: true });
+  }
+
   const KEYMAP = {
     ArrowUp: "up",
     KeyW: "up",
@@ -201,6 +216,13 @@
     btnA.addEventListener("pointerdown", function (ev) {
       ev.preventDefault();
       actionQueued = true;
+      /* A tap also emits a compatibility "click" a moment later. Opening a
+         dialog hides the touch controls (CSS), so by the time that click
+         lands this button is display:none and the click falls through to the
+         dialog underneath — and for a short message box (e.g. the cat) the ✕
+         sits right where this button was, closing it the instant it opened.
+         Swallow the one ghost click that this tap produces. */
+      swallowNextClick();
     });
   }
 
@@ -1305,7 +1327,8 @@
       /* hint line */
       if (target) {
         const def = GAME_DATA.dialogs[target.dialog];
-        UI.setHint("E — " + ((def && def.hint) || "interact"));
+        const key = isTouch() ? "A" : "E";
+        UI.setHint("Press " + key + " to " + ((def && def.hint) || "interact"));
       } else if (nearStairway(20)) {
         UI.setHint("walk in → basement/");
       } else {
