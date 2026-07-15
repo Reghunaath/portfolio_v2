@@ -86,8 +86,14 @@ export function GamePromptModal() {
                     ✕
                   </span>
                 </button>
-                <span className="h-5 w-5 rounded-full bg-t-yellow md:h-3 md:w-3" aria-hidden="true" />
-                <span className="h-5 w-5 rounded-full bg-t-green md:h-3 md:w-3" aria-hidden="true" />
+                <span
+                  className="h-5 w-5 rounded-full bg-t-yellow md:h-3 md:w-3"
+                  aria-hidden="true"
+                />
+                <span
+                  className="h-5 w-5 rounded-full bg-t-green md:h-3 md:w-3"
+                  aria-hidden="true"
+                />
               </div>
               <span className="ml-1 flex-1 truncate text-xs text-t-dim">
                 $ cat whats-new.txt
@@ -100,13 +106,14 @@ export function GamePromptModal() {
                 id="game-invite-title"
                 className="text-base font-bold text-t-green crt-glow"
               >
-                <span aria-hidden="true">🕹️ </span>I built a playable version of this
-                portfolio
+                <span aria-hidden="true">🕹️ </span>I built a playable version of
+                this portfolio
               </h2>
               <p className="text-sm leading-relaxed text-t-text">
-                I recently developed a gamified version of my portfolio — a little
-                pixel world you can actually walk around in. I&apos;ve put a lot of
-                effort into it, and I&apos;d genuinely love for you to check it out.
+                I recently developed a gamified version of my portfolio, a
+                little pixel world you can actually walk around in. I&apos;ve
+                put a lot of effort into it, and I&apos;d genuinely love for you
+                to check it out.
               </p>
 
               <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end">
@@ -133,7 +140,11 @@ export function GamePromptModal() {
                           ],
                         }
                   }
-                  transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 1.8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   className="inline-flex select-none items-center justify-center gap-2 border border-t-green bg-t-green px-4 py-2 text-xs font-bold text-black transition-colors hover:brightness-110"
