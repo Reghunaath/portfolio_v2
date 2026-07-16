@@ -106,7 +106,7 @@ window.World = (function () {
            the box's bottom */
         {
           painter: "mug",
-          x: 8.625,
+          x: 8.375,
           y: 5.125,
           w: 1,
           h: 0.8125,
@@ -119,7 +119,7 @@ window.World = (function () {
            pulled up onto the white top face by the painter */
         {
           painter: "deskPhone",
-          x: 7.375,
+          x: 11.375,
           y: 5.125,
           w: 1,
           h: 0.8125,
