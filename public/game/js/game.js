@@ -398,14 +398,17 @@
          Blocks interacting while standing on top of / inside the furniture
          (e.g. wedged in the gap between two stacked server racks). */
       if (f.frontSide) {
-        const fs = f.frontSide;
-        if (fs === "left" && (player.dir !== "left" || player.x < f.px + f.pw))
-          return;
-        if (fs === "right" && (player.dir !== "right" || player.x > f.px))
-          return;
-        if (fs === "up" && (player.dir !== "up" || player.y < f.py + f.ph))
-          return;
-        if (fs === "down" && (player.dir !== "down" || player.y > f.py)) return;
+        const sides = Array.isArray(f.frontSide) ? f.frontSide : [f.frontSide];
+        const reachable = sides.some(function (fs) {
+          if (fs === "left")
+            return player.dir === "left" && player.x >= f.px + f.pw;
+          if (fs === "right")
+            return player.dir === "right" && player.x <= f.px;
+          if (fs === "up") return player.dir === "up" && player.y >= f.py + f.ph;
+          if (fs === "down") return player.dir === "down" && player.y <= f.py;
+          return false;
+        });
+        if (!reachable) return;
       }
       /* interactPad shrinks/grows the probe's hit margin around the
          furniture rect — cubicles use a smaller one so the desk isn't

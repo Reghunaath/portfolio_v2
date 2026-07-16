@@ -31,7 +31,7 @@ window.GAME_DATA = (function () {
     "hub-cat": {
       path: "~/lobby/cat",
       title: "pixel.cat",
-      body: ["meow meow meow. (roughly translates to: Reghu is awesome and you should give him a job.)"],
+      body: ["meow meow meow. (roughly translates to: Reghu is awesome and you should definitely consider hiring him.)"],
       hint: "pet the cat",
     },
     "hub-mug": {

@@ -673,7 +673,7 @@ window.World = (function () {
           w: 3.1875,
           h: 3.25,
           dialog: "contact-server",
-          frontSide: "up",
+          frontSide: ["up", "left"],
         },
         {
           painter: "serverRack",
@@ -682,7 +682,7 @@ window.World = (function () {
           w: 3.1875,
           h: 3.25,
           dialog: "contact-server",
-          frontSide: "up",
+          frontSide: ["up", "left"],
         },
         {
           painter: "serverRack",
@@ -692,7 +692,7 @@ window.World = (function () {
           h: 3.25,
           flip: true,
           dialog: "contact-server",
-          frontSide: "up",
+          frontSide: ["up", "right"],
         },
         {
           painter: "serverRack",
@@ -702,7 +702,7 @@ window.World = (function () {
           h: 3.25,
           flip: true,
           dialog: "contact-server",
-          frontSide: "up",
+          frontSide: ["up", "right"],
         },
         { painter: "rug", x: 6, y: 5, w: 8, h: 4, solid: false },
       ],
