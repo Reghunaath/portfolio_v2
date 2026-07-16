@@ -406,7 +406,7 @@ body {
 
 .dlg-input { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .dlg-input input {
-  flex: 1;
+  flex: 1 1 100%;
   min-width: 150px;
   background: #fff;
   border: 2px solid #cbb271;
