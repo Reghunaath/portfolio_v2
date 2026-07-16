@@ -487,6 +487,50 @@
     return null;
   }
 
+  /* door funnel — walking straight into the wall corner right beside a door
+     jams the player (no lateral input to slip past the jamb). When a wall just
+     blocked their forward step and a matching door opening is a hair off to the
+     side, nudge them sideways toward it so they slide into the doorway instead
+     of sticking. axis = the perpendicular slide axis ('x' for n/s doors, 'y'
+     for e/w); ch = the door tile to funnel toward. Only fires on pure-axis
+     movement (dx or dy exactly 0), so it never fights the player's own steering. */
+  const FUNNEL_REACH = 12; // px of misalignment we'll pull in from
+  function doorFunnel(axis, ch, solids, speed) {
+    let lo = 1e9,
+      hi = -1e9;
+    for (let i = 0; i < room.doorRects.length; i++) {
+      const dr = room.doorRects[i];
+      if (dr.ch !== ch) continue;
+      if (axis === "x") {
+        lo = Math.min(lo, dr.x);
+        hi = Math.max(hi, dr.x + dr.w);
+      } else {
+        lo = Math.min(lo, dr.y);
+        hi = Math.max(hi, dr.y + dr.h);
+      }
+    }
+    if (lo > hi) return; // no such door in this room
+    const pos = axis === "x" ? player.x : player.y;
+    const half = (axis === "x" ? player.w : player.h) / 2;
+    const passLo = lo + half,
+      passHi = hi - half;
+    if (pos >= passLo && pos <= passHi) return; // already lined up to pass
+    const target = pos < passLo ? passLo : passHi;
+    const gap = Math.abs(target - pos);
+    if (gap > FUNNEL_REACH) return; // too far from the opening — don't grab
+    const npos = pos + (target > pos ? 1 : -1) * Math.min(gap, speed);
+    const rect =
+      axis === "x" ? feetRect(npos, player.y) : feetRect(player.x, npos);
+    if (
+      !solids.some(function (s) {
+        return hit(rect, s);
+      })
+    ) {
+      if (axis === "x") player.x = npos;
+      else player.y = npos;
+    }
+  }
+
   /* ── reception & check-in ─────────────────────────────────────────── */
   function checkInAs(name) {
     save.name = name;
@@ -1342,22 +1386,34 @@
         const speed = (keys.run ? 132 : 84) * dt;
         const solids = roomSolids();
         /* slide: x then y */
+        let movedX = false,
+          movedY = false;
         let nx = player.x + dx * speed;
         let rect = feetRect(nx, player.y);
         if (
           !solids.some(function (s) {
             return hit(rect, s);
           })
-        )
+        ) {
           player.x = nx;
+          movedX = true;
+        }
         let ny = player.y + dy * speed;
         rect = feetRect(player.x, ny);
         if (
           !solids.some(function (s) {
             return hit(rect, s);
           })
-        )
+        ) {
           player.y = ny;
+          movedY = true;
+        }
+        /* door funnel: if a wall just blocked a straight walk into a door,
+           slide toward the opening instead of jamming on the corner */
+        if (dx === 0 && dy !== 0 && !movedY)
+          doorFunnel("x", dy < 0 ? "n" : "s", solids, speed);
+        else if (dy === 0 && dx !== 0 && !movedX)
+          doorFunnel("y", dx < 0 ? "w" : "e", solids, speed);
         /* clamp inside room */
         player.x = Math.max(6, Math.min(VW - 6, player.x));
         player.y = Math.max(10, Math.min(VH - 4, player.y));
