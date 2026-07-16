@@ -3,11 +3,9 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { posthog } from "@/lib/posthog";
 
-// Shown once per visitor: invites them to try the gamified portfolio. Dismissal
-// (either button, Esc, or backdrop) is remembered in localStorage so returning
-// visitors are never nagged again.
-const SEEN_KEY = "reghu-game-invite-v1";
-
+// Invites the visitor to try the gamified portfolio. Shown on every visit,
+// once the hero animation has had a moment to settle. Dismissal (either button,
+// Esc, or backdrop) only closes it for the current page load.
 export function GamePromptModal() {
   const [open, setOpen] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -18,21 +16,9 @@ export function GamePromptModal() {
   }, []);
 
   useEffect(() => {
-    let seen = false;
-    try {
-      seen = localStorage.getItem(SEEN_KEY) === "1";
-    } catch {
-      // localStorage blocked (private mode / cookies off) — just skip the popup.
-      seen = true;
-    }
-    if (seen) return;
-
     // Let the hero animation settle before inviting them away from it.
     const t = setTimeout(() => {
       setOpen(true);
-      try {
-        localStorage.setItem(SEEN_KEY, "1");
-      } catch {}
       posthog.capture("game_invite_shown");
     }, 1200);
     return () => clearTimeout(t);

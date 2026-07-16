@@ -98,10 +98,16 @@
       });
     },
     rumble: function () {
-      /* low stone-grinding descent — the library floor sliding open */
-      [131, 98, 82, 65].forEach(function (f, i) {
-        beep(f, 0.22, 0.07, "triangle", i * 0.11);
-      });
+      /* low stone-grinding descent — the library floor sliding open. A
+         sustained ~2s rumble: overlapping low triangle grinds stepping
+         downward (132→~58 Hz), timed to end as the shake settles. */
+      for (let i = 0; i < 13; i++) {
+        beep(132 - i * 6, 0.3, 0.06, "triangle", i * 0.15);
+      }
+    },
+    stairStep: function () {
+      /* soft low stone tick as each tread grinds into place */
+      beep(140, 0.05, 0.035, "triangle");
     },
   };
 
@@ -254,6 +260,29 @@
   let fade = { a: 0, dir: 0, cb: null }; // screen fade for transitions
   let transitionLock = false;
 
+  /* screen-shake, in logical px — amplitude decays linearly to 0 over `dur`.
+     Used when the library floor grinds open for the hidden staircase.
+     Honored by render() (translates the whole scene, dark-filling the exposed
+     edge) and skipped entirely under reduced motion. */
+  const shakeFx = { t: 0, dur: 0, amp: 0 };
+  function startShake(dur, amp) {
+    shakeFx.dur = dur;
+    shakeFx.t = dur;
+    shakeFx.amp = amp;
+  }
+  /* the odd library book was just pulled and the floor is mid-shake: keep the
+     staircase hidden (and non-solid, and un-enterable) until the rumble
+     settles, then revealStair() drops it into view (see update / pullOddBook) */
+  let stairRevealPending = false;
+  /* after the shake the staircase builds in one tread at a time (bottom-up:
+     nearest step first, each higher step grinding open behind it, descending
+     into the dark) instead of popping in whole. The stairsDown painter reads
+     the reveal fraction off the furniture's `reveal`; entry stays disabled
+     until the build finishes. Skipped under reduced motion. */
+  const STAIR_STEPS = 8; // treads revealed one at a time
+  const STAIR_STEP_DUR = 0.16; // seconds each tread waits before the next
+  let stairRevealAnim = null; // { step, t, f } while building; null = idle/done
+
   /* first-visit check-in cutscene: the player enters through the front door
      and walks up the center aisle to the reception desk before the
      receptionist greets them. Input is ignored while it runs. */
@@ -315,7 +344,7 @@
   }
   function furnitureActive(f) {
     if (f.requires === "questDone") return save.done;
-    if (f.requires === "basement") return !!save.basement;
+    if (f.requires === "basement") return !!save.basement && !stairRevealPending;
     return true;
   }
   function roomSolids() {
@@ -398,14 +427,17 @@
          Blocks interacting while standing on top of / inside the furniture
          (e.g. wedged in the gap between two stacked server racks). */
       if (f.frontSide) {
-        const fs = f.frontSide;
-        if (fs === "left" && (player.dir !== "left" || player.x < f.px + f.pw))
-          return;
-        if (fs === "right" && (player.dir !== "right" || player.x > f.px))
-          return;
-        if (fs === "up" && (player.dir !== "up" || player.y < f.py + f.ph))
-          return;
-        if (fs === "down" && (player.dir !== "down" || player.y > f.py)) return;
+        const sides = Array.isArray(f.frontSide) ? f.frontSide : [f.frontSide];
+        const reachable = sides.some(function (fs) {
+          if (fs === "left")
+            return player.dir === "left" && player.x >= f.px + f.pw;
+          if (fs === "right")
+            return player.dir === "right" && player.x <= f.px;
+          if (fs === "up") return player.dir === "up" && player.y >= f.py + f.ph;
+          if (fs === "down") return player.dir === "down" && player.y <= f.py;
+          return false;
+        });
+        if (!reachable) return;
       }
       /* interactPad shrinks/grows the probe's hit margin around the
          furniture rect — cubicles use a smaller one so the desk isn't
@@ -1054,12 +1086,25 @@
 
   function pullOddBook() {
     UI.closeDialog();
+    /* remember the discovery immediately (survives a reload mid-shake), but
+       hold the staircase hidden — the room shakes as the mechanism grinds,
+       and the floor only drops open once the rumble settles */
     save.basement = true;
     persist();
     sfx.rumble();
-    /* the floor opens below the middle shelf — if the player happens to be
-       standing on that exact patch, shove them clear so they aren't swallowed
-       mid-dialog by the walk-in trigger */
+    if (reduceMotion) {
+      revealStair(); // no shake — the floor is simply open
+      return;
+    }
+    stairRevealPending = true;
+    startShake(2, 3); // ~2s rumble; ends about when sfx.rumble() does → then revealStair()
+  }
+
+  /* the floor finishes sliding open: show the staircase and, if the player
+     happens to be standing on that exact patch, shove them clear so they
+     aren't swallowed by the walk-in trigger */
+  function revealStair() {
+    stairRevealPending = false;
     if (hit(feetRect(player.x, player.y), STAIR_RECT)) {
       player.x = 72;
       player.y = 152;
@@ -1069,6 +1114,14 @@
       "The floor slides open — a staircase descends into darkness.",
       3800,
     );
+    if (reduceMotion) return; // no build-in — the staircase is simply there
+    const f = room.furniture.filter(function (x) {
+      return x.painter === "stairsDown";
+    })[0];
+    if (!f) return;
+    f.reveal = 1 / STAIR_STEPS; // nearest tread shows at once, rest build in
+    stairRevealAnim = { step: 1, t: 0, f: f };
+    sfx.stairStep();
   }
 
   /* near the south entrance (for the hint line) */
@@ -1076,6 +1129,8 @@
     return (
       room.id === "library" &&
       save.basement &&
+      !stairRevealPending &&
+      !stairRevealAnim &&
       hit(feetRect(player.x, player.y), {
         x: STAIR_LIP.x - pad,
         y: STAIR_LIP.y,
@@ -1204,6 +1259,34 @@
           const cb = fade.cb;
           fade.cb = null;
           cb();
+        }
+      }
+    }
+
+    /* screen-shake decay; when the library-floor rumble settles, drop the
+       hidden staircase into view (runs regardless of dialog/lock state so the
+       reveal always lands even if the player wandered off mid-shake) */
+    if (shakeFx.t > 0) {
+      shakeFx.t -= dt;
+      if (shakeFx.t <= 0) {
+        shakeFx.t = 0;
+        if (stairRevealPending) revealStair();
+      }
+    }
+
+    /* the staircase grinds open one tread at a time; when the last step lands
+       the reveal fraction hits 1 and entry re-enables (see nearStairway) */
+    if (stairRevealAnim) {
+      stairRevealAnim.t += dt;
+      while (stairRevealAnim && stairRevealAnim.t >= STAIR_STEP_DUR) {
+        stairRevealAnim.t -= STAIR_STEP_DUR;
+        stairRevealAnim.step++;
+        sfx.stairStep();
+        if (stairRevealAnim.step >= STAIR_STEPS) {
+          stairRevealAnim.f.reveal = 1; // fully open
+          stairRevealAnim = null;
+        } else {
+          stairRevealAnim.f.reveal = stairRevealAnim.step / STAIR_STEPS;
         }
       }
     }
@@ -1415,6 +1498,24 @@
 
   /* ── render ───────────────────────────────────────────────────────── */
   function render(t) {
+    /* screen-shake: offset the whole scene by a few decaying px. The canvas
+       retains last frame's pixels, so translating would smear the exposed
+       edge — dark-fill it first (matches the #05070a stage/canvas frame). */
+    let shaking = false;
+    if (shakeFx.t > 0) {
+      const amp = shakeFx.amp * (shakeFx.t / shakeFx.dur); // decays to 0
+      const e = shakeFx.dur - shakeFx.t; // elapsed seconds → fast rumble
+      const sdx = Math.round(Math.sin(e * 92) * amp);
+      const sdy = Math.round(Math.cos(e * 78) * amp);
+      if (sdx !== 0 || sdy !== 0) {
+        shaking = true;
+        ctx.fillStyle = "#05070a";
+        ctx.fillRect(0, 0, VW, VH);
+        ctx.save();
+        ctx.translate(sdx, sdy);
+      }
+    }
+
     /* floor + walls */
     const floorPainter = Sprites.TILES[room.floor];
     for (let r = 0; r < World.ROWS; r++) {
@@ -1624,6 +1725,8 @@
       ctx.fillStyle = "rgba(2,4,8," + fade.a.toFixed(2) + ")";
       ctx.fillRect(0, 0, VW, VH);
     }
+
+    if (shaking) ctx.restore();
   }
 
   /* ── canvas scaling ───────────────────────────────────────────────── */
