@@ -5533,15 +5533,25 @@ window.Sprites = (function () {
     "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     ".bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.",
   ];
-  function stairsDown(ctx, px, py, w, h) {
-    drawGrid(
-      ctx,
-      STAIRWELL_GRID,
-      px + Math.round((w - 32) / 2),
-      py + h - 32,
-      false,
-      PAL_STAIRWELL,
-    );
+  function stairsDown(ctx, px, py, w, h, t, f) {
+    const gx = px + Math.round((w - 32) / 2);
+    const gy = py + h - 32;
+    /* `reveal` (0..1, set by game.js during the step-by-step build) clips the
+       sprite to a bottom-anchored band so only the nearest treads show, the
+       higher steps grinding open behind them; undefined = fully open */
+    const reveal = f && f.reveal !== undefined ? f.reveal : 1;
+    if (reveal <= 0) return;
+    if (reveal >= 1) {
+      drawGrid(ctx, STAIRWELL_GRID, gx, gy, false, PAL_STAIRWELL);
+      return;
+    }
+    const revH = Math.round(32 * reveal);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(gx, gy + 32 - revH, 32, revH);
+    ctx.clip();
+    drawGrid(ctx, STAIRWELL_GRID, gx, gy, false, PAL_STAIRWELL);
+    ctx.restore();
   }
 
   /* seated stone statue with an engraved plaque set into its pedestal —
