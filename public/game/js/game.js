@@ -30,6 +30,7 @@
     feedbackAsked: false, // the receptionist asks for feedback exactly once
     basement: false, // the odd library book was pulled; the staircase exists
     basementNumber: null, // finder ordinal assigned by /api/basement, once claimed
+    serverUnplugged: false, // the server was unplugged once; no re-unplugging after reset
   };
   try {
     const raw = localStorage.getItem(SAVE_KEY);
@@ -1027,15 +1028,24 @@
      that reboots (reloads the page; the save is untouched). */
   function openServerPrompt() {
     const base = GAME_DATA.dialogs["contact-server"];
-    const def = Object.assign({}, base, {
-      body: base.body.concat([
-        "There's a chunky power cable running to the wall. Unplug this server?",
-      ]),
-      links: [
-        { label: "yes, unplug it", danger: true, onClick: crashGame },
-        { label: "no, leave it running", onClick: UI.closeDialog },
-      ],
-    });
+    /* once unplugged and rebooted, the cable is off-limits — different copy,
+       no unplug option */
+    const def = save.serverUnplugged
+      ? Object.assign({}, base, {
+          body: base.body.concat([
+            "Fresh tape over the socket, and a sticky note: 'DO NOT UNPLUG, this means you.' Fair enough.",
+          ]),
+          links: [{ label: "leave it running", onClick: UI.closeDialog }],
+        })
+      : Object.assign({}, base, {
+          body: base.body.concat([
+            "There's a chunky power cable running to the wall. Unplug this server?",
+          ]),
+          links: [
+            { label: "yes, unplug it", danger: true, onClick: crashGame },
+            { label: "no, leave it running", onClick: UI.closeDialog },
+          ],
+        });
     UI.openDialog(def, {
       onClose: function () {
         sfx.close();
@@ -1046,6 +1056,8 @@
   let crashed = false;
   function crashGame() {
     crashed = true; // freezes the loop below
+    save.serverUnplugged = true; // don't let them do it again after reboot
+    persist();
     sfx.crash();
     UI.openCrash({
       lines: [
