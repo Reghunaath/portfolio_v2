@@ -305,6 +305,9 @@ window.UI = (function () {
 
     const h = document.createElement("h2");
     h.textContent = def.title;
+    /* diploma header seal — per-degree label (e.g. MASTERS/BACHELORS DEGREE),
+       rendered by the .diploma h2::before via attr(data-degree) */
+    if (opts.diploma) h.setAttribute("data-degree", def.degree || "DIPLOMA");
     el.dialogBody.appendChild(h);
 
     if (def.sub) {

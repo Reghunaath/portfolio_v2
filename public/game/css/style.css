@@ -696,7 +696,7 @@ body {
   margin-bottom: 10px;
 }
 #dialog.diploma #dialog-body h2::before {
-  content: "✦ DIPLOMA ✦";
+  content: "✦ " attr(data-degree) " ✦";
   display: block;
   font-size: 10px;
   letter-spacing: 4px;
