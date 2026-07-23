@@ -205,7 +205,7 @@ window.GAME_DATA = (function () {
       path: "~/projects/rescueline-ai",
       title: "RescueLine AI",
       badge: "1st Place — $700 · Innovaite Hackathon",
-      body: ["AI-powered emergency call triage system using Twilio, ElevenLabs, and FastAPI to automatically classify and route emergency calls by urgency during natural disasters, when traditional helplines are overwhelmed. Built a real-time voice AI agent and live dashboard with WebSocket-based updates for emergency coordinators managing high call volumes."],
+      body: ["AI powered emergency call triage system using Twilio, ElevenLabs, and FastAPI to automatically classify and route emergency calls by urgency during natural disasters, when traditional helplines are overwhelmed. Built a real time voice AI agent and live dashboard with WebSocket based updates for emergency coordinators managing high call volumes."],
       tags: ["FastAPI", "Twilio", "ElevenLabs", "Python", "WebSockets"],
       links: [
         { label: "github/backend", url: "https://github.com/Reghunaath/RescueLine-AI" },
@@ -219,7 +219,7 @@ window.GAME_DATA = (function () {
       path: "~/projects/doodlpop",
       title: "Doodlpop",
       badge: "1st Place · SharkHack",
-      body: ["AI-powered comic book generator that turns a single sentence into a fully illustrated comic. Type a story idea — Doodlpop generates a panel-by-panel script with dialogue and visual descriptions, lets you pick an art style (manga, western, watercolor storybook), edit the script, then illustrates every panel with AI. Supports shareable links, QR code sharing, and PDF export."],
+      body: ["AI powered comic book generator that turns a single sentence into a fully illustrated comic. Type a story idea, Doodlpop generates a panel by panel script with dialogue and visual descriptions, lets you pick an art style (manga, western, watercolor storybook), edit the script, then illustrates every panel with AI. Supports shareable links, QR code sharing, and PDF export."],
       tags: ["Next.js", "TypeScript", "Gemini", "Vercel", "AI Image Gen"],
       links: [
         { label: "github", url: "https://github.com/Reghunaath/doodlpop" },
@@ -233,8 +233,8 @@ window.GAME_DATA = (function () {
       path: "~/projects/leadcatch-ai",
       title: "LeadCatch AI",
       badge: "2nd Place — $1,500 · Yconic AI Hackathon",
-      body: ["AI chat assistant powered by ChatGPT and Twilio APIs to turn missed calls into booked appointments for small businesses. Designed a scalable Python backend for multi-user handling and automated SMS-based lead conversion."],
-      tags: ["Python", "ChatGPT", "Twilio", "SMS", "FastAPI"],
+      body: ["Automated SMS based lead conversion powered by OpenAI and Twilio APIs, with a scalable Python backend for multi user handling. After a small business or a trade worker misses a call, an AI agent texts the caller back within seconds, answers their questions, qualifies the lead, and books an appointment straight into the owner's schedule. Turns missed calls, which would otherwise walk away as lost revenue, into booked jobs without the owner ever having to pick up the phone."],
+      tags: ["Python", "OpenAI", "Twilio", "SMS", "FastAPI"],
       links: [
         { label: "github", url: "https://github.com/pavithralagisetty/LeadCatch.ai" },
         { label: "watch demo", url: "https://drive.google.com/file/d/1SYBqNUoYoWbJGfC8LH-QmF_O3aPF1Yn1/view?usp=sharing" },
@@ -246,7 +246,7 @@ window.GAME_DATA = (function () {
       path: "~/projects/snapback",
       title: "SNAPBACK",
       badge: "2nd Place · Babson Generator Build-a-thon",
-      body: ["Computer vision tool that measures athletic mobility loss after injury or a long break — no wearables, no clinic visit. Pick your sport, stand in front of your camera, and get a mobility score out of 100 benchmarked against clinical reference ranges. MediaPipe and OpenCV track 33 skeletal landmarks at 30fps and compute joint angles in real time. Outputs a sport-specific gap analysis and a personalised week-by-week return-to-sport exercise plan."],
+      body: ["Computer vision tool that measures athletic mobility loss after injury or a long break, no wearables, no clinic visit. Pick your sport, stand in front of your camera, and get a mobility score out of 100 benchmarked against clinical reference ranges. MediaPipe and OpenCV track 33 skeletal landmarks at 30fps and compute joint angles in real time. Outputs a sport specific gap analysis and a personalised week by week return to sport exercise plan."],
       tags: ["Python", "MediaPipe", "OpenCV", "Computer Vision", "AI"],
       links: [{ label: "github", url: "https://github.com/Srini-5303/SNAPBACK" }],
       core: true,
@@ -255,7 +255,7 @@ window.GAME_DATA = (function () {
     "proj-deadpool": {
       path: "~/projects/deadpool",
       title: "DEADPOOL",
-      body: ["DEADPOOL (Dependency Evaluation And Downstream Prediction Of Operational Liabilities) — a multi-agent AI system that identifies operational risks and failure cascades in startups before they become catastrophic. Orchestrates 6 specialist agents (People, Finance, Infrastructure, Product, Legal, Code Audit) running concurrently via LangGraph. Cross-domain cascade expansion using Gemini 2.5 Pro traces how a single failure propagates across the org — producing a 0-100 composite risk score and a plain-language founder briefing."],
+      body: ["DEADPOOL (Dependency Evaluation And Downstream Prediction Of Operational Liabilities), a multi agent AI system that identifies operational risks and failure cascades in startups before they become catastrophic. Orchestrates 6 specialist agents (People, Finance, Infrastructure, Product, Legal, Code Audit) running concurrently via LangGraph. Cross domain cascade expansion using Gemini 2.5 Pro traces how a single failure propagates across the org, producing a 0-100 composite risk score and a plain language founder briefing."],
       tags: ["LangGraph", "Gemini 2.5 Pro", "FastAPI", "React", "Python", "Multi-Agent"],
       links: [{ label: "github", url: "https://github.com/Ackshay206/DEADPOOL" }],
       core: true,
