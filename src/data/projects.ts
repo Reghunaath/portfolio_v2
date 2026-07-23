@@ -20,7 +20,7 @@ export const projects: Project[] = [
   {
     title: "RescueLine AI",
     description:
-      "AI-powered emergency call triage system using Twilio, ElevenLabs, and FastAPI to automatically classify and route emergency calls by urgency during natural disasters, when traditional helplines are overwhelmed. Built a real-time voice AI agent and live dashboard with WebSocket-based updates for emergency coordinators managing high call volumes.",
+      "AI powered emergency call triage system using Twilio, ElevenLabs, and FastAPI to automatically classify and route emergency calls by urgency during natural disasters, when traditional helplines are overwhelmed. Built a real time voice AI agent and live dashboard with WebSocket based updates for emergency coordinators managing high call volumes.",
     tags: ["FastAPI", "Twilio", "ElevenLabs", "Python", "WebSockets"],
     github: "",
     githubBackend: "https://github.com/Reghunaath/RescueLine-AI",
@@ -42,7 +42,7 @@ export const projects: Project[] = [
   {
     title: "Doodlpop",
     description:
-      "AI-powered comic book generator that turns a single sentence into a fully illustrated comic. Type a story idea — Doodlpop generates a panel-by-panel script with dialogue and visual descriptions, lets you pick an art style (manga, western, watercolor storybook), edit the script, then illustrates every panel with AI. Supports shareable links, QR code sharing, and PDF export.",
+      "AI powered comic book generator that turns a single sentence into a fully illustrated comic. Type a story idea, Doodlpop generates a panel by panel script with dialogue and visual descriptions, lets you pick an art style (manga, western, watercolor storybook), edit the script, then illustrates every panel with AI. Supports shareable links, QR code sharing, and PDF export.",
     tags: ["Next.js", "TypeScript", "Gemini", "Vercel", "AI Image Gen"],
     github: "https://github.com/Reghunaath/doodlpop",
     live: "https://doodlpop.vercel.app/",
@@ -68,8 +68,8 @@ export const projects: Project[] = [
   {
     title: "LeadCatch AI",
     description:
-      "AI chat assistant powered by ChatGPT and Twilio APIs to turn missed calls into booked appointments for small businesses. Designed a scalable Python backend for multi-user handling and automated SMS-based lead conversion.",
-    tags: ["Python", "ChatGPT", "Twilio", "SMS", "FastAPI"],
+      "Automated SMS based lead conversion powered by OpenAI and Twilio APIs, with a scalable Python backend for multi user handling. After a small business or a trade worker misses a call, an AI agent texts the caller back within seconds, answers their questions, qualifies the lead, and books an appointment straight into the owner's schedule. Turns missed calls, which would otherwise walk away as lost revenue, into booked jobs without the owner ever having to pick up the phone.",
+    tags: ["Python", "OpenAI", "Twilio", "SMS", "FastAPI"],
     github: "https://github.com/pavithralagisetty/LeadCatch.ai",
     demoVideo:
       "https://drive.google.com/file/d/1SYBqNUoYoWbJGfC8LH-QmF_O3aPF1Yn1/view?usp=sharing",
@@ -88,7 +88,7 @@ export const projects: Project[] = [
   {
     title: "SNAPBACK",
     description:
-      "Computer vision tool that measures athletic mobility loss after injury or a long break — no wearables, no clinic visit. Pick your sport, stand in front of your camera, and get a mobility score out of 100 benchmarked against clinical reference ranges. MediaPipe and OpenCV track 33 skeletal landmarks at 30fps and compute joint angles in real time. Outputs a sport-specific gap analysis and a personalised week-by-week return-to-sport exercise plan with sets, reps, and reasoning.",
+      "Computer vision tool that measures athletic mobility loss after injury or a long break, no wearables, no clinic visit. Pick your sport, stand in front of your camera, and get a mobility score out of 100 benchmarked against clinical reference ranges. MediaPipe and OpenCV track 33 skeletal landmarks at 30fps and compute joint angles in real time. Outputs a sport specific gap analysis and a personalised week by week return to sport exercise plan with sets, reps, and reasoning.",
     tags: ["Python", "MediaPipe", "OpenCV", "Computer Vision", "AI"],
     github: "https://github.com/Srini-5303/SNAPBACK",
     award: "🥈 2nd Place · Babson Generator Build-a-thon",
@@ -102,7 +102,7 @@ export const projects: Project[] = [
   {
     title: "DEADPOOL",
     description:
-      "DEADPOOL (Dependency Evaluation And Downstream Prediction Of Operational Liabilities) — a multi-agent AI system that identifies operational risks and failure cascades in startups before they become catastrophic. Orchestrated 6 specialist agents (People, Finance, Infrastructure, Product, Legal, Code Audit) running concurrently via LangGraph. Cross-domain cascade expansion using Gemini 2.5 Pro traces how a single failure propagates across the org — producing a 0–100 composite risk score and a plain-language founder briefing.",
+      "DEADPOOL (Dependency Evaluation And Downstream Prediction Of Operational Liabilities), a multi agent AI system that identifies operational risks and failure cascades in startups before they become catastrophic. Orchestrated 6 specialist agents (People, Finance, Infrastructure, Product, Legal, Code Audit) running concurrently via LangGraph. Cross domain cascade expansion using Gemini 2.5 Pro traces how a single failure propagates across the org, producing a 0–100 composite risk score and a plain language founder briefing.",
     tags: ["LangGraph", "Gemini 2.5 Pro", "FastAPI", "React", "Python", "Multi-Agent"],
     github: "https://github.com/Ackshay206/DEADPOOL",
     images: [
