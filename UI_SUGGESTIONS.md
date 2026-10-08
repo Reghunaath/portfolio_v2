@@ -166,4 +166,3 @@ more "terminal" than a styled `<h1>`:
   section (or make the `$ command` lines real headings) for a11y + SEO.
 - **Typewriter duplicates static text** — "4x Hackathon Winner" appears both static
   and in the rotating strings; rotate things not already on screen.
-- **Raw phone numbers** — display `+1 (857) 351-9009` while keeping the `tel:` href raw.

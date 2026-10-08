@@ -11,8 +11,6 @@ window.GAME_DATA = (function () {
     location: "Boston, MA",
     email: "ajithkumarahila.r@northeastern.edu",
     personalEmail: "reghunaath4@gmail.com",
-    phone: "+18573519009",
-    whatsapp: "+917708418298",
     linkedin: "https://www.linkedin.com/in/reghunaath",
     github: "https://github.com/Reghunaath/",
     mainSite: "/", // when this folder is served from public/game, "/" is the terminal portfolio
@@ -63,7 +61,7 @@ window.GAME_DATA = (function () {
          `resume` dialog mode in ui.js — keep in sync when the PDF changes */
       sheet: {
         name: personal.name,
-        contact: [personal.email, "linkedin.com/in/reghunaath", "Boston, MA", "(857) 351-9009"],
+        contact: [personal.email, "linkedin.com/in/reghunaath", "Boston, MA"],
         sections: [
           {
             heading: "Education",
@@ -418,8 +416,6 @@ window.GAME_DATA = (function () {
       contacts: [
         { value: personal.email },
         { value: personal.personalEmail },
-        { value: personal.phone, note: "US" },
-        { value: personal.whatsapp, note: "WhatsApp" },
       ],
       core: true,
       hint: "check the contact desk",
