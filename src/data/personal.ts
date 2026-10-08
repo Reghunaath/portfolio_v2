@@ -19,8 +19,6 @@ export const personal = {
   location: "Boston, MA",
   email: "ajithkumarahila.r@northeastern.edu",
   personalEmail: "reghunaath4@gmail.com",
-  phone: "+18573519009",
-  whatsapp: "+917708418298",
   linkedin: "https://www.linkedin.com/in/reghunaath",
   github: "https://github.com/Reghunaath/",
 };
